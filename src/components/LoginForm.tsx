@@ -1,7 +1,7 @@
 import { Box, Typography, TextField, Button } from "@mui/material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "../styles/SignInPage.css";
+import "../styles/Forms.css";
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
@@ -35,7 +35,7 @@ const LoginForm = () => {
   };
 
   return (
-    <Box className="login-form-container">
+    <Box className="form-main-container">
       <Box className="header">
         <Typography variant="h4" component="h2" gutterBottom>
           Log in
@@ -65,7 +65,7 @@ const LoginForm = () => {
         />
         <Box className="buttons-container">
           <Button type="submit" variant="contained" color="primary" fullWidth>
-            Log in!
+            Log in
           </Button>
           <Button
             variant="outlined"

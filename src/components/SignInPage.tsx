@@ -1,10 +1,10 @@
-import "../styles/SignInPage.css";
+import '../styles/LoginAndSignUp.css';
 import { Box, Typography } from "@mui/material";
 import LoginForm from "./LoginForm";
 
 const SignInPage = () => {
   return (
-    <Box className="sign-in-main-container">
+    <Box className="sign-main-container">
       <Box className="left-container">
         <Box className="background-image" />
         <Box className="overlay" />
