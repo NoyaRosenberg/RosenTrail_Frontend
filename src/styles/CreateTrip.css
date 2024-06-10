@@ -1,0 +1,79 @@
+
+  
+  .app-container {
+    display: flex;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    background-color: white;
+  }
+  
+  .image-container {
+    width: 50%;
+    background-image: url('/public/canada.png'); /* Replace with the correct path to your image */
+    background-size: cover;
+    background-position: center;
+  }
+  
+  .form-container {
+    width: 50%;
+    padding: 20px;
+  }
+  
+  h2 {
+    color: #5eba00;
+    font-size: 24px;
+  }
+  
+  p {
+    color: #666;
+  }
+  
+  .form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  input {
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .rating {
+    display: flex;
+    justify-content: center;
+    margin: 10px 0;
+  }
+  
+  .rating span {
+    font-size: 24px;
+    color: #5eba00;
+  }
+  
+  button {
+    padding: 10px;
+    background-color: #5eba00;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+  
+  button:hover {
+    background-color: #4da500;
+  }
+  
+  .contact {
+    margin-top: 20px;
+    font-size: 14px;
+  }
+  
+  .contact a {
+    color: #5eba00;
+    text-decoration: none;
+  }
+  
+  .contact a:hover {
+    text-decoration: underline;
+  }

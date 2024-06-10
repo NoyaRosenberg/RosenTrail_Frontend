@@ -1,0 +1,88 @@
+.main-page {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: white;
+  position: relative;
+  z-index: 10;
+}
+
+.nav-title {
+  font-size: 1.5rem;
+  color: black;
+  margin: 0;
+  font-weight: bold;
+}
+
+.nav-links {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-link {
+  text-decoration: none;
+  font-size: 1rem;
+  color: green;
+  margin-left: 1.5rem;
+}
+
+.gray-link {
+  color: gray;
+}
+
+.separator {
+  color: gray;
+  padding: 0 0.5rem;
+}
+
+.background-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.background-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.overlay {
+  position: absolute;
+  bottom: 20%;
+  left: 10%;
+  text-align: left;
+  color: white;
+  z-index: 5;
+}
+
+.welcome-text {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.main-title {
+  font-size: 4rem;
+  margin: 0;
+}
+
+.description {
+  font-size: 1.5rem;
+  margin: 0.5rem 0;
+}
+
+.sub-description {
+  font-size: 1.25rem;
+  margin: 0.5rem 0;
+}
