@@ -7,7 +7,7 @@ const MainPage = () => {
     <Stack className="main-container">
       <Navbar />
       <Box className="background-box">
-        <Box className="background-image" />
+        <Box className="home-background-image" />
         <Box className="overlay" />
         <Box className="text-content">
           <Typography variant="h5">Welcome</Typography>

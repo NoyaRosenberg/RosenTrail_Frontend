@@ -1,7 +1,9 @@
 import { Box, Typography, TextField, Button, Grid } from "@mui/material";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import "../styles/Forms.css";
+import { Link, useNavigate } from "react-router-dom";
+import "../../styles/Forms.css";
+import FormHeader from "../Forms/FormHeader";
+import ContactInfo from "../Forms/ContactInfo";
 
 const SignUpForm = () => {
   const [username, setUsername] = useState("");
@@ -39,14 +41,7 @@ const SignUpForm = () => {
 
   return (
     <Box className="form-main-container">
-      <Box className="header">
-        <Typography variant="h4" component="h2" gutterBottom>
-          Sign Up
-        </Typography>
-        <Typography variant="body1" gutterBottom>
-          Sign up to save your wonderful trip plans
-        </Typography>
-      </Box>
+      <FormHeader mainTitle="Sign Up" secondaryTitle="Sign up to save your wonderful trip plans"/>
       <Grid
         container
         spacing={2}
@@ -117,14 +112,7 @@ const SignUpForm = () => {
           )}
         </Grid>
       </Grid>
-      <Box className="contact-info">
-        <Typography variant="body2" className="contact-info">
-          Need help? Contact us at:
-        </Typography>
-        <Typography variant="body2" color="textSecondary">
-          Wonderplan@gmail.com
-        </Typography>
-      </Box>
+      <ContactInfo/>
     </Box>
   );
 };

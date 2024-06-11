@@ -1,18 +1,19 @@
-import '../styles/LoginAndSignUp.css';
 import { Box, Typography } from '@mui/material';
 import SignUpForm from './SignUpForm';
+import '../../styles/Forms.css';
+import '../../styles/SignUpPage.css';
 
 const SignUpPage = () => {
   return (
-    <Box className="sign-main-container">
-    <Box className="left-container">
-      <Box className="background-image" />
-      <Box className="overlay" />
-      <Box className="text-content">
+    <Box className="form-page-main-container">
+    <Box className="form-page-left-container">
+      <Box className="form-page-background-image sign-up-image" />
+      <Box className="form-page-overlay" />
+      <Box className="form-page-text-content">
         <Typography variant="h5">START YOUR JOURNEY</Typography>
       </Box>
     </Box>
-    <Box className="right-container">
+    <Box className="form-page-right-container">
       <SignUpForm />
     </Box>
   </Box>

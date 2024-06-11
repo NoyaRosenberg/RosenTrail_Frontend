@@ -1,6 +1,8 @@
 import { Box, Typography, TextField, Button } from "@mui/material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import ContactInfo from "../Forms/ContactInfo";
+import FormHeader from "../Forms/FormHeader";
 import "../../styles/Forms.css";
 
 const LoginForm = () => {
@@ -36,14 +38,7 @@ const LoginForm = () => {
 
   return (
     <Box className="form-main-container">
-      <Box className="header">
-        <Typography variant="h4" component="h2" gutterBottom>
-          Log in
-        </Typography>
-        <Typography variant="body1" gutterBottom>
-          Log in and continue your wonderful trip plans
-        </Typography>
-      </Box>
+      <FormHeader mainTitle="Login" secondaryTitle="Log in and continue your wonderful trip plans"/>
       <Box component="form" onSubmit={handleSubmit} sx={{ width: "100%" }}>
         <TextField
           type="email"
@@ -63,7 +58,7 @@ const LoginForm = () => {
           fullWidth
           margin="normal"
         />
-        <Box className="buttons-container">
+        <Box className="form-buttons-container">
           <Button type="submit" variant="contained" color="primary" fullWidth>
             Log in
           </Button>
@@ -82,14 +77,7 @@ const LoginForm = () => {
           </Typography>
         )}
       </Box>
-      <Box className="contact-info">
-        <Typography variant="body2" className="contact-info">
-          Need help? Contact us at:
-        </Typography>
-        <Typography variant="body2" color="textSecondary">
-          Wonderplan@gmail.com
-        </Typography>
-      </Box>
+      <ContactInfo/>
     </Box>
   );
 };

@@ -8,6 +8,9 @@ const Navbar = () => {
           WonderPlan
         </Typography>
         <ButtonGroup variant="text" aria-label="Basic button group">
+          <Button component={Link} to="/createTrip">
+            Create Trip
+          </Button>
           <Button component={Link} to="/community">
             Community Trips
           </Button>
