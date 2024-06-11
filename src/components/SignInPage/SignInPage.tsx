@@ -1,4 +1,4 @@
-import '../styles/LoginAndSignUp.css';
+import '../../styles/LoginAndSignUp.css';
 import { Box, Typography } from "@mui/material";
 import LoginForm from "./LoginForm";
 
