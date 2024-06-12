@@ -17,12 +17,12 @@ const SignUpForm = () => {
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://localhost:5000/api/auth/signup", {
+      const response = await fetch("http://localhost:3000/auth/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ name: username, email, password, imgUrl: "" }),
+        body: JSON.stringify({ email, password }),
       });
 
       if (response.ok) {
