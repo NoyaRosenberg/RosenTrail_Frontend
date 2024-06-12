@@ -5,7 +5,7 @@ import Navbar from "./Navbar";
 const MainPage = () => {
   return (
     <Stack className="main-container">
-      <Navbar />
+      <Navbar showButtonGroup={true}/>
       <Box className="background-box">
         <Box className="home-background-image" />
         <Box className="overlay" />

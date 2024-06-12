@@ -1,11 +1,22 @@
-import { green } from '@mui/material/colors';
-import { createTheme } from '@mui/material/styles';
+import { TextField } from '@mui/material';
+import { lightGreen } from '@mui/material/colors';
+import { createTheme, styled } from '@mui/material/styles';
 
 const theme = createTheme({
   palette: {
     primary: {
-        main: green[500], 
+        main: lightGreen[500], 
       },
+  }
+});
+
+export const StyledTextField = styled(TextField)({
+  '&.search .MuiOutlinedInput-root': {
+    borderRadius: '20px',
+    padding: '0 12px',
+  },
+  '&.search .MuiOutlinedInput-input': {
+    padding: '12px 0', 
   },
 });
 

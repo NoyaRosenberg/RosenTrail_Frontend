@@ -3,15 +3,6 @@
   overflow: hidden;
 }
 
-.nav-bar {
-  padding: 1rem;
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-}
-
 .background-box {
   position: relative;
   display: flex;
