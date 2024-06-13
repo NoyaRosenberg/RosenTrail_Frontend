@@ -1,9 +1,11 @@
-import { Box, Typography, TextField, Button, Grid } from "@mui/material";
+import { Box, TextField, Button, Grid } from "@mui/material";
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "../../styles/Forms.css";
 import FormHeader from "../Forms/FormHeader";
 import ContactInfo from "../Forms/ContactInfo";
+import authService from "../../services/auth.service";
+import ErrorMessage from "../Forms/ErrorMessage";
 
 const SignUpForm = () => {
   const [username, setUsername] = useState("");
@@ -16,32 +18,22 @@ const SignUpForm = () => {
 
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
-    try {
-      const response = await fetch("http://localhost:3000/auth/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
 
-      if (response.ok) {
-        const data = await response.json();
-        // Handle successful registration (e.g., redirect to login)
-        console.log("Registration successful:", data);
-        navigate("/signin"); // Redirect to sign-in page
-      } else {
-        const errorData = await response.json();
-        setError(errorData.message || "Registration failed");
-      }
+    try {
+      await authService.signUp(email, password);
+      console.log("Registration successful");
+      navigate("/signin");
     } catch (err) {
-      setError("An error occurred. Please try again.");
+      setError((err as Error).message);
     }
   };
 
   return (
     <Box className="form-main-container">
-      <FormHeader mainTitle="Sign Up" secondaryTitle="Sign up to save your wonderful trip plans"/>
+      <FormHeader
+        mainTitle="Sign Up"
+        secondaryTitle="Sign up to save your wonderful trip plans"
+      />
       <Grid
         container
         spacing={2}
@@ -106,13 +98,11 @@ const SignUpForm = () => {
         </Grid>
         <Grid item xs={12}>
           {error && (
-            <Typography variant="body2" className="error">
-              {error}
-            </Typography>
+            <ErrorMessage errorMessage={error} />
           )}
         </Grid>
       </Grid>
-      <ContactInfo/>
+      <ContactInfo />
     </Box>
   );
 };

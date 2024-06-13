@@ -1,9 +1,11 @@
-import { Box, Typography, TextField, Button } from "@mui/material";
+import { Box, TextField, Button } from "@mui/material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ContactInfo from "../Forms/ContactInfo";
 import FormHeader from "../Forms/FormHeader";
+import authService from "../../services/auth.service";
 import "../../styles/Forms.css";
+import ErrorMessage from "../Forms/ErrorMessage";
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
@@ -14,32 +16,22 @@ const LoginForm = () => {
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
     console.log(JSON.stringify({ email, password }));
-    try {
-      const response = await fetch("http://localhost:3000/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
 
-      if (response.ok) {
-        const data = await response.json();
-        // Handle successful login (e.g., save token, redirect)
-        console.log("Login successful:", data);
-        navigate("/"); // Redirect to main page or user dashboard
-      } else {
-        const errorData = await response.json();
-        setError(errorData.message || "Login failed");
-      }
+    try {
+      await authService.login(email, password);
+      console.log("Login successful");
+      navigate("/");
     } catch (err) {
-      setError("An error occurred. Please try again.");
+      setError((err as Error).message);
     }
   };
 
   return (
     <Box className="form-main-container">
-      <FormHeader mainTitle="Login" secondaryTitle="Log in and continue your wonderful trip plans"/>
+      <FormHeader
+        mainTitle="Login"
+        secondaryTitle="Log in and continue your wonderful trip plans"
+      />
       <Box component="form" onSubmit={handleSubmit} sx={{ width: "100%" }}>
         <TextField
           type="email"
@@ -72,13 +64,9 @@ const LoginForm = () => {
             Log in with Google
           </Button>
         </Box>
-        {error && (
-          <Typography variant="body2" className="error">
-            {error}
-          </Typography>
-        )}
       </Box>
-      <ContactInfo/>
+      {error && <ErrorMessage errorMessage={error} />}
+      <ContactInfo />
     </Box>
   );
 };
