@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ContactInfo from "../Forms/ContactInfo";
 import FormHeader from "../Forms/FormHeader";
+import authService from "../../services/auth.service";
 import "../../styles/Forms.css";
 
 const LoginForm = () => {
@@ -14,26 +15,13 @@ const LoginForm = () => {
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
     console.log(JSON.stringify({ email, password }));
+    
     try {
-      const response = await fetch("http://localhost:3000/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        // Handle successful login (e.g., save token, redirect)
-        console.log("Login successful:", data);
-        navigate("/"); // Redirect to main page or user dashboard
-      } else {
-        const errorData = await response.json();
-        setError(errorData.message || "Login failed");
-      }
+      authService.login(email, password)
+      console.log("Login successful");
+      navigate("/");
     } catch (err) {
-      setError("An error occurred. Please try again.");
+      setError((err as Error).message || "Login failed");
     }
   };
 
