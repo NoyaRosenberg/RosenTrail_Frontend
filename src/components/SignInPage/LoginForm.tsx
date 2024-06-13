@@ -1,10 +1,11 @@
-import { Box, Typography, TextField, Button } from "@mui/material";
+import { Box, TextField, Button } from "@mui/material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ContactInfo from "../Forms/ContactInfo";
 import FormHeader from "../Forms/FormHeader";
 import authService from "../../services/auth.service";
 import "../../styles/Forms.css";
+import ErrorMessage from "../Forms/ErrorMessage";
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
@@ -15,19 +16,22 @@ const LoginForm = () => {
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
     console.log(JSON.stringify({ email, password }));
-    
+
     try {
-      authService.login(email, password)
+      await authService.login(email, password);
       console.log("Login successful");
       navigate("/");
     } catch (err) {
-      setError((err as Error).message || "Login failed");
+      setError((err as Error).message);
     }
   };
 
   return (
     <Box className="form-main-container">
-      <FormHeader mainTitle="Login" secondaryTitle="Log in and continue your wonderful trip plans"/>
+      <FormHeader
+        mainTitle="Login"
+        secondaryTitle="Log in and continue your wonderful trip plans"
+      />
       <Box component="form" onSubmit={handleSubmit} sx={{ width: "100%" }}>
         <TextField
           type="email"
@@ -60,13 +64,9 @@ const LoginForm = () => {
             Log in with Google
           </Button>
         </Box>
-        {error && (
-          <Typography variant="body2" className="error">
-            {error}
-          </Typography>
-        )}
       </Box>
-      <ContactInfo/>
+      {error && <ErrorMessage errorMessage={error} />}
+      <ContactInfo />
     </Box>
   );
 };

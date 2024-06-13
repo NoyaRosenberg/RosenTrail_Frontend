@@ -18,7 +18,8 @@ class AuthService {
       });
   
       if (!response.ok) {
-        throw new Error('Login failed: ' + response.json());
+        const error = await response.json();
+        throw new Error(error.message);
       }
   
       const user = await response.json();
@@ -37,7 +38,8 @@ class AuthService {
       });
   
       if (!response.ok) {
-        throw new Error('Sign Up failed: ' + response.json());
+        const error = await response.json();
+        throw new Error(error.message);
       }
     }
   
