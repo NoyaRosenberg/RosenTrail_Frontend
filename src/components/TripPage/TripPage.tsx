@@ -2,51 +2,17 @@ import React, { useState } from 'react';
 import {
     Container,
     Card,
-    CardMedia,
     CardContent,
     Typography,
     Button,
     IconButton,
     Box,
     Avatar,
+    Grid,
 } from '@mui/material';
 import { Delete, Edit, Home } from '@mui/icons-material';
-import { styled } from '@mui/material/styles';
-
-const PREFIX = 'TripDetails';
-const classes = {
-    container: `${PREFIX}-container`,
-    card: `${PREFIX}-card`,
-    media: `${PREFIX}-media`,
-    actionButtons: `${PREFIX}-actionButtons`,
-    participants: `${PREFIX}-participants`,
-    avatar: `${PREFIX}-avatar`,
-};
-
-const Root = styled('div')(({ theme }) => ({
-    [`& .${classes.container}`]: {
-        padding: '20px',
-    },
-    [`& .${classes.card}`]: {
-        maxWidth: 600,
-        margin: '0 auto',
-    },
-    [`& .${classes.media}`]: {
-        height: 400,
-    },
-    [`& .${classes.actionButtons}`]: {
-        display: 'flex',
-        justifyContent: 'space-between',
-        marginTop: '20px',
-    },
-    [`& .${classes.participants}`]: {
-        display: 'flex',
-        marginTop: '10px',
-    },
-    [`& .${classes.avatar}`]: {
-        marginRight: '10px',
-    },
-}));
+import "../../styles/Forms.css";
+import '../../styles/TripPage.css';
 
 type TripProps = {
     title: string;
@@ -76,45 +42,56 @@ const TripDetails: React.FC<TripProps> = ({ title, description, price, imageUrl,
     };
 
     return (
-        <Root>
-            <Container className={classes.container}>
-                <Card className={classes.card}>
-                    <CardMedia className={classes.media} image={imageUrl} title={title} />
-                    <CardContent>
-                        <Typography variant="h4" component="h2">
-                            {title}
-                        </Typography>
-                        <Typography variant="body1" color="textSecondary" component="p">
-                            {description}
-                        </Typography>
-                        <Typography variant="h5" component="p" color="primary">
-                            {price} €
-                        </Typography>
-                        <Box className={classes.participants}>
-                            {participants.map((participant, index) => (
-                                <Avatar key={index} className={classes.avatar}>
-                                    {participant.charAt(0).toUpperCase()}
-                                </Avatar>
-                            ))}
-                        </Box>
-                        <Box className={classes.actionButtons}>
-                            <Button variant="contained" color="primary" onClick={handleSchedule}>
-                                {scheduled ? 'Scheduled' : 'Schedule'}
-                            </Button>
-                            <IconButton color="primary" onClick={handleEdit}>
-                                <Edit />
-                            </IconButton>
-                            <IconButton color="secondary" onClick={handleDelete}>
-                                <Delete />
-                            </IconButton>
-                            <IconButton onClick={handleBackHome}>
-                                <Home />
-                            </IconButton>
-                        </Box>
-                    </CardContent>
-                </Card>
-            </Container>
-        </Root>
+        <Container maxWidth={false} className="form-page-main-container">
+            <Grid container style={{ height: '100%' }}>
+                <Grid item xs={6} style={{ display: 'flex' }}>
+                    <Box
+                        className="form-page-left-container"
+                        style={{ backgroundImage: `url(${imageUrl})` }}
+                    ></Box>
+                </Grid>
+                <Grid item xs={6} style={{ display: 'flex' }}>
+                    <Box className="form-page-right-container">
+                        <Card className="trip-card">
+                            <CardContent className="trip-content">
+                                <Box>
+                                    <Typography variant="h4" component="h2">
+                                        {title}
+                                    </Typography>
+                                    <Typography variant="body1" color="textSecondary" component="p">
+                                        {description}
+                                    </Typography>
+                                    <Typography variant="h5" component="p" color="primary">
+                                        {price} €
+                                    </Typography>
+                                    <Box className="trip-participants">
+                                        {participants.map((participant, index) => (
+                                            <Avatar key={index} className="trip-avatar">
+                                                {participant.charAt(0).toUpperCase()}
+                                            </Avatar>
+                                        ))}
+                                    </Box>
+                                </Box>
+                                <Box className="trip-action-buttons">
+                                    <Button variant="contained" color="primary" onClick={handleSchedule}>
+                                        {scheduled ? 'Scheduled' : 'Schedule'}
+                                    </Button>
+                                    <IconButton color="primary" onClick={handleEdit}>
+                                        <Edit />
+                                    </IconButton>
+                                    <IconButton color="secondary" onClick={handleDelete}>
+                                        <Delete />
+                                    </IconButton>
+                                    <IconButton onClick={handleBackHome}>
+                                        <Home />
+                                    </IconButton>
+                                </Box>
+                            </CardContent>
+                        </Card>
+                    </Box>
+                </Grid>
+            </Grid>
+        </Container>
     );
 };
 
@@ -123,7 +100,7 @@ const App = () => {
         title: 'Paris',
         description: 'Trip plan to Paris\nVisiting the Eiffel Tower, Museums, Disneyland and more',
         price: 399,
-        imageUrl: '/public/Paris.jpeg',
+        imageUrl: '/public/Paris.jpeg', // Use the image path accordingly
         participants: ['noyaro@gmail.com', 'skediya@gmail.com'],
     };
 
