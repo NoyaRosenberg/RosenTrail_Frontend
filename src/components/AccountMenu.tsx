@@ -9,12 +9,13 @@ import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
-import authService from "../services/auth.service";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from '../contexts/AuthProvider';
 
 const AccountMenu = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+  const { logout } = useAuth();
   const navigate = useNavigate();
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -25,8 +26,8 @@ const AccountMenu = () => {
     setAnchorEl(null);
   };
 
-  const logout = () => {
-    authService.logout();
+  const logoutUser = () => {
+    logout();
     navigate('/');
   };
 
@@ -94,7 +95,7 @@ const AccountMenu = () => {
           </ListItemIcon>
           Settings
         </MenuItem>
-        <MenuItem onClick={logout}>
+        <MenuItem onClick={logoutUser}>
           <ListItemIcon>
             <Logout fontSize="small" />
           </ListItemIcon>

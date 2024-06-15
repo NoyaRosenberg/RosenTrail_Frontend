@@ -6,7 +6,6 @@ export interface AuthData {
 
 class AuthService {
     private baseURL: string = 'http://localhost:3000/auth/';
-    private static currentUserKey: string = 'currentUser'; 
   
     async login(email: string, password: string): Promise<AuthData> {
       const response = await fetch(`${this.baseURL}/login`, {
@@ -23,7 +22,6 @@ class AuthService {
       }
   
       const user = await response.json();
-      this.saveCurrentUser(user);
 
       return user;
     }
@@ -41,23 +39,6 @@ class AuthService {
         const error = await response.json();
         throw new Error(error.message);
       }
-    }
-  
-    saveCurrentUser(authData: AuthData): void {
-      localStorage.setItem(AuthService.currentUserKey, JSON.stringify(authData));
-    }
-  
-    getCurrentUser(): AuthData {
-      const user = localStorage.getItem(AuthService.currentUserKey);
-      return user ? JSON.parse(user) : null;
-    }
-  
-    logout(): void {
-      localStorage.removeItem(AuthService.currentUserKey);
-    }
-  
-    isAuthenticated(): boolean {
-      return this.getCurrentUser() !== null;
     }
   }
   

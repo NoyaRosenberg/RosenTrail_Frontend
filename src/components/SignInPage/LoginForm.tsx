@@ -6,19 +6,22 @@ import FormHeader from "../Forms/FormHeader";
 import authService from "../../services/auth.service";
 import "../../styles/Forms.css";
 import ErrorMessage from "../Forms/ErrorMessage";
+import { useAuth } from "../../contexts/AuthProvider";
 
 const LoginForm = () => {
+  const navigate = useNavigate();
+  const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const navigate = useNavigate();
 
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
     console.log(JSON.stringify({ email, password }));
 
     try {
-      await authService.login(email, password);
+      const authData = await authService.login(email, password);
+      login(authData);
       console.log("Login successful");
       navigate("/trips");
     } catch (err) {

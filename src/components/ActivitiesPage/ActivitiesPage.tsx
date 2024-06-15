@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Box, Container, Stack, Typography } from "@mui/material";
-import Navbar from "../Navbar";
 import Recommendations from "./Recommendations";
 import AttractionSearch from "./AttractionSearch";
 import ActivityFilters from "./ActivityFilters";
@@ -48,7 +47,6 @@ const ActivitiesPage: React.FC = () => {
   return (
     <>
       <Container sx={{ paddingTop: "14px" }}>
-        <Navbar isUserLoggedIn={false} />
         <Stack spacing={8} sx={{ marginTop: 5 }}>
           <Stack spacing={2}>
             <AttractionSearch />

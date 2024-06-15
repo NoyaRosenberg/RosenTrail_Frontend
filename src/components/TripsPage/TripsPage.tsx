@@ -1,7 +1,7 @@
-import Navbar from "../Navbar";
-
 const TripsPage = () => {
-  return <><Navbar isUserLoggedIn={true}/></>;
+  return (
+    <>trips page</>
+  );
 };
 
 export default TripsPage;
