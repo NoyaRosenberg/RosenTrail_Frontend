@@ -9,6 +9,8 @@ import {
     Box,
     Avatar,
     Grid,
+    Tooltip,
+    Chip,
 } from '@mui/material';
 import { Delete, Edit, Home } from '@mui/icons-material';
 import "../../styles/Forms.css";
@@ -43,7 +45,7 @@ const TripDetails: React.FC<TripProps> = ({ title, description, price, imageUrl,
 
     return (
         <Container maxWidth={false} className="form-page-main-container">
-            <Grid container style={{ height: '100%' }}>
+            <Grid container style={{ height: '100vh' }}>
                 <Grid item xs={6} style={{ display: 'flex' }}>
                     <Box
                         className="form-page-left-container"
@@ -54,37 +56,65 @@ const TripDetails: React.FC<TripProps> = ({ title, description, price, imageUrl,
                     <Box className="form-page-right-container">
                         <Card className="trip-card">
                             <CardContent className="trip-content">
-                                <Box>
-                                    <Typography variant="h4" component="h2">
+                                <Box sx={{ marginBottom: 10 }} textAlign={'left'}>
+                                    <Typography variant="h3" component="h2" className="trip-typography">
                                         {title}
                                     </Typography>
-                                    <Typography variant="body1" color="textSecondary" component="p">
+                                    <Typography variant="h6" color="textSecondary" component="p" className="trip-typography">
                                         {description}
                                     </Typography>
-                                    <Typography variant="h5" component="p" color="primary">
+                                    <Box className="trip-participants">
+                                        <Chip
+                                            key="participants:"
+                                            label="participants:"
+                                            color={"primary"}
+                                            sx={{
+                                                fontSize: '1rem', // Adjust the font size as needed
+                                                marginRight: '10px' // Add margin for spacing
+                                            }}
+                                        />
+                                        {participants.map((participant, index) => (
+                                            <Tooltip title={participant} key={index}>
+                                                <Avatar className="trip-avatar">
+                                                    {participant.charAt(0).toUpperCase()}
+                                                </Avatar>
+                                            </Tooltip>
+                                        ))}
+                                    </Box>
+                                    <Typography variant="h4" component="p" color="default" className="trip-typography" marginRight={10}>
                                         {price} €
                                     </Typography>
-                                    <Box className="trip-participants">
-                                        {participants.map((participant, index) => (
-                                            <Avatar key={index} className="trip-avatar">
-                                                {participant.charAt(0).toUpperCase()}
-                                            </Avatar>
-                                        ))}
+                                    <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 10 }}>
+                                        <Button variant="contained" color="primary" onClick={handleSchedule} sx={{ width: '200px', height: '50px' }}>
+                                            {scheduled ? 'Scheduled' : 'Schedule'}
+                                        </Button>
                                     </Box>
                                 </Box>
                                 <Box className="trip-action-buttons">
-                                    <Button variant="contained" color="primary" onClick={handleSchedule}>
-                                        {scheduled ? 'Scheduled' : 'Schedule'}
-                                    </Button>
-                                    <IconButton color="primary" onClick={handleEdit}>
-                                        <Edit />
-                                    </IconButton>
-                                    <IconButton color="secondary" onClick={handleDelete}>
-                                        <Delete />
-                                    </IconButton>
-                                    <IconButton onClick={handleBackHome}>
-                                        <Home />
-                                    </IconButton>
+                                    <Box className="icon-text">
+                                        <Typography variant="body2">
+                                            Delete Trip
+                                        </Typography>
+                                        <IconButton color="secondary" onClick={handleDelete}>
+                                            <Delete />
+                                        </IconButton>
+                                    </Box>
+                                    <Box className="icon-text">
+                                        <Typography variant="body2">
+                                            Edit Trip
+                                        </Typography>
+                                        <IconButton color="primary" onClick={handleEdit}>
+                                            <Edit />
+                                        </IconButton>
+                                    </Box>
+                                    <Box className="icon-text">
+                                        <Typography variant="body2">
+                                            Back Home
+                                        </Typography>
+                                        <IconButton onClick={handleBackHome}>
+                                            <Home />
+                                        </IconButton>
+                                    </Box>
                                 </Box>
                             </CardContent>
                         </Card>
