@@ -15,6 +15,7 @@ import {
 import { Delete, Edit, Home } from '@mui/icons-material';
 import "../../styles/Forms.css";
 import '../../styles/TripPage.css';
+import { useNavigate } from 'react-router-dom';
 
 type TripProps = {
     title: string;
@@ -26,6 +27,7 @@ type TripProps = {
 
 const TripDetails: React.FC<TripProps> = ({ title, description, price, imageUrl, participants }) => {
     const [scheduled, setScheduled] = useState(false);
+    const navigate = useNavigate();
 
     const handleSchedule = () => {
         setScheduled(true);
@@ -40,7 +42,7 @@ const TripDetails: React.FC<TripProps> = ({ title, description, price, imageUrl,
     };
 
     const handleBackHome = () => {
-        // Navigation logic
+        navigate("/");
     };
 
     return (
@@ -69,8 +71,8 @@ const TripDetails: React.FC<TripProps> = ({ title, description, price, imageUrl,
                                             label="participants:"
                                             color={"primary"}
                                             sx={{
-                                                fontSize: '1rem', // Adjust the font size as needed
-                                                marginRight: '10px' // Add margin for spacing
+                                                fontSize: '1rem', 
+                                                marginRight: '10px' 
                                             }}
                                         />
                                         {participants.map((participant, index) => (
