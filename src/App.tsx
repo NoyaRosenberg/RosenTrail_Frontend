@@ -8,6 +8,7 @@ import ActivitiesPage from "./components/ActivitiesPage/ActivitiesPage";
 import { ThemeProvider } from "@emotion/react";
 import { CssBaseline } from "@mui/material";
 import theme from "./theme";
+import TripsPage from "./components/TripsPage/TripsPage";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
             <Route path="/" element={<MainPage />} />
             <Route path="/signin" element={<SignInPage />} />
             <Route path="/register" element={<SignUpPage />} />
+            <Route path="/trips" element={<TripsPage />} />
             <Route path="/createTrip" element={<CreateTripPage />} />
             <Route path="/AddActivities" element={<ActivitiesPage />} />
           </Routes>

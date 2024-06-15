@@ -20,7 +20,7 @@ const LoginForm = () => {
     try {
       await authService.login(email, password);
       console.log("Login successful");
-      navigate("/");
+      navigate("/trips");
     } catch (err) {
       setError((err as Error).message);
     }

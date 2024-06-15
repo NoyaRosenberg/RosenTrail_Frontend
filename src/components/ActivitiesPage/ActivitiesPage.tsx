@@ -48,7 +48,7 @@ const ActivitiesPage: React.FC = () => {
   return (
     <>
       <Container sx={{ paddingTop: "14px" }}>
-        <Navbar showButtonGroup={false} />
+        <Navbar isUserLoggedIn={false} />
         <Stack spacing={8} sx={{ marginTop: 5 }}>
           <Stack spacing={2}>
             <AttractionSearch />
