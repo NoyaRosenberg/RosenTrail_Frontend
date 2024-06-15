@@ -28,9 +28,6 @@ const Navbar = ({ isUserLoggedIn }: NavbarProps) => {
       <div>
         {!isUserLoggedIn ? (
           <ButtonGroup variant="text" aria-label="Basic button group">
-            <Button component={Link} to="/createTrip">
-              Create Trip
-            </Button>
             <Button component={Link} to="/addActivities">
               Add Activities
             </Button>
