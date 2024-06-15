@@ -1,4 +1,5 @@
 import { Typography } from "@mui/material";
+import '../../styles/Forms.css'
 
 export interface ErrorSectionProps {
   errorMessage: string;

@@ -1,3 +1,5 @@
+import axios from "axios";
+
 export interface AuthData {
     userId: string;
     email: string;
@@ -5,39 +7,32 @@ export interface AuthData {
 }
 
 class AuthService {
-    private baseURL: string = 'http://localhost:3000/auth/';
+    private baseURL: string = 'http://localhost:3000/auth';
   
     async login(email: string, password: string): Promise<AuthData> {
-      const response = await fetch(`${this.baseURL}/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ email: email, password })
-      });
-  
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message);
+      try {
+        const response = await axios.post<AuthData>(`${this.baseURL}/login`, { email: email, password });
+        return response.data;
+      } catch (error) {
+        if (axios.isAxiosError(error) && error.response) {
+          const errorMessage = error.response.data.message || 'An error occurred';
+          throw new Error(errorMessage);
+        } else {
+          throw new Error('An unexpected error occurred');
+        }
       }
-  
-      const user = await response.json();
-
-      return user;
     }
 
     async signUp(email: string, password: string): Promise<void> {
-      const response = await fetch(`${this.baseURL}/signup`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ email: email, password })
-      });
-  
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message);
+      try {
+        await axios.post(`${this.baseURL}/signup`, { email: email, password });
+      } catch (error) {
+        if (axios.isAxiosError(error) && error.response) {
+          const errorMessage = error.response.data.message || 'An error occurred';
+          throw new Error(errorMessage);
+        } else {
+          throw new Error('An unexpected error occurred');
+        }
       }
     }
   }

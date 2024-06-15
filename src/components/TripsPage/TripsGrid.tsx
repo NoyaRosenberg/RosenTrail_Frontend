@@ -20,7 +20,7 @@ const TripsGrid = ({ trips }: TripsGrisProps) => {
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12} sm={6} md={3} sx={{ display: "flex" }}>
+      <Grid item xs={12} sm={6} md={4} sx={{ display: "flex" }}>
         <PlaceCard
           name="New Trip"
           description="Create a new wonderful plan!"
@@ -30,11 +30,11 @@ const TripsGrid = ({ trips }: TripsGrisProps) => {
         />
       </Grid>
       {trips.map((trip, index) => (
-        <Grid item xs={12} sm={6} md={3} key={index} sx={{ display: "flex" }}>
+        <Grid item xs={12} sm={6} md={4} key={index} sx={{ display: "flex" }}>
           <PlaceCard
             name={trip.destinations.join(", ")}
             description={trip.description}
-            image={trip.image}
+            image={trip.imgUrl}
             onCardClick={showTripDetails}
           />
         </Grid>

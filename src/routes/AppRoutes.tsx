@@ -8,9 +8,18 @@ import MainPage from "../components/MainPage";
 import SignInPage from "../components/SignInPage/SignInPage";
 import SignUpPage from "../components/SignUpPage/SignUpPage";
 import TripsPage from "../components/TripsPage/TripsPage";
+import { CircularProgress } from "@mui/material";
 
 const AppRoutes: React.FC = () => {
-  const { isLoggedIn } = useAuth();
+  const { isLoggedIn, loading } = useAuth();
+
+  if (loading) {
+    return <CircularProgress />; 
+  }
+
+  if (location.pathname === '/' && isLoggedIn) {
+    return <Navigate to="/trips" replace />;
+  }
 
   return (
     <Routes>

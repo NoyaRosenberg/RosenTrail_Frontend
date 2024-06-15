@@ -5,16 +5,19 @@ import { CssBaseline, Stack } from "@mui/material";
 import theme from "./theme";
 import { AuthProvider, useAuth } from "./contexts/AuthProvider";
 import AppContent from "./AppContent";
+import { TripsProvider } from "./contexts/TripProvider";
 
 function App() {
   return (
     <AuthProvider>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <Router>
-          <AppWrapper />
-        </Router>
-      </ThemeProvider>
+      <TripsProvider>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <Router>
+            <AppWrapper />
+          </Router>
+        </ThemeProvider>
+      </TripsProvider>
     </AuthProvider>
   );
 }

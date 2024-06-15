@@ -12,7 +12,7 @@ const FormHeader = ({ mainTitle, secondaryTitle }: FormHeaderProps) => {
       <Typography variant="h4" component="h2" gutterBottom>
         {mainTitle}
       </Typography>
-      <Typography gutterBottom>
+      <Typography variant="overline" display="block" gutterBottom>
         {secondaryTitle}
       </Typography>
     </Box>

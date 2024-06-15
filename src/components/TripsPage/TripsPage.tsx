@@ -1,15 +1,35 @@
-import { Box, Container, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  CircularProgress,
+  Container,
+  Stack,
+  Typography,
+} from "@mui/material";
 import SearchBar from "../SearchBar";
 import TripsGrid from "./TripsGrid";
-import { useEffect, useState } from "react";
-import { Trip } from "../../services/trip.service";
+import { useTrips } from "../../contexts/TripProvider";
 
 const TripsPage = () => {
-  const [trips, setTrips] = useState<Trip[]>([]);
+  const { trips, loading, error } = useTrips();
 
-  useEffect(() => {
-    setTrips([]);
-  }, []);
+  if (loading) {
+    return (
+      <Container
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          alignContent: "center"
+        }}
+      >
+        <CircularProgress/>
+      </Container>
+    );
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
 
   return (
     <Container
@@ -20,7 +40,7 @@ const TripsPage = () => {
         alignItems: "center",
         gap: 6,
         paddingTop: "14px",
-        paddingBottom: "14px",
+        paddingBottom: "20px",
         width: "68%",
       }}
     >
