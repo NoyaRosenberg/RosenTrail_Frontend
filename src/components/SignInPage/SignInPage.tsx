@@ -2,6 +2,7 @@ import { Box, Typography } from "@mui/material";
 import LoginForm from "./LoginForm";
 import '../../styles/Forms.css';
 import '../../styles/SignInPage.css';
+import React from "react";
 
 const SignInPage = () => {
   return (

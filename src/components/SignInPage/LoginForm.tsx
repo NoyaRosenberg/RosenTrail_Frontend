@@ -1,6 +1,7 @@
+import React, { useState } from 'react';
 import { Box, TextField, Button } from "@mui/material";
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
 import ContactInfo from "../Forms/ContactInfo";
 import FormHeader from "../Forms/FormHeader";
 import authService from "../../services/auth.service";
@@ -26,48 +27,61 @@ const LoginForm = () => {
     }
   };
 
+  const handleGoogleSuccess = async (response: any) => {
+    try {
+      await authService.googleLogin(response.credential);
+      navigate("/");
+    } catch (err) {
+      setError((err as Error).message);
+    }
+  };
+
+  const handleGoogleError = () => {
+    setError("Google Sign-In was unsuccessful. Try again later");
+  };
+
   return (
-    <Box className="form-main-container">
-      <FormHeader
-        mainTitle="Login"
-        secondaryTitle="Log in and continue your wonderful trip plans"
-      />
-      <Box component="form" onSubmit={handleSubmit} sx={{ width: "100%" }}>
-        <TextField
-          type="email"
-          label="E-mail"
-          variant="outlined"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          fullWidth
-          margin="normal"
+    <GoogleOAuthProvider clientId= "476400310595-f9hesqa26tvd6cn31uho8k4pc3tg58or.apps.googleusercontent.com">
+      <Box className="form-main-container">
+        <FormHeader
+          mainTitle="Login"
+          secondaryTitle="Log in and continue your wonderful trip plans"
         />
-        <TextField
-          type="password"
-          label="Password"
-          variant="outlined"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          fullWidth
-          margin="normal"
-        />
-        <Box className="form-buttons-container">
-          <Button type="submit" variant="contained" color="primary" fullWidth>
-            Log in
-          </Button>
-          <Button
+        <Box component="form" onSubmit={handleSubmit} sx={{ width: "100%" }}>
+          <TextField
+            type="email"
+            label="E-mail"
             variant="outlined"
-            className="google-login"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             fullWidth
-            onClick={() => {}}
-          >
-            Log in with Google
-          </Button>
+            margin="normal"
+          />
+          <TextField
+            type="password"
+            label="Password"
+            variant="outlined"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            fullWidth
+            margin="normal"
+          />
+          <Box className="form-buttons-container">
+            <Button type="submit" variant="contained" color="primary" fullWidth>
+              Log in
+            </Button>
+            <Box sx={{ mt: 2, mb: 2 }}>
+              <GoogleLogin
+                onSuccess={handleGoogleSuccess}
+                onError={handleGoogleError}
+              />
+            </Box>
+          </Box>
         </Box>
+        {error && <ErrorMessage errorMessage={error} />}
+        <ContactInfo />
       </Box>
-      {error && <ErrorMessage errorMessage={error} />}
-      <ContactInfo />
-    </Box>
+    </GoogleOAuthProvider>
   );
 };
 
