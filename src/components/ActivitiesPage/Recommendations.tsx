@@ -1,6 +1,6 @@
 import { Grid } from "@mui/material";
 import RecommendationCard, { Recommendation } from "./RecommendationCard";
-
+import React from "react";
 export interface RecommendationsProps {
   recommendations: Recommendation[];
 }

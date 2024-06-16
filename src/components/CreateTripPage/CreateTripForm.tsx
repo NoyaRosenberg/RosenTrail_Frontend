@@ -5,6 +5,7 @@ import FormHeader from "../Forms/FormHeader";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import "../../styles/Forms.css";
+import React from 'react';
 
 const CreateTripForm = () => {
   const [trip, setTrip] = useState({
