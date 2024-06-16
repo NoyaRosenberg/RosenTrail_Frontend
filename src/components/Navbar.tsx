@@ -26,6 +26,9 @@ const Navbar = ({ showButtonGroup }: NavbarProps) => {
           <Button component={Link} to="/register">
             Sign Up
           </Button>
+          <Button component={Link} to="/trip">
+            Trip Details
+          </Button>
         </ButtonGroup>
       )}
     </Box>
@@ -33,3 +36,4 @@ const Navbar = ({ showButtonGroup }: NavbarProps) => {
 };
 
 export default Navbar;
+
