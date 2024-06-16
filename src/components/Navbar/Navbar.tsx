@@ -31,6 +31,9 @@ const Navbar = ({ isUserLoggedIn }: NavbarProps) => {
             <Button component={Link} to="/addActivities">
               Add Activities
             </Button>
+            <Button component={Link} to="/tripDetails">
+              Trip
+            </Button>
             <Button component={Link} to="/signin">
               Login
             </Button>

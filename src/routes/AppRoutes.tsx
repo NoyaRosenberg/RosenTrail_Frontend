@@ -9,6 +9,7 @@ import SignInPage from "../components/SignInPage/SignInPage";
 import SignUpPage from "../components/SignUpPage/SignUpPage";
 import TripsPage from "../components/TripsPage/TripsPage";
 import { CircularProgress } from "@mui/material";
+import TripPage from "../components/TripPage/TripPage";
 
 const AppRoutes: React.FC = () => {
   const { isLoggedIn, loading } = useAuth();
@@ -26,6 +27,7 @@ const AppRoutes: React.FC = () => {
       <Route path="/" element={<MainPage />} />
       <Route path="/signin" element={<SignInPage />} />
       <Route path="/register" element={<SignUpPage />} />
+      <Route path="/tripDetails" element={<TripPage />} />
       <Route
         path="/trips"
         element={
