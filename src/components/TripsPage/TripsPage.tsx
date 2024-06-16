@@ -8,9 +8,26 @@ import {
 import SearchBar from "../SearchBar";
 import TripsGrid from "./TripsGrid";
 import { useTrips } from "../../contexts/TripProvider";
+import { Trip } from "../../services/trip.service";
+import { useState, useEffect } from "react";
 
 const TripsPage = () => {
   const { trips, loading, error } = useTrips();
+  const [filteredTrips, setFilteredTrips] = useState<Trip[]>(trips);
+
+  useEffect(() => {
+    setFilteredTrips(trips);
+  }, [trips]);
+
+  const onTripSearch = (searchValue: string) => {
+    const newFilteredTrips = trips.filter(trip =>
+      trip.destinations.some(destination =>
+        destination.toLowerCase().includes(searchValue.toLowerCase())
+      )
+    );
+    
+    setFilteredTrips(newFilteredTrips);
+  };
 
   if (loading) {
     return (
@@ -53,11 +70,11 @@ const TripsPage = () => {
           pictures from you wonderful trips
         </Typography>
         <Box width="100%">
-          <SearchBar placeholder="search a trip..." />
+          <SearchBar placeholder="search a trip..." onSearch={onTripSearch}/>
         </Box>
       </Stack>
       <Box width="100%">
-        <TripsGrid trips={trips} />
+        <TripsGrid trips={filteredTrips} />
       </Box>
     </Container>
   );

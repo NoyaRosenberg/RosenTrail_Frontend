@@ -44,6 +44,11 @@ const ActivitiesPage: React.FC = () => {
     },
   ]);
 
+  const onActivitySearch = (searchValue: string) => {
+    // Implement Search 
+    console.log(searchValue);
+  }
+
   return (
     <Container sx={{ paddingTop: "14px", paddingBottom: "14px" }}>
       <Stack spacing={8} sx={{ marginTop: 5 }}>
@@ -51,7 +56,7 @@ const ActivitiesPage: React.FC = () => {
           <Typography variant="h3" sx={{ fontSize: 20, color: "#333" }}>
             Search For Attractions In New York
           </Typography>
-          <SearchBar placeholder="Search for Attractions..."/>
+          <SearchBar placeholder="Search for Attractions..." onSearch={onActivitySearch}/>
           <ActivityFilters />
         </Stack>
         <Stack spacing={2} sx={{ alignItems: "flex-start", width: "100%" }}>

@@ -10,16 +10,14 @@ import { StyledTextField } from "../theme";
 
 export interface SearchBarProps {
   placeholder: string;
+  onSearch: (searchValue: string) => void;
 }
 
-const SearchBar = ({ placeholder }: SearchBarProps) => {
+const SearchBar = ({ placeholder, onSearch }: SearchBarProps) => {
   const [searchValue, setSearchValue] = useState<string>("");
 
   const handleSearchInput = (e: ChangeEvent<HTMLInputElement>) => {
     setSearchValue(e.target.value);
-  };
-
-  const handleSearch = () => {
   };
 
   return (
@@ -54,7 +52,7 @@ const SearchBar = ({ placeholder }: SearchBarProps) => {
         <Button
           variant="contained"
           color="primary"
-          onClick={handleSearch}
+          onClick={() => onSearch(searchValue)}
           sx={{ padding: 1, width: "10%", borderRadius: '50px' }}
         >
           Search
