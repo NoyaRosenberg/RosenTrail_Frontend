@@ -25,7 +25,7 @@ const TripsPage = () => {
         destination.toLowerCase().includes(searchValue.toLowerCase())
       )
     );
-    
+
     setFilteredTrips(newFilteredTrips);
   };
 
