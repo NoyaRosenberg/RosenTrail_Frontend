@@ -21,6 +21,11 @@ const PlaceCard = ({ name, description, image, isNew, onCardClick }: PlaceCardPr
         borderRadius: 2,
         cursor: "pointer",
         position: "relative",
+        transition: 'transform 0.3s, box-shadow 0.3s',
+        '&:hover': {
+          transform: 'scale(1.01)',
+          backgroundColor: 'rgba(0, 0, 0, 0.05)',
+        },
       }}
     >
       <Box sx={{ position: "relative" }}>
