@@ -35,6 +35,9 @@ const Navbar = ({ showButtonGroup }: NavbarProps) => {
               Sign Up
             </Button>
           )}
+          <Button component={Link} to="/trip">
+            Trip Details
+          </Button>
         </ButtonGroup>
       )}
     </Box>
@@ -42,3 +45,4 @@ const Navbar = ({ showButtonGroup }: NavbarProps) => {
 };
 
 export default Navbar;
+
