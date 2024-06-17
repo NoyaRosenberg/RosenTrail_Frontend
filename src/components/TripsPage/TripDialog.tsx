@@ -13,7 +13,7 @@ import {
   Stack,
   Divider,
 } from "@mui/material";
-import { Delete, Edit } from "@mui/icons-material";
+import { Delete, Edit, Schedule } from "@mui/icons-material";
 import CloseIcon from "@mui/icons-material/Close";
 import "../../styles/Forms.css";
 import "../../styles/TripPage.css";
@@ -82,7 +82,7 @@ const TripDialog: React.FC<TripDialogProps> = ({
           </Grid>
           <Grid item xs={12} sm={7}>
             <Stack
-              spacing={12}
+              spacing={8}
               paddingTop="40px"
               paddingRight="40px"
               paddingBottom="40px"
@@ -94,7 +94,7 @@ const TripDialog: React.FC<TripDialogProps> = ({
                   </Typography>
                   <Typography
                     variant="body1"
-                    sx={{ fontSize: 14, color: "#666" }}
+                    sx={{ fontSize: 16, color: "#666" }}
                     gutterBottom
                   >
                     {trip.description}
@@ -103,8 +103,15 @@ const TripDialog: React.FC<TripDialogProps> = ({
                 <Box display="flex" alignItems="center" gap="2">
                   <Chip
                     key="participants:"
-                    label="participants:"
-                    color={"primary"}
+                    label="Participants:"
+                    variant="outlined"
+                    sx={{
+                      borderColor: 'primary.main',
+                      color: '#666',
+                      backgroundColor: 'white',
+                      fontSize: '1rem',
+                      marginRight: '10px'
+                    }}
                   />
                   {trip.participantsId?.map((participant, index) => (
                     <Tooltip title={participant} key={index}>
@@ -116,8 +123,11 @@ const TripDialog: React.FC<TripDialogProps> = ({
                 </Box>
               </Stack>
               <Stack>
-                <Stack spacing={4}>
-                  <Box display="flex" alignItems="center" gap="30px">
+                <Stack spacing={5}>
+                  <Box display="flex" alignItems="center" gap="105px">
+                    <Typography variant="h5" component="p">
+                      {price} €
+                    </Typography>
                     <Button
                       variant="contained"
                       color="primary"
@@ -126,21 +136,19 @@ const TripDialog: React.FC<TripDialogProps> = ({
                     >
                       Schedule
                     </Button>
-                    <Typography variant="h5" component="p">
-                      {price} €
-                    </Typography>
                   </Box>
                   <Stack>
                     <Divider />
-                    <Box display="flex" gap={2}>
-                      <Box className="icon-text">
-                        <Typography variant="body2">Delete Trip</Typography>
+                    <Box display="flex" justifyContent="center" alignItems="center" gap={2}>
+                      <Box display="flex" alignItems="center" gap={1}>
+                        <Typography variant="body1">Delete Trip</Typography>
                         <IconButton color="secondary" onClick={handleDelete}>
                           <Delete />
                         </IconButton>
                       </Box>
-                      <Box className="icon-text">
-                        <Typography variant="body2">Edit Trip</Typography>
+                      <Divider orientation="vertical" variant="middle" flexItem />
+                      <Box display="flex" alignItems="center" gap={1}>
+                        <Typography variant="body1">Edit Trip</Typography>
                         <IconButton color="primary" onClick={handleEdit}>
                           <Edit />
                         </IconButton>
