@@ -1,5 +1,6 @@
 import { Box, Typography } from "@mui/material";
 import "../../styles/Forms.css";
+import React from "react";
 
 export interface FormHeaderProps {
   mainTitle: string;

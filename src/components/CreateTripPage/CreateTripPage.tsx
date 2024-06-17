@@ -2,6 +2,7 @@ import { Box } from '@mui/material';
 import CreateTripForm from './CreateTripForm';
 import '../../styles/CreateTrip.css';
 import '../../styles/Forms.css';
+import React from 'react';
 
 const CreateTripPage = () => {
   return (
