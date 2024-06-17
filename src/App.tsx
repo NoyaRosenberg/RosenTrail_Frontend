@@ -1,33 +1,35 @@
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import MainPage from "./components/MainPage";
-import SignInPage from "./components/SignInPage/SignInPage";
+import { BrowserRouter as Router } from "react-router-dom";
 import "./App.css";
-import SignUpPage from "./components/SignUpPage/SignUpPage";
-import CreateTripPage from "./components/CreateTripPage/CreateTripPage";
-import ActivitiesPage from "./components/ActivitiesPage/ActivitiesPage";
 import { ThemeProvider } from "@emotion/react";
-import { CssBaseline } from "@mui/material";
+import { CssBaseline, Stack } from "@mui/material";
 import theme from "./theme";
-import TripPage from "./components/TripPage/TripPage";
+import { AuthProvider, useAuth } from "./contexts/AuthProvider";
+import AppContent from "./AppContent";
+import { TripsProvider } from "./contexts/TripProvider";
 
 function App() {
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Router>
-        <div className="App">
-          <Routes>
-            <Route path="/" element={<MainPage />} />
-            <Route path="/signin" element={<SignInPage />} />
-            <Route path="/register" element={<SignUpPage />} />
-            <Route path="/createTrip" element={<CreateTripPage />} />
-            <Route path="/AddActivities" element={<ActivitiesPage />} />
-            <Route path="/trip" element={<TripPage />} />
-          </Routes>
-        </div>
-      </Router>
-    </ThemeProvider>
+    <AuthProvider>
+      <TripsProvider>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <Router>
+            <AppWrapper />
+          </Router>
+        </ThemeProvider>
+      </TripsProvider>
+    </AuthProvider>
   );
 }
+
+const AppWrapper: React.FC = () => {
+  const { isLoggedIn } = useAuth();
+
+  return (
+    <Stack className="main-container">
+      <AppContent isLoggedIn={isLoggedIn} />
+    </Stack>
+  );
+};
 
 export default App;

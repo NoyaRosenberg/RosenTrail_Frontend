@@ -2,30 +2,26 @@ import {
   Box,
   Button,
   InputAdornment,
-  Stack,
-  TextField,
-  Typography,
+  Stack
 } from "@mui/material";
 import { useState, ChangeEvent } from "react";
 import SearchIcon from "@mui/icons-material/Search";
-import { StyledTextField } from "../../theme";
+import { StyledTextField } from "../theme";
 
-const AttractionSearch = () => {
+export interface SearchBarProps {
+  placeholder: string;
+  onSearch: (searchValue: string) => void;
+}
+
+const SearchBar = ({ placeholder, onSearch }: SearchBarProps) => {
   const [searchValue, setSearchValue] = useState<string>("");
 
   const handleSearchInput = (e: ChangeEvent<HTMLInputElement>) => {
     setSearchValue(e.target.value);
   };
 
-  const handleSearch = () => {
-    // Perform search
-  };
-
   return (
     <Stack spacing={2} sx={{ alignItems: "flex-start" }}>
-      <Typography variant="h3" sx={{ fontSize: 20, color: "#333" }}>
-        Search For Attractions In New York
-      </Typography>
       <Box
         sx={{
           display: "flex",
@@ -41,7 +37,7 @@ const AttractionSearch = () => {
           className="search"
           fullWidth
           variant="outlined"
-          placeholder="Search for Attractions..."
+          placeholder={placeholder}
           value={searchValue}
           onChange={handleSearchInput}
           InputProps={{
@@ -56,7 +52,7 @@ const AttractionSearch = () => {
         <Button
           variant="contained"
           color="primary"
-          onClick={handleSearch}
+          onClick={() => onSearch(searchValue)}
           sx={{ padding: 1, width: "10%", borderRadius: '50px' }}
         >
           Search
@@ -66,4 +62,4 @@ const AttractionSearch = () => {
   );
 };
 
-export default AttractionSearch;
+export default SearchBar;

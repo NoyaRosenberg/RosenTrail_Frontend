@@ -1,65 +1,51 @@
+import axios from "axios";
+
 export interface AuthData {
-    userId: string;
-    email: string;
-    token: string
+  userId: string;
+  email: string;
+  token: string;
 }
 
 class AuthService {
-    private baseURL: string = 'http://localhost:3000/auth/';
-    private static currentUserKey: string = 'currentUser'; 
-  
-    async login(email: string, password: string): Promise<AuthData> {
-      const response = await fetch(`${this.baseURL}/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ email: email, password })
-      });
-  
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message);
-      }
-  
-      const user = await response.json();
-      this.saveCurrentUser(user);
+  private baseURL: string = "http://localhost:3000/auth";
 
-      return user;
-    }
-
-    async signUp(email: string, password: string): Promise<void> {
-      const response = await fetch(`${this.baseURL}/signup`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ email: email, password })
+  async login(email: string, password: string): Promise<AuthData | void> {
+    try {
+      const response = await axios.post<AuthData>(`${this.baseURL}/login`, {
+        email: email,
+        password,
       });
-  
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message);
-      }
-    }
-  
-    saveCurrentUser(authData: AuthData): void {
-      localStorage.setItem(AuthService.currentUserKey, JSON.stringify(authData));
-    }
-  
-    getCurrentUser(): AuthData {
-      const user = localStorage.getItem(AuthService.currentUserKey);
-      return user ? JSON.parse(user) : null;
-    }
-  
-    logout(): void {
-      localStorage.removeItem(AuthService.currentUserKey);
-    }
-  
-    isAuthenticated(): boolean {
-      return this.getCurrentUser() !== null;
+      return response.data;
+    } catch (error) {
+      this.handleError(error);
     }
   }
-  
-  export default new AuthService();
-  
+
+  async googleLogin(token: string): Promise<AuthData | void> {
+    try {
+      const response = await axios.post(`${this.baseURL}/google-login`, { token });
+      return response.data;
+    } catch (error) {
+      this.handleError(error);
+    }
+  }
+
+  async signUp(email: string, password: string): Promise<void> {
+    try {
+      await axios.post(`${this.baseURL}/signup`, { email: email, password });
+    } catch (error) {
+      this.handleError(error);
+    }
+  }
+
+  handleError(error: unknown): void {
+    if (axios.isAxiosError(error) && error.response) {
+      const errorMessage = error.response.data.message || "An error occurred";
+      throw new Error(errorMessage);
+    } else {
+      throw new Error("An unexpected error occurred");
+    }
+  }
+}
+
+export default new AuthService();

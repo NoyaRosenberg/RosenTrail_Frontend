@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import { Box, Container, Stack, Typography } from "@mui/material";
-import Navbar from "../Navbar";
-import Recommendations from "./Recommendations";
-import AttractionSearch from "./AttractionSearch";
+import RecommendationsGrid from "./RecommendationsGrid";
+import SearchBar from "../SearchBar";
 import ActivityFilters from "./ActivityFilters";
-import { Recommendation } from "./RecommendationCard";
+import { Recommendation } from "./RecommendationsGrid";
 
 const ActivitiesPage: React.FC = () => {
   const [recommendations, setRecommendations] = useState<Recommendation[]>([
@@ -45,29 +44,34 @@ const ActivitiesPage: React.FC = () => {
     },
   ]);
 
+  const onActivitySearch = (searchValue: string) => {
+    // Implement Search 
+    console.log(searchValue);
+  }
+
   return (
-    <>
-      <Container sx={{ paddingTop: "14px" }}>
-        <Navbar showButtonGroup={false} />
-        <Stack spacing={8} sx={{ marginTop: 5 }}>
-          <Stack spacing={2}>
-            <AttractionSearch />
-            <ActivityFilters />
-          </Stack>
-          <Stack spacing={2} sx={{ alignItems: "flex-start", width: "100%" }}>
-            <Typography variant="h3" sx={{ fontSize: 20, color: "#333" }}>
-              Recommendations For Attractions
-            </Typography>
-            <Typography variant="body1" sx={{ color: "#666" }}>
-              Click an activity to add it to your trip!
-            </Typography>
-            <Box sx={{ width: "100%" }}>
-              <Recommendations recommendations={recommendations} />
-            </Box>
-          </Stack>
+    <Container sx={{ paddingTop: "14px", paddingBottom: "14px" }}>
+      <Stack spacing={8} sx={{ marginTop: 5 }}>
+        <Stack spacing={2}>
+          <Typography variant="h3" sx={{ fontSize: 20, color: "#333" }}>
+            Search For Attractions In New York
+          </Typography>
+          <SearchBar placeholder="Search for Attractions..." onSearch={onActivitySearch}/>
+          <ActivityFilters />
         </Stack>
-      </Container>
-    </>
+        <Stack spacing={2} sx={{ alignItems: "flex-start", width: "100%" }}>
+          <Typography variant="h3" sx={{ fontSize: 20, color: "#333" }}>
+            Recommendations For Attractions
+          </Typography>
+          <Typography variant="body1" sx={{ color: "#666" }}>
+            Click an activity to add it to your trip!
+          </Typography>
+          <Box sx={{ width: "100%" }}>
+            <RecommendationsGrid recommendations={recommendations} />
+          </Box>
+        </Stack>
+      </Stack>
+    </Container>
   );
 };
 

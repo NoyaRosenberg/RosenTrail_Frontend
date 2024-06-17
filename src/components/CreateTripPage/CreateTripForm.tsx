@@ -6,6 +6,7 @@ import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import TripService from '../../services/trip.service'
 import "../../styles/Forms.css";
+import React from 'react';
 
 const CreateTripForm = () => {
   const [trip, setTrip] = useState({

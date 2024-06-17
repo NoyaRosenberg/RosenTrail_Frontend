@@ -56,7 +56,7 @@
 }
 
 .form-main-container {
-    padding: 20px;
+    padding: 20px 50px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -68,18 +68,20 @@
   .form-header {
     display: flex;
     flex-direction: column;
+    align-items: center;
   }
   
   .form-buttons-container {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 20px;
     margin-top: 20px;
   }
   
   .form-error {
     color: red;
     margin-top: 1rem;
+    text-align: center;
   }
   
   .contact-info {
