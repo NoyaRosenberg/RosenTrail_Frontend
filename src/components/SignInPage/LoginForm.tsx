@@ -1,39 +1,52 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import { Box, TextField, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
+import {
+  GoogleOAuthProvider,
+  GoogleLogin,
+  GoogleCredentialResponse,
+} from "@react-oauth/google";
 import ContactInfo from "../Forms/ContactInfo";
 import FormHeader from "../Forms/FormHeader";
-import authService from "../../services/auth.service";
-import "../../styles/Forms.css";
+import authService, { AuthData } from "../../services/auth.service";
 import ErrorMessage from "../Forms/ErrorMessage";
+import { useAuth } from "../../contexts/AuthProvider";
+import "../../styles/Forms.css";
+import "../../styles/SignInPage.css";
 
 const LoginForm = () => {
+  const navigate = useNavigate();
+  const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const navigate = useNavigate();
 
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
     console.log(JSON.stringify({ email, password }));
 
     try {
-      await authService.login(email, password);
-      console.log("Login successful");
-      navigate("/");
+      const authData = await authService.login(email, password);
+      loginSuccess(authData!);
     } catch (err) {
       setError((err as Error).message);
     }
   };
 
-  const handleGoogleSuccess = async (response: any) => {
+  const handleGoogleSuccess = async (response: GoogleCredentialResponse) => {
     try {
-      await authService.googleLogin(response.credential);
-      navigate("/");
+      const authData = await authService.googleLogin(response.credential!);
+      loginSuccess(authData!);
     } catch (err) {
       setError((err as Error).message);
     }
+  };
+
+  const loginSuccess = (authData: AuthData) => {
+    login(authData!);
+    console.log("Login successful");
+    navigate("/trips");
+    navigate("/");
   };
 
   const handleGoogleError = () => {
@@ -41,8 +54,8 @@ const LoginForm = () => {
   };
 
   return (
-    <GoogleOAuthProvider clientId= "476400310595-f9hesqa26tvd6cn31uho8k4pc3tg58or.apps.googleusercontent.com">
-      <Box className="form-main-container">
+    <GoogleOAuthProvider clientId="476400310595-f9hesqa26tvd6cn31uho8k4pc3tg58or.apps.googleusercontent.com">
+      <Box className="form-main-container sign-in-container">
         <FormHeader
           mainTitle="Login"
           secondaryTitle="Log in and continue your wonderful trip plans"
@@ -70,8 +83,9 @@ const LoginForm = () => {
             <Button type="submit" variant="contained" color="primary" fullWidth>
               Log in
             </Button>
-            <Box sx={{ mt: 2, mb: 2 }}>
+            <Box className="full-width">
               <GoogleLogin
+                width="400"
                 onSuccess={handleGoogleSuccess}
                 onError={handleGoogleError}
               />

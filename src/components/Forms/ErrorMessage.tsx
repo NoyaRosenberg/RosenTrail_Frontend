@@ -1,4 +1,5 @@
 import { Typography } from "@mui/material";
+import '../../styles/Forms.css'
 import React from "react";
 
 export interface ErrorSectionProps {
