@@ -1,6 +1,7 @@
 import { Box, Typography, ButtonGroup, Button } from "@mui/material";
 import { Link } from "react-router-dom";
 import AccountMenu from "./AccountMenu";
+import React from "react";
 
 export interface NavbarProps {
   isUserLoggedIn: boolean;
@@ -28,9 +29,6 @@ const Navbar = ({ isUserLoggedIn }: NavbarProps) => {
       <div>
         {!isUserLoggedIn ? (
           <ButtonGroup variant="text" aria-label="Basic button group">
-            <Button component={Link} to="/addActivities">
-              Add Activities
-            </Button>
             <Button component={Link} to="/signin">
               Login
             </Button>
