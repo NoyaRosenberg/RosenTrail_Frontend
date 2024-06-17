@@ -22,17 +22,17 @@ const Navbar = ({ isUserLoggedIn }: NavbarProps) => {
         variant="h5"
         component="a"
         href=""
-        sx={{ textDecoration: "none", color: "black", cursor: "pointer" }}
+        sx={{ textDecoration: "none", color: "black", cursor: "pointer"}}
       >
         WonderPlan
       </Typography>
       <div>
         {!isUserLoggedIn ? (
           <ButtonGroup variant="text" aria-label="Basic button group">
-            <Button component={Link} to="/signin">
+            <Button component={Link} to="/signin" sx={{ fontWeight: "bold" }}>
               Login
             </Button>
-            <Button component={Link} to="/register">
+            <Button component={Link} to="/register" sx={{ fontWeight: "bold" }}>
               Sign Up
             </Button>
           </ButtonGroup>
