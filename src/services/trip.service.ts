@@ -16,17 +16,21 @@ export interface Trip {
 class TripService {
   private baseURL: string = "http://localhost:3000/trips/";
 
-  async getUserTrips(userId: string): Promise<Trip[]> {
+  async getUserTrips(userId: string): Promise<Trip[] | void> {
     try {
       const response = await axios.get<Trip[]>(`${this.baseURL}?participant=${userId}`);
       return response.data;
     } catch (error) {
-      if (axios.isAxiosError(error) && error.response) {
-        const errorMessage = error.response.data.message || "An error occurred";
-        throw new Error(errorMessage);
-      } else {
-        throw new Error("An unexpected error occurred");
-      }
+      this.handleError(error);
+    }
+  }
+
+  handleError(error: unknown): void {
+    if (axios.isAxiosError(error) && error.response) {
+      const errorMessage = error.response.data.message || "An error occurred";
+      throw new Error(errorMessage);
+    } else {
+      throw new Error("An unexpected error occurred");
     }
   }
 }
