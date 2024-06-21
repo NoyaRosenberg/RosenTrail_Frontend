@@ -43,3 +43,7 @@
     align-items: center;
     gap: 2px;
 }
+
+.icon-text > .css-1gws2xf-MuiButtonBase-root-MuiIconButton-root {
+    padding: 0px;
+}

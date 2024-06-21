@@ -13,10 +13,10 @@ import {
   Stack,
   Divider,
 } from "@mui/material";
-import { Delete, Edit, Schedule } from "@mui/icons-material";
+import { Delete, Edit } from "@mui/icons-material";
 import CloseIcon from "@mui/icons-material/Close";
 import "../../styles/Forms.css";
-import "../../styles/TripPage.css";
+import "../../styles/TripDialog.css";
 import { Trip } from "../../services/trip.service";
 import { useNavigate } from "react-router-dom";
 
@@ -124,7 +124,7 @@ const TripDialog: React.FC<TripDialogProps> = ({
               </Stack>
               <Stack>
                 <Stack spacing={5}>
-                  <Box display="flex" alignItems="center" gap="105px">
+                  <Box display="flex" alignItems="center" gap="30px">
                     <Typography variant="h5" component="p">
                       {price} €
                     </Typography>
@@ -139,15 +139,15 @@ const TripDialog: React.FC<TripDialogProps> = ({
                   </Box>
                   <Stack>
                     <Divider />
-                    <Box display="flex" justifyContent="center" alignItems="center" gap={2}>
-                      <Box display="flex" alignItems="center" gap={1}>
+                    <Box display="flex" gap={3}>
+                      <Box className="icon-text">
                         <Typography variant="body1">Delete Trip</Typography>
                         <IconButton color="secondary" onClick={handleDelete}>
                           <Delete />
                         </IconButton>
                       </Box>
-                      <Divider orientation="vertical" variant="middle" flexItem />
-                      <Box display="flex" alignItems="center" gap={1}>
+                      <Divider orientation="vertical" flexItem />
+                      <Box className="icon-text">
                         <Typography variant="body1">Edit Trip</Typography>
                         <IconButton color="primary" onClick={handleEdit}>
                           <Edit />
