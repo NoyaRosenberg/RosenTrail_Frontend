@@ -36,7 +36,7 @@ const TripDialog: React.FC<TripDialogProps> = ({
   const navigate = useNavigate();
 
   const showSchedule = () => {
-    navigate("/schedule");
+    navigate("/schedule", { state: { trip } });
   };
 
   const handleEdit = () => {

@@ -6,17 +6,21 @@ import theme from "./theme";
 import { AuthProvider, useAuth } from "./contexts/AuthProvider";
 import AppContent from "./AppContent";
 import { TripsProvider } from "./contexts/TripProvider";
+import { ActivityProvider } from "./contexts/ActivityProvider";
+import React from "react";
 
 function App() {
   return (
     <AuthProvider>
       <TripsProvider>
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
-          <Router>
-            <AppWrapper />
-          </Router>
-        </ThemeProvider>
+        <ActivityProvider>
+          <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <Router>
+              <AppWrapper />
+            </Router>
+          </ThemeProvider>
+        </ActivityProvider>
       </TripsProvider>
     </AuthProvider>
   );

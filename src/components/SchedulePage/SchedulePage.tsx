@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, ChangeEvent } from 'react';
 import {
   Container,
   Stack,
@@ -18,106 +18,48 @@ import {
 import { Delete, Edit } from '@mui/icons-material';
 import "../../styles/Forms.css";
 import '../../styles/TripPage.css';
+import { useLocation } from 'react-router-dom';
+import { useActivities } from '../../contexts/ActivityProvider';
+import { Activity } from '../../services/activity.service';
 import { Trip } from '../../services/trip.service';
 
-export interface ITrip {
-  _id: string;
-  destinations: string[];
-  startDate: Date;
-  endDate: Date;
-  ownerId: string;
-  participantsId: string[];
-  unregisteredParticipants?: string[];
-  activitiesId: string[];
-  imgUrl: string;
-}
-
-export interface IActivity {
-  _id: string;
-  tripId: string;
-  name: string;
-  date: Date;
-  startTime: string;
-  endTime: string;
-  location: string;
-  description: string;
-  cost: number;
-  participantsId: string[];
-  unregisteredParticipants: string[];
-}
-
-const activitiesData: IActivity[] = [
-  // Example activities data
-  {
-    _id: '1',
-    tripId: '1',
-    name: 'Visit Eiffel Tower',
-    date: new Date('2024-06-19'),
-    startTime: '10:00 AM',
-    endTime: '12:00 PM',
-    location: 'Eiffel Tower',
-    description: 'A visit to the Eiffel Tower.',
-    cost: 20,
-    participantsId: ['1'],
-    unregisteredParticipants: ['John Doe']
-  },
-  {
-    _id: '2',
-    tripId: '1',
-    name: 'Lunch at Cafe',
-    date: new Date('2024-06-19'),
-    startTime: '01:00 PM',
-    endTime: '02:00 PM',
-    location: 'Local Cafe',
-    description: 'Lunch at a local cafe.',
-    cost: 15,
-    participantsId: ['1'],
-    unregisteredParticipants: ['Jane Doe']
-  },
-  // Add more activities as needed
-];
-
-const tripData: ITrip = {
-  _id: '1',
-  destinations: ['Paris'],
-  startDate: new Date('2024-06-19'),
-  endDate: new Date('2024-06-21'),
-  ownerId: '1',
-  participantsId: ['1'],
-  activitiesId: ['1', '2'],
-  imgUrl: '/public/Paris.jpeg'
-};
-
 const TripSchedulePage: React.FC = () => {
+  const location = useLocation();
+  const { trip } = location.state as { trip: Trip };
+  const { activities, loading, error, fetchActivities } = useActivities();
   const [page, setPage] = useState(1);
-  const [currentActivities, setCurrentActivities] = useState<IActivity[]>([]);
+  const [currentActivities, setCurrentActivities] = useState<Activity[]>([]);
 
   useEffect(() => {
-    // Calculate the number of days in the trip
-    const tripDuration = Math.ceil(
-      (new Date(tripData.endDate).getTime() - new Date(tripData.startDate).getTime()) /
-      (1000 * 3600 * 24)
-    ) + 1;
+    fetchActivities(trip._id);
+  }, [trip._id, fetchActivities]);
 
-    // Get activities for the current page (current day)
-    const currentDate = new Date(tripData.startDate);
-    currentDate.setDate(currentDate.getDate() + page - 1);
-    const activitiesForCurrentDate = activitiesData.filter(
-      (activity) =>
-        new Date(activity.date).toDateString() === currentDate.toDateString()
-    );
+  useEffect(() => {
+    if (activities.length && trip.startDate && trip.endDate) {
+      const tripDuration = Math.ceil(
+        (new Date(trip.endDate).getTime() - new Date(trip.startDate).getTime()) /
+        (1000 * 3600 * 24)
+      ) + 1;
 
-    setCurrentActivities(activitiesForCurrentDate);
-  }, [page]);
+      const currentDate = new Date(trip.startDate);
+      currentDate.setDate(currentDate.getDate() + page - 1);
+      const activitiesForCurrentDate = activities.filter(
+        (activity) =>
+          new Date(activity.date).toDateString() === currentDate.toDateString()
+      );
 
-  const handleChangePage = (event: React.ChangeEvent<unknown>, value: number) => {
-    setPage(value);
-  };
+      setCurrentActivities(activitiesForCurrentDate);
+    }
+  }, [page, activities, trip.startDate, trip.endDate]);
 
-  const tripDuration = Math.ceil(
-    (new Date(tripData.endDate).getTime() - new Date(tripData.startDate).getTime()) /
+  const tripDuration = trip.startDate && trip.endDate ? Math.ceil(
+    (new Date(trip.endDate).getTime() - new Date(trip.startDate).getTime()) /
     (1000 * 3600 * 24)
-  ) + 1;
+  ) + 1 : 0;
+
+  const handleChangePage = (event: ChangeEvent<unknown>, page: number): void => {
+    setPage(page);
+  };
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4, backgroundColor: '#f5e3ce', padding: 2, borderRadius: 2 }}>
@@ -145,47 +87,53 @@ const TripSchedulePage: React.FC = () => {
           color="primary"
         />
       </Stack>
-      <TableContainer component={Paper} sx={{ backgroundColor: '#fff', borderRadius: 2 }}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Time</TableCell>
-              <TableCell>Activity</TableCell>
-              <TableCell align="center">Actions</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {currentActivities.length > 0 ? (
-              currentActivities.map((activity) => (
-                <TableRow key={activity._id}>
-                  <TableCell component="th" scope="row">
-                    <Typography fontWeight="bold">
-                      {activity.startTime} - {activity.endTime}
-                    </Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography>{activity.name}</Typography>
-                  </TableCell>
-                  <TableCell align="center">
-                    <IconButton color="primary">
-                      <Edit />
-                    </IconButton>
-                    <IconButton color="secondary">
-                      <Delete />
-                    </IconButton>
+      {loading ? (
+        <Typography>Loading...</Typography>
+      ) : error ? (
+        <Typography>Error: {error}</Typography>
+      ) : (
+        <TableContainer component={Paper} sx={{ backgroundColor: '#fff', borderRadius: 2 }}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Time</TableCell>
+                <TableCell>Activity</TableCell>
+                <TableCell align="center">Actions</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {currentActivities.length > 0 ? (
+                currentActivities.map((activity) => (
+                  <TableRow key={activity._id}>
+                    <TableCell component="th" scope="row">
+                      <Typography fontWeight="bold">
+                        {activity.startTime} - {activity.endTime}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography>{activity.name}</Typography>
+                    </TableCell>
+                    <TableCell align="center">
+                      <IconButton color="primary">
+                        <Edit />
+                      </IconButton>
+                      <IconButton color="secondary">
+                        <Delete />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={3} align="center">
+                    <Typography>No activities scheduled for this day.</Typography>
                   </TableCell>
                 </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={3} align="center">
-                  <Typography>No activities scheduled for this day.</Typography>
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </TableContainer>
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      )}
     </Container>
   );
 };

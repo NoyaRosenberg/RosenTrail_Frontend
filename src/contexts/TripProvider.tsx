@@ -21,7 +21,9 @@ export const TripsProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       if (authData && isLoggedIn) {
           try {
             const fetchedTrips = await tripService.getUserTrips(authData.userId);
-            setTrips(fetchedTrips);
+            if (fetchedTrips) {
+              setTrips(fetchedTrips);
+            }
           } catch (err) {
             setError('Failed to fetch trips');
           } finally {
