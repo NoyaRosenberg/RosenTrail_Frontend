@@ -10,14 +10,14 @@ interface AuthContextType {
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
-const authDataKey: string = 'auth';
+const authDataKey = 'currentUser';
 
 const checkIfLoggedIn = (): boolean => {
-  return localStorage.getItem(authDataKey) ? true : false;
+  return !!localStorage.getItem(authDataKey);
 };
 
 const getAuthData = (): AuthData | null => {
-  const authData = localStorage.getItem(authDataKey)
+  const authData = localStorage.getItem(authDataKey);
   return authData ? JSON.parse(authData) : null;
 };
 
@@ -37,8 +37,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setIsLoggedIn(true);
     setAuthData(authData);
   };
-
+  
   const logout = () => {
+    console.log("Logging out");
     localStorage.removeItem(authDataKey); 
     setIsLoggedIn(false);
     setAuthData(null);
@@ -53,10 +54,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
 export const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext);
-
   if (!context) {
     throw new Error('useAuth must be used within an AuthProvider');
   }
-  
   return context;
 };

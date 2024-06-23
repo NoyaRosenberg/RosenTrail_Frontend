@@ -1,15 +1,17 @@
-import { Grid } from "@mui/material";
+import { Grid, Button } from "@mui/material";
 import PlaceCard from "../PlaceCard";
 import { Trip } from "../../services/trip.service";
 import { useNavigate } from "react-router-dom";
 import TripDialog from "./TripDialog";
 import { useState } from "react";
+import React from "react";
 
-export interface TripsGrisProps {
+export interface TripsGridProps {
   trips: Trip[];
+  fetchTrips: () => void;
 }
 
-const TripsGrid = ({ trips }: TripsGrisProps) => {
+const TripsGrid = ({ trips, fetchTrips }: TripsGridProps) => {
   const [isTripDialogOpen, setIsTripDialogOpen] = useState<boolean>(false);
   const [selectedTrip, setSelectedTrip] = useState<Trip | null>(null);
   const navigate = useNavigate();
@@ -63,6 +65,7 @@ const TripsGrid = ({ trips }: TripsGrisProps) => {
           onClose={onDialogClose}
           trip={selectedTrip}
           price={299}
+          onDelete={fetchTrips}
         />
       )}
     </>

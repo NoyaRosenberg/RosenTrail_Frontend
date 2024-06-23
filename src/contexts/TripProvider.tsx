@@ -6,6 +6,7 @@ interface TripsContextProps {
   trips: Trip[];
   loading: boolean;
   error: string | null;
+  fetchTrips: () => void;
 }
 
 const TripsContext = createContext<TripsContextProps | undefined>(undefined);
@@ -16,27 +17,27 @@ export const TripsProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchTrips = async () => {
-      if (authData && isLoggedIn) {
-          try {
-            const fetchedTrips = await tripService.getUserTrips(authData.userId);
-            if (fetchedTrips) {
-              setTrips(fetchedTrips);
-            }
-          } catch (err) {
-            setError('Failed to fetch trips');
-          } finally {
-            setLoading(false);
-          }
+  const fetchTrips = async () => {
+    if (authData && isLoggedIn) {
+      setLoading(true);
+      try {
+        const fetchedTrips = await tripService.getUserTrips(authData.userId);
+        setTrips(fetchedTrips || []);  // Ensure trips is always an array
+        setError(null);
+      } catch (err) {
+        setError('Failed to fetch trips');
+      } finally {
+        setLoading(false);
       }
-    };
+    }
+  };
 
+  useEffect(() => {
     fetchTrips();
   }, [authData, isLoggedIn]);
 
   return (
-    <TripsContext.Provider value={{ trips, loading, error }}>
+    <TripsContext.Provider value={{ trips, loading, error, fetchTrips }}>
       {children}
     </TripsContext.Provider>
   );

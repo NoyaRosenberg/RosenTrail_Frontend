@@ -25,6 +25,7 @@ type TripDialogProps = {
   price: number;
   open: boolean;
   onClose: () => void;
+  onDelete: () => void; 
 };
 
 const TripDialog: React.FC<TripDialogProps> = ({
@@ -32,6 +33,7 @@ const TripDialog: React.FC<TripDialogProps> = ({
   price,
   open,
   onClose,
+  onDelete, 
 }) => {
   const navigate = useNavigate();
 
@@ -43,8 +45,20 @@ const TripDialog: React.FC<TripDialogProps> = ({
     // Edit logic
   };
 
-  const handleDelete = () => {
-    // Delete logic
+  const handleDelete = async () => {
+    try {
+      const response = await fetch(`http://localhost:3000/trips/${trip._id}`, {
+        method: "DELETE",
+      });
+      if (response.ok) {
+        onDelete(); 
+        onClose(); 
+      } else {
+        console.error("Failed to delete trip");
+      }
+    } catch (error) {
+      console.error("Failed to delete trip:", error);
+    }
   };
 
   return (

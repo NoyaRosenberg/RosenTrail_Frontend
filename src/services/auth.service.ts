@@ -2,7 +2,9 @@ import axios from "axios";
 
 export interface AuthData {
   userId: string;
+  username: string;
   email: string;
+  imageData: string; 
   token: string;
 }
 
@@ -30,9 +32,17 @@ class AuthService {
     }
   }
 
-  async signUp(email: string, password: string): Promise<void> {
+  async signUp(username: string, email: string, age: string, phoneNumber: string, password: string, imageData: string): Promise<AuthData | void> {
     try {
-      await axios.post(`${this.baseURL}/signup`, { email: email, password });
+      const response = await axios.post<AuthData>(`${this.baseURL}/signup`, {
+        username,
+        email,
+        age,
+        phoneNumber,
+        password,
+        imageData
+      });
+      return response.data;
     } catch (error) {
       this.handleError(error);
     }

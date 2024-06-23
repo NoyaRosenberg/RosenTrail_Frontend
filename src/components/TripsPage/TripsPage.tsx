@@ -1,18 +1,12 @@
-import {
-  Box,
-  CircularProgress,
-  Container,
-  Stack,
-  Typography,
-} from "@mui/material";
+import React, { useState, useEffect } from "react";
+import { Box, CircularProgress, Container, Stack, Typography } from "@mui/material";
 import SearchBar from "../SearchBar";
 import TripsGrid from "./TripsGrid";
 import { useTrips } from "../../contexts/TripProvider";
 import { Trip } from "../../services/trip.service";
-import { useState, useEffect } from "react";
 
 const TripsPage = () => {
-  const { trips, loading, error } = useTrips();
+  const { trips, loading, error, fetchTrips } = useTrips();
   const [filteredTrips, setFilteredTrips] = useState<Trip[]>(trips);
 
   useEffect(() => {
@@ -39,7 +33,7 @@ const TripsPage = () => {
           alignContent: "center"
         }}
       >
-        <CircularProgress/>
+        <CircularProgress />
       </Container>
     );
   }
@@ -66,15 +60,14 @@ const TripsPage = () => {
           My Wonderful Trips
         </Typography>
         <Typography variant="overline" display="block" gutterBottom>
-          Create a new trip or enter your former trip to edit, publish or print
-          pictures from you wonderful trips
+          Create a new trip or enter your former trip to edit, publish or print pictures from you wonderful trips
         </Typography>
         <Box width="100%">
-          <SearchBar placeholder="search a trip..." onSearch={onTripSearch}/>
+          <SearchBar placeholder="search a trip..." onSearch={onTripSearch} />
         </Box>
       </Stack>
       <Box width="100%">
-        <TripsGrid trips={filteredTrips} />
+        <TripsGrid trips={filteredTrips} fetchTrips={fetchTrips}/>
       </Box>
     </Container>
   );

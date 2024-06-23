@@ -7,6 +7,8 @@ import { AuthProvider, useAuth } from "./contexts/AuthProvider";
 import AppContent from "./AppContent";
 import { TripsProvider } from "./contexts/TripProvider";
 import { ActivityProvider } from "./contexts/ActivityProvider";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import React from "react";
 
 function App() {
@@ -22,6 +24,7 @@ function App() {
           </ThemeProvider>
         </ActivityProvider>
       </TripsProvider>
+      <ToastContainer />
     </AuthProvider>
   );
 }
