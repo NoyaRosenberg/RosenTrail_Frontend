@@ -1,5 +1,9 @@
 import { useState } from "react";
 import { Box, TextField, Button, Grid, Autocomplete, Chip } from "@mui/material";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+
 import ContactInfo from "../Forms/ContactInfo";
 import FormHeader from "../Forms/FormHeader";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
@@ -20,8 +24,7 @@ const CreateTripForm = () => {
   });
   const navigate = useNavigate();
 
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {    
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setTrip((prevTrip) => {
       const newValue = typeof value === "string" ? value.split(",") : value;
@@ -43,14 +46,14 @@ const CreateTripForm = () => {
     setTrip((prevTrip) => ({
       ...prevTrip,
       ['participants']: newVal,
-    }));   
+    }));
   };
 
   const updateDestinations = (event, newVal) => {
     setTrip((prevTrip) => ({
       ...prevTrip,
       ['destinations']: newVal,
-    }));   
+    }));
   };
 
   const handleSave = async (e: React.FormEvent) => {
@@ -70,9 +73,10 @@ const CreateTripForm = () => {
         ),
       };
       const createdTrip = await TripService.CreateTrip(cleanedTrip);
-      console.log(createdTrip);
+      toast.success("Trip created successfully");
       navigate("/trips");
     } catch (error) {
+      toast.error("Failed to create trip");
       console.error("Failed to save trip:", error);
     }
   };
@@ -110,7 +114,7 @@ const CreateTripForm = () => {
           <Grid item xs={6}>
 
 
-          <Autocomplete
+            <Autocomplete
               multiple
               id="tags-filled"
               freeSolo
@@ -162,6 +166,7 @@ const CreateTripForm = () => {
         <ContactInfo />
       </Box>
     </LocalizationProvider>
+    
   );
 };
 

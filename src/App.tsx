@@ -6,6 +6,8 @@ import theme from "./theme";
 import { AuthProvider, useAuth } from "./contexts/AuthProvider";
 import AppContent from "./AppContent";
 import { TripsProvider } from "./contexts/TripProvider";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   return (
@@ -18,6 +20,7 @@ function App() {
           </Router>
         </ThemeProvider>
       </TripsProvider>
+      <ToastContainer />
     </AuthProvider>
   );
 }
