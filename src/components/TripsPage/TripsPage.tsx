@@ -10,6 +10,7 @@ import TripsGrid from "./TripsGrid";
 import { useTrips } from "../../contexts/TripProvider";
 import { Trip } from "../../services/trip.service";
 import { useState, useEffect } from "react";
+import React from "react";
 
 const TripsPage = () => {
   const { trips, loading, error } = useTrips();

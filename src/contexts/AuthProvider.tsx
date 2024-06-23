@@ -10,7 +10,7 @@ interface AuthContextType {
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
-const authDataKey = 'auth';
+const authDataKey = 'currentUser';
 
 const checkIfLoggedIn = (): boolean => {
   return !!localStorage.getItem(authDataKey);
@@ -27,18 +27,22 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
+    console.log("AuthProvider useEffect - Checking login status");
     setIsLoggedIn(checkIfLoggedIn());
     setAuthData(getAuthData());
     setLoading(false);
+    console.log("AuthProvider useEffect - isLoggedIn:", isLoggedIn, "authData:", authData);
   }, []);
 
   const login = (authData: AuthData) => {
+    console.log("Logging in with authData:", authData);
     localStorage.setItem(authDataKey, JSON.stringify(authData));
     setIsLoggedIn(true);
     setAuthData(authData);
   };
   
   const logout = () => {
+    console.log("Logging out");
     localStorage.removeItem(authDataKey); 
     setIsLoggedIn(false);
     setAuthData(null);

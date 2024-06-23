@@ -4,7 +4,7 @@ export interface AuthData {
   userId: string;
   username: string;
   email: string;
-  photo: string; 
+  imageData: string; 
   token: string;
 }
 
@@ -17,6 +17,7 @@ class AuthService {
         email: email,
         password,
       });
+      console.log("Login response data:", response.data);
       return response.data;
     } catch (error) {
       this.handleError(error);
@@ -26,13 +27,14 @@ class AuthService {
   async googleLogin(token: string): Promise<AuthData | void> {
     try {
       const response = await axios.post(`${this.baseURL}/google-login`, { token });
+      console.log("Google login response data:", response.data);
       return response.data;
     } catch (error) {
       this.handleError(error);
     }
   }
 
-  async signUp(username: string, email: string, age: string, phoneNumber: string, password: string, photo: string): Promise<AuthData | void> {
+  async signUp(username: string, email: string, age: string, phoneNumber: string, password: string, imageData: string): Promise<AuthData | void> {
     try {
       const response = await axios.post<AuthData>(`${this.baseURL}/signup`, {
         username,
@@ -40,8 +42,9 @@ class AuthService {
         age,
         phoneNumber,
         password,
-        photo
+        imageData
       });
+      console.log("Signup response data:", response.data);
       return response.data;
     } catch (error) {
       this.handleError(error);

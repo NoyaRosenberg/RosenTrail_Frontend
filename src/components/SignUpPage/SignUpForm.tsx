@@ -16,13 +16,13 @@ const SignUpForm = () => {
   const [age, setAge] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [password, setPassword] = useState("");
-  const [photo, setPhoto] = useState<string | null>(null);
-  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const [imageData, setImageData] = useState<string | null>(null);
+  const [imageDataPreview, setImageDataPreview] = useState<string | null>(null);
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const { login } = useAuth(); 
 
-  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageDataChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       const reader = new FileReader();
@@ -54,8 +54,8 @@ const SignUpForm = () => {
           ctx?.drawImage(img, 0, 0, width, height);
 
           const resizedDataUrl = canvas.toDataURL('image/jpeg', 0.7); 
-          setPhoto(resizedDataUrl);
-          setPhotoPreview(resizedDataUrl);
+          setImageData(resizedDataUrl);
+          setImageDataPreview(resizedDataUrl);
         };
       };
       reader.readAsDataURL(file);
@@ -67,7 +67,7 @@ const SignUpForm = () => {
     console.log("Submitting sign-up form");
 
     try {
-      const authData = await authService.signUp(username, email, age, phoneNumber, password, photo!);
+      const authData = await authService.signUp(username, email, age, phoneNumber, password, imageData!);
       console.log('Auth data received:', authData);
       if (authData) {
         console.log(authData)
@@ -96,7 +96,7 @@ const SignUpForm = () => {
       >
         <Grid item xs={12} style={{ textAlign: "center" }}>
           <Avatar
-            src={photoPreview || ""}
+            src={imageDataPreview || ""}
             alt="Profile Photo"
             sx={{ width: 80, height: 80, margin: "0 auto" }}
           />
@@ -105,7 +105,7 @@ const SignUpForm = () => {
             style={{ display: "none" }}
             id="icon-button-file"
             type="file"
-            onChange={handlePhotoChange}
+            onChange={handleImageDataChange}
           />
           <label htmlFor="icon-button-file">
             <IconButton color="primary" aria-label="upload picture" component="span">
