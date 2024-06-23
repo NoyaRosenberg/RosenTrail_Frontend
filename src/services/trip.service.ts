@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export interface Trip {
-  _id: string;
+  _id?: string;
   destinations: string[];
   startDate?: Date;
   endDate?: Date;
@@ -9,8 +9,8 @@ export interface Trip {
   participantsId?: string[];
   unregisteredParticipants?: string[];
   activitiesId?: string[];
-  description: string;
-  imgUrl: string;
+  description?: string;
+  imgUrl?: string;
 }
 
 class TripService {
@@ -25,7 +25,7 @@ class TripService {
     }
   }
 
-  async CreateTrip(trip: Trip): Promise<void> {
+  async CreateTrip(trip: Trip): Promise<Trip | undefined> {
     const response = await fetch(`${this.baseURL}/create-trip`, {
         method: "POST",
         headers: {
@@ -34,7 +34,7 @@ class TripService {
         body: JSON.stringify(trip),
       });
       if (response.ok) {
-        console.log("Trip details saved:", trip);
+        return response.json();
       } else {
         this.handleError(response);
       }

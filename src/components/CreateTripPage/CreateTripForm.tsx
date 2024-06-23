@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Box, TextField, Button, Grid } from "@mui/material";
+import { Box, TextField, Button, Grid, Autocomplete, Chip } from "@mui/material";
 import ContactInfo from "../Forms/ContactInfo";
 import FormHeader from "../Forms/FormHeader";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
@@ -7,6 +7,8 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import TripService from '../../services/trip.service'
 import "../../styles/Forms.css";
 import React from 'react';
+import { useNavigate } from "react-router-dom";
+
 
 const CreateTripForm = () => {
   const [trip, setTrip] = useState({
@@ -14,10 +16,12 @@ const CreateTripForm = () => {
     endDate: new Date(),
     destinations: [],
     participants: [],
-    ownerId:  JSON.parse(localStorage.getItem('currentUser') || '{}')?.userId || '' ,
+    ownerId: JSON.parse(localStorage.getItem('currentUser') || '{}')?.userId || '',
   });
+  const navigate = useNavigate();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {    
     const { name, value } = e.target;
     setTrip((prevTrip) => {
       const newValue = typeof value === "string" ? value.split(",") : value;
@@ -35,7 +39,22 @@ const CreateTripForm = () => {
     }));
   };
 
-  const handleSave = async () => {
+  const updateParticipants = (event, newVal) => {
+    setTrip((prevTrip) => ({
+      ...prevTrip,
+      ['participants']: newVal,
+    }));   
+  };
+
+  const updateDestinations = (event, newVal) => {
+    setTrip((prevTrip) => ({
+      ...prevTrip,
+      ['destinations']: newVal,
+    }));   
+  };
+
+  const handleSave = async (e: React.FormEvent) => {
+    e.preventDefault();
     if (!trip || !trip.participants || !trip.destinations) {
       console.error("Invalid trip data:", trip);
       return;
@@ -50,7 +69,9 @@ const CreateTripForm = () => {
           destination ? destination.trim() : ""
         ),
       };
-      await TripService.CreateTrip(cleanedTrip);
+      const createdTrip = await TripService.CreateTrip(cleanedTrip);
+      console.log(createdTrip);
+      navigate("/trips");
     } catch (error) {
       console.error("Failed to save trip:", error);
     }
@@ -87,13 +108,22 @@ const CreateTripForm = () => {
             />
           </Grid>
           <Grid item xs={6}>
-            <TextField
-              type="text"
-              name="destinations"
-              label="Destination"
-              value={trip.destinations.join(",")}
-              onChange={handleChange}
-              fullWidth
+
+
+          <Autocomplete
+              multiple
+              id="tags-filled"
+              freeSolo
+              onChange={updateDestinations}
+              options={[]}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant="filled"
+                  label="destinations"
+                  placeholder="destinations"
+                />
+              )}
             />
           </Grid>
           {/* <Grid item xs={6}>
@@ -107,13 +137,20 @@ const CreateTripForm = () => {
             />
           </Grid> */}
           <Grid item xs={12}>
-            <TextField
-              type="text"
-              name="participants"
-              label="Participants (comma separated)"
-              value={trip.participants.join(",")}
-              onChange={handleChange}
-              fullWidth
+            <Autocomplete
+              multiple
+              id="tags-filled"
+              freeSolo
+              onChange={updateParticipants}
+              options={[]}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant="filled"
+                  label="participants"
+                  placeholder="participants"
+                />
+              )}
             />
           </Grid>
           <Grid item xs={12}>
