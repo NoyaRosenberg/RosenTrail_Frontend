@@ -1,5 +1,5 @@
 import React from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "../contexts/AuthProvider";
 import ProtectedRoute from "./ProtectedRoute";
 import ActivitiesPage from "../components/ActivitiesPage/ActivitiesPage";
@@ -13,9 +13,10 @@ import TripPage from "../components/TripPage/TripPage";
 
 const AppRoutes: React.FC = () => {
   const { isLoggedIn, loading } = useAuth();
+  const location = useLocation();
 
   if (loading) {
-    return <CircularProgress />; 
+    return <CircularProgress />;
   }
 
   if (location.pathname === '/' && isLoggedIn) {
