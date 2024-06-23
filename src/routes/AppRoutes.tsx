@@ -9,7 +9,7 @@ import SignInPage from "../components/SignInPage/SignInPage";
 import SignUpPage from "../components/SignUpPage/SignUpPage";
 import TripsPage from "../components/TripsPage/TripsPage";
 import { CircularProgress } from "@mui/material";
-import TripPage from "../components/TripPage/TripPage";
+import SchedulePage from "../components/SchedulePage/SchedulePage";
 
 const AppRoutes: React.FC = () => {
   const { isLoggedIn, loading } = useAuth();
@@ -49,6 +49,14 @@ const AppRoutes: React.FC = () => {
         element={
           <ProtectedRoute>
             <ActivitiesPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/schedule"
+        element={
+          <ProtectedRoute>
+            <SchedulePage />
           </ProtectedRoute>
         }
       />
