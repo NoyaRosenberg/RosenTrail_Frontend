@@ -44,7 +44,6 @@ const AccountMenu = () => {
             aria-expanded={open ? 'true' : undefined}
           >
             {authData?.imageData ? (
-              console.log(authData.imageData, "imagedata"),
               <Avatar src={authData.imageData} sx={{ width: 32, height: 32 }} />
             ) : (
               <Avatar sx={{ width: 32, height: 32 }}>{authData?.username?.charAt(0)}</Avatar>

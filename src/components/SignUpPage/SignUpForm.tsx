@@ -68,9 +68,7 @@ const SignUpForm = () => {
 
     try {
       const authData = await authService.signUp(username, email, age, phoneNumber, password, imageData!);
-      console.log('Auth data received:', authData);
       if (authData) {
-        console.log(authData)
         login(authData); 
         navigate("/trips"); 
       } else {

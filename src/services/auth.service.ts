@@ -17,7 +17,6 @@ class AuthService {
         email: email,
         password,
       });
-      console.log("Login response data:", response.data);
       return response.data;
     } catch (error) {
       this.handleError(error);
@@ -27,7 +26,6 @@ class AuthService {
   async googleLogin(token: string): Promise<AuthData | void> {
     try {
       const response = await axios.post(`${this.baseURL}/google-login`, { token });
-      console.log("Google login response data:", response.data);
       return response.data;
     } catch (error) {
       this.handleError(error);
@@ -44,7 +42,6 @@ class AuthService {
         password,
         imageData
       });
-      console.log("Signup response data:", response.data);
       return response.data;
     } catch (error) {
       this.handleError(error);

@@ -23,7 +23,6 @@ const LoginForm = () => {
 
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
-    console.log(JSON.stringify({ email, password }));
 
     try {
       const authData = await authService.login(email, password);

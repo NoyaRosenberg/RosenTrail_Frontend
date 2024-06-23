@@ -27,15 +27,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    console.log("AuthProvider useEffect - Checking login status");
     setIsLoggedIn(checkIfLoggedIn());
     setAuthData(getAuthData());
     setLoading(false);
-    console.log("AuthProvider useEffect - isLoggedIn:", isLoggedIn, "authData:", authData);
   }, []);
 
   const login = (authData: AuthData) => {
-    console.log("Logging in with authData:", authData);
     localStorage.setItem(authDataKey, JSON.stringify(authData));
     setIsLoggedIn(true);
     setAuthData(authData);
