@@ -67,6 +67,26 @@ const TripSchedulePage: React.FC = () => {
     navigate("/AddActivities", { state: { trip } });
   };
 
+  const handleEdit = (activityId: string) => {
+    // Edit logic
+    console.log("Edit activity with ID:", activityId);
+  };
+
+  const handleDelete = async (activityId: string) => {
+    try {
+      const response = await fetch(`http://localhost:3000/activities/${activityId}`, {
+        method: "DELETE",
+      });
+      if (response.ok) {
+        fetchActivities(trip._id); // Refresh activities list
+      } else {
+        console.error("Failed to delete activity");
+      }
+    } catch (error) {
+      console.error("Failed to delete activity:", error);
+    }
+  };
+
   return (
     <Container maxWidth="lg" sx={{ mt: 4, backgroundColor: '#f5e3ce', padding: 2, borderRadius: 2 }}>
       <Typography variant="h4" gutterBottom>
@@ -120,10 +140,10 @@ const TripSchedulePage: React.FC = () => {
                       <Typography>{activity.name}</Typography>
                     </TableCell>
                     <TableCell align="center">
-                      <IconButton color="primary">
+                      <IconButton color="primary" onClick={() => handleEdit(activity._id)}>
                         <Edit />
                       </IconButton>
-                      <IconButton color="secondary">
+                      <IconButton color="secondary" onClick={() => handleDelete(activity._id)}>
                         <Delete />
                       </IconButton>
                     </TableCell>
