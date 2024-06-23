@@ -4,8 +4,8 @@ import React from "react";
 
 export interface PlaceCardProps {
   name: string;
-  description: string;
-  image: string;
+  description?: string;
+  image?: string;
   isNew?: boolean;
   onCardClick: () => void;
 }

@@ -1,38 +1,33 @@
-import { useState } from "react";
-import { Box, TextField, Button, Grid, Autocomplete, Chip } from "@mui/material";
+import React, { useState } from 'react';
+import { Box, TextField, Button, Grid, Autocomplete } from "@mui/material";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
-
 import ContactInfo from "../Forms/ContactInfo";
 import FormHeader from "../Forms/FormHeader";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import TripService from '../../services/trip.service'
-import "../../styles/Forms.css";
-import React from 'react';
 import { useNavigate } from "react-router-dom";
+import { useTrips } from "../../contexts/TripProvider";
+import "../../styles/Forms.css";
+import tripService from '../../services/trip.service';
 
-
-const CreateTripForm = () => {
+const CreateTripForm: React.FC = () => {
+  const { fetchTrips } = useTrips();
   const [trip, setTrip] = useState({
     startDate: new Date(),
     endDate: new Date(),
-    destinations: [],
-    participants: [],
+    destinations: [] as string[],
+    participants: [] as string[],
     ownerId: JSON.parse(localStorage.getItem('currentUser') || '{}')?.userId || '',
   });
   const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setTrip((prevTrip) => {
-      const newValue = typeof value === "string" ? value.split(",") : value;
-      return {
-        ...prevTrip,
-        [name]: newValue,
-      };
-    });
+    setTrip((prevTrip) => ({
+      ...prevTrip,
+      [name]: value.split(","),
+    }));
   };
 
   const handleDateChange = (date: Date | null, name: string) => {
@@ -42,17 +37,17 @@ const CreateTripForm = () => {
     }));
   };
 
-  const updateParticipants = (event, newVal) => {
+  const updateParticipants = (event: any, newVal: string[]) => {
     setTrip((prevTrip) => ({
       ...prevTrip,
-      ['participants']: newVal,
+      participants: newVal,
     }));
   };
 
-  const updateDestinations = (event, newVal) => {
+  const updateDestinations = (event: any, newVal: string[]) => {
     setTrip((prevTrip) => ({
       ...prevTrip,
-      ['destinations']: newVal,
+      destinations: newVal,
     }));
   };
 
@@ -72,8 +67,9 @@ const CreateTripForm = () => {
           destination ? destination.trim() : ""
         ),
       };
-      const createdTrip = await TripService.CreateTrip(cleanedTrip);
+      await tripService.CreateTrip(cleanedTrip);
       toast.success("Trip created successfully");
+      fetchTrips(); 
       navigate("/trips");
     } catch (error) {
       toast.error("Failed to create trip");
@@ -112,8 +108,6 @@ const CreateTripForm = () => {
             />
           </Grid>
           <Grid item xs={6}>
-
-
             <Autocomplete
               multiple
               id="tags-filled"
@@ -124,22 +118,12 @@ const CreateTripForm = () => {
                 <TextField
                   {...params}
                   variant="filled"
-                  label="destinations"
-                  placeholder="destinations"
+                  label="Destinations"
+                  placeholder="Destinations"
                 />
               )}
             />
           </Grid>
-          {/* <Grid item xs={6}>
-            <TextField
-              type="text"
-              name="city"
-              label="City"
-              value={trip.city}
-              onChange={handleChange}
-              fullWidth
-            />
-          </Grid> */}
           <Grid item xs={12}>
             <Autocomplete
               multiple
@@ -151,8 +135,8 @@ const CreateTripForm = () => {
                 <TextField
                   {...params}
                   variant="filled"
-                  label="participants"
-                  placeholder="participants"
+                  label="Participants"
+                  placeholder="Participants"
                 />
               )}
             />
@@ -166,7 +150,6 @@ const CreateTripForm = () => {
         <ContactInfo />
       </Box>
     </LocalizationProvider>
-    
   );
 };
 
