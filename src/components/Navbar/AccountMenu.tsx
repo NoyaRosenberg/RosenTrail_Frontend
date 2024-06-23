@@ -15,7 +15,7 @@ import { useAuth } from '../../contexts/AuthProvider';
 const AccountMenu = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
-  const { logout } = useAuth();
+  const { authData, logout } = useAuth();
   const navigate = useNavigate();
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -43,7 +43,12 @@ const AccountMenu = () => {
             aria-haspopup="true"
             aria-expanded={open ? 'true' : undefined}
           >
-            <Avatar sx={{ width: 32, height: 32 }}>M</Avatar>
+            {authData?.imageData ? (
+              console.log(authData.imageData, "imagedata"),
+              <Avatar src={authData.imageData} sx={{ width: 32, height: 32 }} />
+            ) : (
+              <Avatar sx={{ width: 32, height: 32 }}>{authData?.username?.charAt(0)}</Avatar>
+            )}
           </IconButton>
         </Tooltip>
       </Box>
@@ -80,13 +85,14 @@ const AccountMenu = () => {
                 zIndex: 0,
               },
             },
-          } 
+          }
         }}
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
         <MenuItem onClick={handleClose}>
-          <Avatar /> Profile
+          <Avatar src={authData?.imageData} sx={{ width: 32, height: 32 }} />
+          My Profile 
         </MenuItem>
         <Divider />
         <MenuItem onClick={handleClose}>
@@ -104,6 +110,6 @@ const AccountMenu = () => {
       </Menu>
     </React.Fragment>
   );
-}
+};
 
 export default AccountMenu;

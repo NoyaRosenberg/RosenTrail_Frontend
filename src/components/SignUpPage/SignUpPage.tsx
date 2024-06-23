@@ -2,6 +2,7 @@ import { Box, Typography } from '@mui/material';
 import SignUpForm from './SignUpForm';
 import '../../styles/Forms.css';
 import '../../styles/SignUpPage.css';
+import React from 'react';
 
 const SignUpPage = () => {
   return (
