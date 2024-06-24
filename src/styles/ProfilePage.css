@@ -1,0 +1,65 @@
+.profile-container {
+  background-color: #F5E3CE;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.profile-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 1200px;
+}
+
+.profile-avatar-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-left: 40px; /* Ensure it is on the right side */
+  width: 500px;
+}
+
+.profile-avatar {
+  width: 300px; /* Adjust size as needed */
+  height: 300px; /* Adjust height accordingly */
+  background-color: white;
+  object-fit: cover;
+  margin-bottom: 10px;
+}
+
+.profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  max-width: 600px; /* Adjust to make the form narrower */
+}
+
+.profile-form .MuiTextField-root {
+  margin-bottom: 10px;
+}
+
+.save-button {
+  background-color: black;
+  color: white;
+  width: 100%; /* Ensure button spans full width */
+}
+
+.icon-button {
+  margin-top: 10px;
+}
+
+.half-width {
+  width: 48%; /* Adjust width for half-width fields */
+  display: inline-block;
+}
+
+.full-width {
+  width: 100%;
+}

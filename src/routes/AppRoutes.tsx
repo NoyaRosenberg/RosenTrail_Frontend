@@ -8,8 +8,8 @@ import MainPage from "../components/MainPage";
 import SignInPage from "../components/SignInPage/SignInPage";
 import SignUpPage from "../components/SignUpPage/SignUpPage";
 import TripsPage from "../components/TripsPage/TripsPage";
+import ProfilePage from "../components/ProfilePage/ProfilePage"; // Make sure to import ProfilePage
 import { CircularProgress } from "@mui/material";
-import ProfilePage from "../components/ProfilePage/ProfilePage";
 
 const AppRoutes: React.FC = () => {
   const { isLoggedIn, loading } = useAuth();
@@ -52,13 +52,13 @@ const AppRoutes: React.FC = () => {
           </ProtectedRoute>
         }
       />
-      <Route
-        path="/profile"
+      <Route 
+        path="/profile" 
         element={
           <ProtectedRoute>
             <ProfilePage />
           </ProtectedRoute>
-        }
+        } 
       />
       <Route path="*" element={<Navigate to={isLoggedIn ? "/trips" : "/"} />} />
     </Routes>

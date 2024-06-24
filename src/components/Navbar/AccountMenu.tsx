@@ -9,6 +9,7 @@ import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
+import TravelExplore from '@mui/icons-material/TravelExplore'; // Import My Trips icon
 import { useNavigate } from "react-router-dom";
 import { useAuth } from '../../contexts/AuthProvider';
 
@@ -26,8 +27,12 @@ const AccountMenu = () => {
     setAnchorEl(null);
   };
 
-  const myProfile = () => {
-    navigate('/profile'); 
+  const navigateToProfile = () => {
+    navigate('/profile');
+  };
+
+  const navigateToMyTrips = () => {
+    navigate('/trips');
   };
 
   const logoutUser = () => {
@@ -93,9 +98,15 @@ const AccountMenu = () => {
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        <MenuItem onClick={myProfile}>
+        <MenuItem onClick={navigateToProfile}>
           <Avatar src={authData?.imageData} sx={{ width: 32, height: 32 }} />
           My Profile 
+        </MenuItem>
+        <MenuItem onClick={navigateToMyTrips}>
+          <ListItemIcon>
+            <TravelExplore fontSize="small" />
+          </ListItemIcon>
+          My Trips
         </MenuItem>
         <Divider />
         <MenuItem onClick={handleClose}>

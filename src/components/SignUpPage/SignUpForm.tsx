@@ -1,14 +1,14 @@
-import { Box, TextField, Button, Grid, Avatar, IconButton } from "@mui/material";
+import { Box, TextField, Button, Grid, Avatar, IconButton, Typography, Link } from "@mui/material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../styles/Forms.css";
 import FormHeader from "../Forms/FormHeader";
 import ContactInfo from "../Forms/ContactInfo";
-import authService, { AuthData } from "../../services/auth.service";
+import authService from "../../services/auth.service";
 import ErrorMessage from "../Forms/ErrorMessage";
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import React from "react";
-import { useAuth } from "../../contexts/AuthProvider"; // import useAuth
+import { useAuth } from "../../contexts/AuthProvider"; 
 
 const SignUpForm = () => {
   const [username, setUsername] = useState("");
@@ -168,6 +168,11 @@ const SignUpForm = () => {
         </Grid>
         <Grid item xs={12}>
           {error && <ErrorMessage errorMessage={error} />}
+        </Grid>
+        <Grid item xs={12} style={{ textAlign: "center" }}>
+          <Typography variant="body2">
+            Already have an account? <Link href="/signin">Log in</Link>
+          </Typography>
         </Grid>
       </Grid>
       <ContactInfo />
