@@ -6,6 +6,9 @@ export interface AuthData {
   email: string;
   imageData: string; 
   token: string;
+  gender: string;
+  age: number;
+  phoneNumber: number;
 }
 
 class AuthService {

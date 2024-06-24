@@ -26,6 +26,10 @@ const AccountMenu = () => {
     setAnchorEl(null);
   };
 
+  const myProfile = () => {
+    navigate('/profile'); 
+  };
+
   const logoutUser = () => {
     logout();
     navigate('/');
@@ -89,7 +93,7 @@ const AccountMenu = () => {
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        <MenuItem onClick={handleClose}>
+        <MenuItem onClick={myProfile}>
           <Avatar src={authData?.imageData} sx={{ width: 32, height: 32 }} />
           My Profile 
         </MenuItem>

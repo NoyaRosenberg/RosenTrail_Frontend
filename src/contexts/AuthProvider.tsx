@@ -7,6 +7,8 @@ interface AuthContextType {
   loading: boolean;
   login: (authData: AuthData) => void;
   logout: () => void;
+  updateUser: (updatedData: Partial<AuthData>) => void;
+  setAuthData: (authData: AuthData) => void; // Add setAuthData function
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -45,8 +47,14 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setAuthData(null);
   };
 
+  const updateUser = (updatedData: Partial<AuthData>) => {
+    const updatedAuthData = { ...authData, ...updatedData };
+    localStorage.setItem(authDataKey, JSON.stringify(updatedAuthData));
+    setAuthData(updatedAuthData as AuthData);
+  };
+
   return (
-    <AuthContext.Provider value={{ isLoggedIn, loading, authData, login, logout }}>
+    <AuthContext.Provider value={{ isLoggedIn, loading, authData, login, logout, updateUser, setAuthData }}>
       {children}
     </AuthContext.Provider>
   );
