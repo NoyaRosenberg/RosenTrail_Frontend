@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export interface Activity {
-  _id: string;
+  _id?: string;
   tripId: string;
   name: string;
   date: Date;
@@ -10,8 +10,8 @@ export interface Activity {
   location: string;
   description: string;
   cost: number;
-  participantsId: string[];
-  unregisteredParticipants: string[];
+  participantsId?: string[];
+  unregisteredParticipants?: string[];
 }
 
 class ActivityService {

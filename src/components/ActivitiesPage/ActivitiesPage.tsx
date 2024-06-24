@@ -1,11 +1,19 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Container, Stack, Typography } from "@mui/material";
 import RecommendationsGrid from "./RecommendationsGrid";
 import SearchBar from "../SearchBar";
 import ActivityFilters from "./ActivityFilters";
 import { Recommendation } from "./RecommendationsGrid";
+import { useLocation } from 'react-router-dom';
+
 
 const ActivitiesPage: React.FC = () => {
+  const location = useLocation();
+  const [filteredRecommendations, setFilteredReccomendations] = useState<Recommendation[]>([]);
+  const trip = location.state.trip;
+  useEffect(() => {
+    onActivitySearch('');
+  }, []);
   const [recommendations, setRecommendations] = useState<Recommendation[]>([
     {
       name: "Central Park",
@@ -45,8 +53,10 @@ const ActivitiesPage: React.FC = () => {
   ]);
 
   const onActivitySearch = (searchValue: string) => {
-    // Implement Search 
-    console.log(searchValue);
+    const newFilteredRecommendations = recommendations.filter(recommendation =>
+      recommendation.name.toLowerCase().includes(searchValue.toLowerCase())
+    );
+    setFilteredReccomendations(newFilteredRecommendations);
   }
 
   return (
@@ -67,7 +77,7 @@ const ActivitiesPage: React.FC = () => {
             Click an activity to add it to your trip!
           </Typography>
           <Box sx={{ width: "100%" }}>
-            <RecommendationsGrid recommendations={recommendations} />
+            <RecommendationsGrid recommendations={filteredRecommendations} trip={trip} />
           </Box>
         </Stack>
       </Stack>
