@@ -1,5 +1,8 @@
-import { Grid } from "@mui/material";
+import { Dialog, DialogActions, DialogContent, DialogTitle, Grid } from "@mui/material";
 import PlaceCard from "../PlaceCard";
+import { Trip } from "../../services/trip.service";
+import React, { useState } from "react";
+import CreateActivityForm from "./CreateActivityForm";
 
 export interface Recommendation {
   name: string;
@@ -9,10 +12,23 @@ export interface Recommendation {
 
 export interface RecommendationsGrisProps {
   recommendations: Recommendation[];
+  trip: Trip;
 }
 
-const RecommendationsGrid = ({ recommendations }: RecommendationsGrisProps) => {
-  const addActivity = () => {
+const RecommendationsGrid = ({ recommendations, trip }: RecommendationsGrisProps) => {
+  const [open, setOpen] = useState(false);
+  const [selectedRecommendation, setSelectedRecommendation] = useState<Recommendation | null>(null);
+
+
+  const handleClose = () => {
+    setOpen(false);
+    setSelectedRecommendation(null);
+
+  };
+  const addActivity = (rec: Recommendation) => {
+    setSelectedRecommendation(rec);
+    setOpen(true);
+
     // Add activity to trip
   };
 
@@ -24,10 +40,18 @@ const RecommendationsGrid = ({ recommendations }: RecommendationsGrisProps) => {
             name={rec.name}
             description={rec.description}
             image={rec.image}
-            onCardClick={addActivity}
+            onCardClick={() => addActivity(rec)}
           />
         </Grid>
       ))}
+      <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
+        <DialogTitle>Edit Your Activity</DialogTitle>
+        <DialogContent>
+          <CreateActivityForm location={selectedRecommendation?.name ?? ''} description={selectedRecommendation?.description ?? ''} trip={trip} onClose={handleClose} />
+        </DialogContent>
+        <DialogActions>
+        </DialogActions>
+      </Dialog>
     </Grid>
   );
 };

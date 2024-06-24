@@ -22,8 +22,10 @@ import { useLocation } from 'react-router-dom';
 import { useActivities } from '../../contexts/ActivityProvider';
 import { Activity } from '../../services/activity.service';
 import { Trip } from '../../services/trip.service';
+import { useNavigate } from "react-router-dom";
 
 const TripSchedulePage: React.FC = () => {
+  const navigate = useNavigate();
   const location = useLocation();
   const { trip } = location.state as { trip: Trip };
   const { activities, loading, error, fetchActivities } = useActivities();
@@ -61,6 +63,30 @@ const TripSchedulePage: React.FC = () => {
     setPage(page);
   };
 
+  const addActivity = () => {
+    navigate("/AddActivities", { state: { trip } });
+  };
+
+  const handleEdit = (activityId: string) => {
+    // Edit logic
+    console.log("Edit activity with ID:", activityId);
+  };
+
+  const handleDelete = async (activityId: string) => {
+    try {
+      const response = await fetch(`http://localhost:3000/activities/${activityId}`, {
+        method: "DELETE",
+      });
+      if (response.ok) {
+        fetchActivities(trip._id); // Refresh activities list
+      } else {
+        console.error("Failed to delete activity");
+      }
+    } catch (error) {
+      console.error("Failed to delete activity:", error);
+    }
+  };
+
   return (
     <Container maxWidth="lg" sx={{ mt: 4, backgroundColor: '#f5e3ce', padding: 2, borderRadius: 2 }}>
       <Typography variant="h4" gutterBottom>
@@ -74,7 +100,7 @@ const TripSchedulePage: React.FC = () => {
           <Button variant="contained" color="primary" sx={{ mr: 2 }}>
             Manage Budget
           </Button>
-          <Button variant="contained" color="primary">
+          <Button variant="contained" color="primary" onClick={addActivity}>
             Add Attractions
           </Button>
         </Box>
@@ -114,10 +140,10 @@ const TripSchedulePage: React.FC = () => {
                       <Typography>{activity.name}</Typography>
                     </TableCell>
                     <TableCell align="center">
-                      <IconButton color="primary">
+                      <IconButton color="primary" onClick={() => handleEdit(activity._id)}>
                         <Edit />
                       </IconButton>
-                      <IconButton color="secondary">
+                      <IconButton color="secondary" onClick={() => handleDelete(activity._id)}>
                         <Delete />
                       </IconButton>
                     </TableCell>
