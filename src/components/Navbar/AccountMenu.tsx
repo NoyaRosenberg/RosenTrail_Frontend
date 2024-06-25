@@ -16,7 +16,7 @@ import { useAuth } from '../../contexts/AuthProvider';
 const AccountMenu = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
-  const { authData, logout } = useAuth();
+  const { authData, logout, refreshAuthData } = useAuth();
   const navigate = useNavigate();
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -32,7 +32,8 @@ const AccountMenu = () => {
   };
 
   const navigateToMyTrips = () => {
-    navigate('/trips');
+    refreshAuthData(); // Refresh authData before navigation
+    window.location.href = '/trips';
   };
 
   const logoutUser = () => {

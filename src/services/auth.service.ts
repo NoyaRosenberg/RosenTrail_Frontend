@@ -17,7 +17,7 @@ class AuthService {
   async login(email: string, password: string): Promise<AuthData | void> {
     try {
       const response = await axios.post<AuthData>(`${this.baseURL}/login`, {
-        email: email,
+        email,
         password,
       });
       return response.data;
@@ -29,6 +29,15 @@ class AuthService {
   async googleLogin(token: string): Promise<AuthData | void> {
     try {
       const response = await axios.post(`${this.baseURL}/google-login`, { token });
+      return response.data;
+    } catch (error) {
+      this.handleError(error);
+    }
+  }
+
+  async googleSignUp(token: string): Promise<AuthData | void> {
+    try {
+      const response = await axios.post(`${this.baseURL}/google-signup`, { token });
       return response.data;
     } catch (error) {
       this.handleError(error);
