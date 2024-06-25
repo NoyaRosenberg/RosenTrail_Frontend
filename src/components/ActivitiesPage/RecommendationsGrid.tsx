@@ -2,7 +2,8 @@ import { Dialog, DialogActions, DialogContent, DialogTitle, Grid } from "@mui/ma
 import PlaceCard from "../PlaceCard";
 import { Trip } from "../../services/trip.service";
 import React, { useState } from "react";
-import CreateActivityForm from "./CreateActivityForm";
+import CreateActivityForm from "../CreateActivityPage/CreateActivityForm";
+import CreateActivityPage from "../CreateActivityPage/CreateActivityPage";
 
 export interface Recommendation {
   name: string;
@@ -44,10 +45,10 @@ const RecommendationsGrid = ({ recommendations, trip }: RecommendationsGrisProps
           />
         </Grid>
       ))}
-      <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
+      <Dialog open={open} onClose={handleClose} maxWidth="lg" fullWidth>
         <DialogTitle>Edit Your Activity</DialogTitle>
         <DialogContent>
-          <CreateActivityForm location={selectedRecommendation?.name ?? ''} description={selectedRecommendation?.description ?? ''} trip={trip} onClose={handleClose} />
+          <CreateActivityPage location={selectedRecommendation?.name ?? ''} description={selectedRecommendation?.description ?? ''} trip={trip} onClose={handleClose} />
         </DialogContent>
         <DialogActions>
         </DialogActions>
