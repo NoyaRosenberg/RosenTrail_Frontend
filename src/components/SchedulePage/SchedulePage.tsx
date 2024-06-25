@@ -14,6 +14,10 @@ import {
   TableRow,
   Paper,
   Pagination,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from '@mui/material';
 import { Delete, Edit } from '@mui/icons-material';
 import "../../styles/Forms.css";
@@ -23,6 +27,7 @@ import { useActivities } from '../../contexts/ActivityProvider';
 import { Activity } from '../../services/activity.service';
 import { Trip } from '../../services/trip.service';
 import { useNavigate } from "react-router-dom";
+import CreateActivityPage from '../CreateActivityPage/CreateActivityPage';
 
 const TripSchedulePage: React.FC = () => {
   const navigate = useNavigate();
@@ -31,9 +36,12 @@ const TripSchedulePage: React.FC = () => {
   const { activities, loading, error, fetchActivities } = useActivities();
   const [page, setPage] = useState(1);
   const [currentActivities, setCurrentActivities] = useState<Activity[]>([]);
+  const [open, setOpen] = useState(false);
+  const [editingActivity, setEditingActivity] = useState<Activity | null>(null);
+
 
   useEffect(() => {
-    fetchActivities(trip._id);
+    fetchActivities(trip._id ?? '');
   }, [trip._id, fetchActivities]);
 
   useEffect(() => {
@@ -67,9 +75,15 @@ const TripSchedulePage: React.FC = () => {
     navigate("/AddActivities", { state: { trip } });
   };
 
-  const handleEdit = (activityId: string) => {
-    // Edit logic
-    console.log("Edit activity with ID:", activityId);
+  const handleEdit = (activity: Activity) => {
+    setEditingActivity(activity);
+    setOpen(true);
+    console.log("Edit activity with ID:", activity._id);
+  };
+
+  const handleClose = async () => {
+    setOpen(false);
+    await fetchActivities(trip._id ?? '')
   };
 
   const handleDelete = async (activityId: string) => {
@@ -78,7 +92,7 @@ const TripSchedulePage: React.FC = () => {
         method: "DELETE",
       });
       if (response.ok) {
-        fetchActivities(trip._id); // Refresh activities list
+        fetchActivities(trip._id ?? ''); // Refresh activities list
       } else {
         console.error("Failed to delete activity");
       }
@@ -140,10 +154,11 @@ const TripSchedulePage: React.FC = () => {
                       <Typography>{activity.name}</Typography>
                     </TableCell>
                     <TableCell align="center">
-                      <IconButton color="primary" onClick={() => handleEdit(activity._id)}>
+                      <IconButton color="primary" onClick={() => handleEdit(activity ?? '')}>
                         <Edit />
+
                       </IconButton>
-                      <IconButton color="secondary" onClick={() => handleDelete(activity._id)}>
+                      <IconButton color="secondary" onClick={() => handleDelete(activity._id ?? '')}>
                         <Delete />
                       </IconButton>
                     </TableCell>
@@ -158,6 +173,14 @@ const TripSchedulePage: React.FC = () => {
               )}
             </TableBody>
           </Table>
+          <Dialog open={open} onClose={handleClose} maxWidth="lg" fullWidth>
+            <DialogTitle>Edit Your Activity</DialogTitle>
+            <DialogContent>
+              <CreateActivityPage trip={trip} activityToEdit={editingActivity} onClose={handleClose} />
+            </DialogContent>
+            <DialogActions>
+            </DialogActions>
+          </Dialog>
         </TableContainer>
       )}
     </Container>
