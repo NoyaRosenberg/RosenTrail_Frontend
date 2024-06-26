@@ -34,7 +34,7 @@ const TripParticipants = ({ tripId }: TripParticipantsProps) => {
           color: "#666",
           backgroundColor: "white",
           fontSize: "1rem",
-          marginRight: "10px",
+          marginRight: "5px",
         }}
       />
       <Box display="flex">

@@ -23,7 +23,7 @@ type TripDialogProps = {
   price: number;
   open: boolean;
   onClose: () => void;
-  onDelete: () => void; 
+  onDelete: () => void;
 };
 
 const TripDialog: React.FC<TripDialogProps> = ({
@@ -31,7 +31,7 @@ const TripDialog: React.FC<TripDialogProps> = ({
   price,
   open,
   onClose,
-  onDelete, 
+  onDelete,
 }) => {
   const navigate = useNavigate();
 
@@ -49,8 +49,8 @@ const TripDialog: React.FC<TripDialogProps> = ({
         method: "DELETE",
       });
       if (response.ok) {
-        onDelete(); 
-        onClose(); 
+        onDelete();
+        onClose();
       } else {
         console.error("Failed to delete trip");
       }
@@ -94,9 +94,9 @@ const TripDialog: React.FC<TripDialogProps> = ({
           </Grid>
           <Grid item xs={12} sm={7}>
             <Stack
-              spacing={8}
-              paddingTop="40px"
-              paddingRight="40px"
+              spacing={15}
+              paddingTop="50px"
+              paddingRight="80px"
               paddingBottom="40px"
             >
               <Stack spacing={3}>
@@ -112,15 +112,12 @@ const TripDialog: React.FC<TripDialogProps> = ({
                     {trip.description}
                   </Typography>
                 </Stack>
-                <TripParticipants tripId={trip._id!}/>
+                <TripParticipants tripId={trip._id!} />
               </Stack>
               <Stack>
                 <Stack spacing={5}>
-                  <Box display="flex" alignItems="center" gap="30px">
-                    <Typography variant="h5" component="p">
-                      {price} €
-                    </Typography>
-                    <Button
+                  <Box display="flex" alignItems="center" gap="40px">
+                  <Button
                       variant="contained"
                       color="primary"
                       onClick={showSchedule}
@@ -128,21 +125,24 @@ const TripDialog: React.FC<TripDialogProps> = ({
                     >
                       Schedule
                     </Button>
+                    <Typography variant="h6" component="p" color="#666">
+                      {price} €
+                    </Typography>
                   </Box>
                   <Stack>
                     <Divider />
                     <Box display="flex" gap={3}>
-                      <Box className="icon-text">
-                        <Typography variant="body1">Delete Trip</Typography>
-                        <IconButton color="secondary" onClick={handleDelete}>
-                          <Delete />
+                    <Box className="icon-text">
+                        <Typography variant="body1">Edit Trip</Typography>
+                        <IconButton color="primary" onClick={handleEdit}>
+                          <Edit />
                         </IconButton>
                       </Box>
                       <Divider orientation="vertical" flexItem />
                       <Box className="icon-text">
-                        <Typography variant="body1">Edit Trip</Typography>
-                        <IconButton color="primary" onClick={handleEdit}>
-                          <Edit />
+                        <Typography variant="body1">Delete Trip</Typography>
+                        <IconButton color="error" onClick={handleDelete}>
+                          <Delete />
                         </IconButton>
                       </Box>
                     </Box>
