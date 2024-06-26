@@ -4,13 +4,13 @@ import { useAuth } from "../contexts/AuthProvider";
 import ProtectedRoute from "./ProtectedRoute";
 import ActivitiesPage from "../components/ActivitiesPage/ActivitiesPage";
 import CreateTripPage from "../components/CreateTripPage/CreateTripPage";
-import MainPage from "../components/MainPage";
 import SignInPage from "../components/SignInPage/SignInPage";
 import SignUpPage from "../components/SignUpPage/SignUpPage";
 import TripsPage from "../components/TripsPage/TripsPage";
 import ProfilePage from "../components/ProfilePage/ProfilePage"; 
 import { CircularProgress } from "@mui/material";
 import SchedulePage from "../components/SchedulePage/SchedulePage";
+import MainPage from "../components/MainPage/MainPage";
 
 const AppRoutes: React.FC = () => {
   const { isLoggedIn, loading } = useAuth();
