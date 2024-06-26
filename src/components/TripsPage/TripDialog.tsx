@@ -4,28 +4,26 @@ import {
   Button,
   IconButton,
   Box,
-  Avatar,
   Grid,
-  Tooltip,
-  Chip,
   Dialog,
   DialogContent,
   Stack,
   Divider,
 } from "@mui/material";
-import { Delete, Edit, Schedule } from "@mui/icons-material";
+import { Delete, Edit } from "@mui/icons-material";
 import CloseIcon from "@mui/icons-material/Close";
 import "../../styles/Forms.css";
-import "../../styles/TripPage.css";
+import "../../styles/TripDialog.css";
 import { Trip } from "../../services/trip.service";
 import { useNavigate } from "react-router-dom";
+import TripParticipants from "./TripParticipants";
 
 type TripDialogProps = {
   trip: Trip;
   price: number;
   open: boolean;
   onClose: () => void;
-  onDelete: () => void; 
+  onDelete: () => void;
 };
 
 const TripDialog: React.FC<TripDialogProps> = ({
@@ -33,7 +31,7 @@ const TripDialog: React.FC<TripDialogProps> = ({
   price,
   open,
   onClose,
-  onDelete, 
+  onDelete,
 }) => {
   const navigate = useNavigate();
 
@@ -51,8 +49,8 @@ const TripDialog: React.FC<TripDialogProps> = ({
         method: "DELETE",
       });
       if (response.ok) {
-        onDelete(); 
-        onClose(); 
+        onDelete();
+        onClose();
       } else {
         console.error("Failed to delete trip");
       }
@@ -96,9 +94,9 @@ const TripDialog: React.FC<TripDialogProps> = ({
           </Grid>
           <Grid item xs={12} sm={7}>
             <Stack
-              spacing={8}
-              paddingTop="40px"
-              paddingRight="40px"
+              spacing={15}
+              paddingTop="50px"
+              paddingRight="80px"
               paddingBottom="40px"
             >
               <Stack spacing={3}>
@@ -114,35 +112,12 @@ const TripDialog: React.FC<TripDialogProps> = ({
                     {trip.description}
                   </Typography>
                 </Stack>
-                <Box display="flex" alignItems="center" gap="2">
-                  <Chip
-                    key="participants:"
-                    label="Participants:"
-                    variant="outlined"
-                    sx={{
-                      borderColor: 'primary.main',
-                      color: '#666',
-                      backgroundColor: 'white',
-                      fontSize: '1rem',
-                      marginRight: '10px'
-                    }}
-                  />
-                  {trip.participantsId?.map((participant, index) => (
-                    <Tooltip title={participant} key={index}>
-                      <Avatar className="trip-avatar">
-                        {participant.charAt(0).toUpperCase()}
-                      </Avatar>
-                    </Tooltip>
-                  ))}
-                </Box>
+                <TripParticipants tripId={trip._id!} />
               </Stack>
               <Stack>
                 <Stack spacing={5}>
-                  <Box display="flex" alignItems="center" gap="105px">
-                    <Typography variant="h5" component="p">
-                      {price} €
-                    </Typography>
-                    <Button
+                  <Box display="flex" alignItems="center" gap="40px">
+                  <Button
                       variant="contained"
                       color="primary"
                       onClick={showSchedule}
@@ -150,21 +125,24 @@ const TripDialog: React.FC<TripDialogProps> = ({
                     >
                       Schedule
                     </Button>
+                    <Typography variant="h6" component="p" color="#666">
+                      {price} €
+                    </Typography>
                   </Box>
                   <Stack>
                     <Divider />
-                    <Box display="flex" justifyContent="center" alignItems="center" gap={2}>
-                      <Box display="flex" alignItems="center" gap={1}>
-                        <Typography variant="body1">Delete Trip</Typography>
-                        <IconButton color="secondary" onClick={handleDelete}>
-                          <Delete />
-                        </IconButton>
-                      </Box>
-                      <Divider orientation="vertical" variant="middle" flexItem />
-                      <Box display="flex" alignItems="center" gap={1}>
+                    <Box display="flex" gap={3}>
+                    <Box className="icon-text">
                         <Typography variant="body1">Edit Trip</Typography>
                         <IconButton color="primary" onClick={handleEdit}>
                           <Edit />
+                        </IconButton>
+                      </Box>
+                      <Divider orientation="vertical" flexItem />
+                      <Box className="icon-text">
+                        <Typography variant="body1">Delete Trip</Typography>
+                        <IconButton color="error" onClick={handleDelete}>
+                          <Delete />
                         </IconButton>
                       </Box>
                     </Box>

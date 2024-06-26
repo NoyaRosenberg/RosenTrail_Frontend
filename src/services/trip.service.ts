@@ -13,32 +13,53 @@ export interface Trip {
   imgUrl?: string;
 }
 
+export interface User {
+  _id: string;
+  username: string;
+  email: string;
+  imageData: string;
+  gender: string;
+  age: number;
+  phoneNumber: number;
+}
+
 class TripService {
   private baseURL: string = "http://localhost:3000/trips/";
 
   async getUserTrips(userId: string): Promise<Trip[] | void> {
     try {
-      const response = await axios.get<Trip[]>(`${this.baseURL}?participant=${userId}`);
+      const response = await axios.get<Trip[]>(
+        `${this.baseURL}?participant=${userId}`
+      );
       return response.data;
     } catch (error) {
       this.handleError(error);
     }
   }
 
-  async CreateTrip(trip: Trip): Promise<Trip | undefined> {
+  async getTripParticipants(tripId: string): Promise<User[] | undefined> {
+    try {
+      const response = await axios.get<User[]>(`${this.baseURL}/${tripId}/participants`);
+      return response.data;
+    } catch (error) {
+      this.handleError(error);
+    }
+  }
+
+  async createTrip(trip: Trip): Promise<Trip | undefined> {
     const response = await fetch(`${this.baseURL}/create-trip`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(trip),
-      });
-      if (response.ok) {
-        return response.json();
-      } else {
-        this.handleError(response);
-      }
-}
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(trip),
+    });
+    if (response.ok) {
+      return response.json();
+    } else {
+      this.handleError(response);
+    }
+  }
 
   handleError(error: unknown): void {
     if (axios.isAxiosError(error) && error.response) {
