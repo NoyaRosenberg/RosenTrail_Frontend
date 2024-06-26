@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Box, TextField, Button, Grid, Autocomplete } from "@mui/material";
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ContactInfo from "../Forms/ContactInfo";
 import FormHeader from "../Forms/FormHeader";
@@ -107,7 +107,7 @@ const CreateTripForm: React.FC = () => {
               renderInput={(params) => <TextField {...params} fullWidth />}
             />
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={12}>
             <Autocomplete
               multiple
               id="tags-filled"
@@ -117,7 +117,7 @@ const CreateTripForm: React.FC = () => {
               renderInput={(params) => (
                 <TextField
                   {...params}
-                  variant="filled"
+                  variant="outlined"
                   label="Destinations"
                   placeholder="Destinations"
                 />
@@ -134,7 +134,7 @@ const CreateTripForm: React.FC = () => {
               renderInput={(params) => (
                 <TextField
                   {...params}
-                  variant="filled"
+                  variant="outlined"
                   label="Participants"
                   placeholder="Participants"
                 />
