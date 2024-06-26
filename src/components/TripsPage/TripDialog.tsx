@@ -4,10 +4,7 @@ import {
   Button,
   IconButton,
   Box,
-  Avatar,
   Grid,
-  Tooltip,
-  Chip,
   Dialog,
   DialogContent,
   Stack,
@@ -19,6 +16,7 @@ import "../../styles/Forms.css";
 import "../../styles/TripDialog.css";
 import { Trip } from "../../services/trip.service";
 import { useNavigate } from "react-router-dom";
+import TripParticipants from "./TripParticipants";
 
 type TripDialogProps = {
   trip: Trip;
@@ -114,27 +112,7 @@ const TripDialog: React.FC<TripDialogProps> = ({
                     {trip.description}
                   </Typography>
                 </Stack>
-                <Box display="flex" alignItems="center" gap="2">
-                  <Chip
-                    key="participants:"
-                    label="Participants:"
-                    variant="outlined"
-                    sx={{
-                      borderColor: 'primary.main',
-                      color: '#666',
-                      backgroundColor: 'white',
-                      fontSize: '1rem',
-                      marginRight: '10px'
-                    }}
-                  />
-                  {trip.participantsId?.map((participant, index) => (
-                    <Tooltip title={participant} key={index}>
-                      <Avatar className="trip-avatar">
-                        {participant.charAt(0).toUpperCase()}
-                      </Avatar>
-                    </Tooltip>
-                  ))}
-                </Box>
+                <TripParticipants tripId={trip._id!}/>
               </Stack>
               <Stack>
                 <Stack spacing={5}>
