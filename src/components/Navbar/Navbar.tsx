@@ -17,31 +17,31 @@ const Navbar = ({ isUserLoggedIn }: NavbarProps) => {
         WonderPlan
       </Typography>
       <div>
-        <Box display="flex" alignItems="center" gap="5">
-          <Button
-            variant="outlined"
-            sx={{ height: "90%", paddingRight: "30px", paddingLeft: "30px" }}
-            onClick={() => navigate("/trips")}
+        {!isUserLoggedIn ? (
+          <ButtonGroup
+            variant="text"
+            className="button-group"
+            aria-label="Basic button group"
           >
-            My Trips
-          </Button>
-          {!isUserLoggedIn ? (
-            <ButtonGroup
-              variant="text"
-              className="button-group"
-              aria-label="Basic button group"
+            <Button component={Link} to="/signin">
+              Login
+            </Button>
+            <Button component={Link} to="/register">
+              Sign Up
+            </Button>
+          </ButtonGroup>
+        ) : (
+          <Box display="flex" alignItems="center" gap="5">
+            <Button
+              variant="outlined"
+              sx={{ height: "90%", paddingRight: "30px", paddingLeft: "30px" }}
+              onClick={() => navigate("/trips")}
             >
-              <Button component={Link} to="/signin">
-                Login
-              </Button>
-              <Button component={Link} to="/register">
-                Sign Up
-              </Button>
-            </ButtonGroup>
-          ) : (
+              My Trips
+            </Button>
             <AccountMenu />
-          )}
-        </Box>
+          </Box>
+        )}
       </div>
     </Box>
   );
