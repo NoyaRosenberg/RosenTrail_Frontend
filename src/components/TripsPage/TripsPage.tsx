@@ -55,7 +55,7 @@ const TripsPage = () => {
         width: "68%",
       }}
     >
-      <Stack spacing={2} alignItems="center">
+      <Stack spacing={2} alignItems="center" width="100%">
         <Typography variant="h4" gutterBottom>
           My Wonderful Trips
         </Typography>
