@@ -50,7 +50,7 @@ const TripsPage = () => {
         justifyContent: "center",
         alignItems: "center",
         gap: 6,
-        paddingTop: "14px",
+        paddingTop: "50px",
         paddingBottom: "20px",
         width: "68%",
       }}

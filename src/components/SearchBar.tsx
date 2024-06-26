@@ -7,6 +7,7 @@ import {
 import { useState, ChangeEvent } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import { StyledTextField } from "../theme";
+import React from "react";
 
 export interface SearchBarProps {
   placeholder: string;
