@@ -67,7 +67,7 @@ const CreateTripForm: React.FC = () => {
           destination ? destination.trim() : ""
         ),
       };
-      await tripService.CreateTrip(cleanedTrip);
+      await tripService.createTrip(cleanedTrip);
       toast.success("Trip created successfully");
       fetchTrips(); 
       navigate("/trips");
