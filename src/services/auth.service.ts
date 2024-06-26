@@ -2,8 +2,13 @@ import axios from "axios";
 
 export interface AuthData {
   userId: string;
+  username: string;
   email: string;
+  imageData: string; 
   token: string;
+  gender: string;
+  age: number;
+  phoneNumber: number;
 }
 
 class AuthService {
@@ -12,7 +17,7 @@ class AuthService {
   async login(email: string, password: string): Promise<AuthData | void> {
     try {
       const response = await axios.post<AuthData>(`${this.baseURL}/login`, {
-        email: email,
+        email,
         password,
       });
       return response.data;
@@ -30,9 +35,26 @@ class AuthService {
     }
   }
 
-  async signUp(email: string, password: string): Promise<void> {
+  async googleSignUp(token: string): Promise<AuthData | void> {
     try {
-      await axios.post(`${this.baseURL}/signup`, { email: email, password });
+      const response = await axios.post(`${this.baseURL}/google-signup`, { token });
+      return response.data;
+    } catch (error) {
+      this.handleError(error);
+    }
+  }
+
+  async signUp(username: string, email: string, age: string, phoneNumber: string, password: string, imageData: string): Promise<AuthData | void> {
+    try {
+      const response = await axios.post<AuthData>(`${this.baseURL}/signup`, {
+        username,
+        email,
+        age,
+        phoneNumber,
+        password,
+        imageData
+      });
+      return response.data;
     } catch (error) {
       this.handleError(error);
     }

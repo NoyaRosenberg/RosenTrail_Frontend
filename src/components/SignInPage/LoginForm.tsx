@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, TextField, Button } from "@mui/material";
+import { Box, TextField, Button, Typography, Link } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import {
   GoogleOAuthProvider,
@@ -23,7 +23,6 @@ const LoginForm = () => {
 
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
-    console.log(JSON.stringify({ email, password }));
 
     try {
       const authData = await authService.login(email, password);
@@ -93,6 +92,11 @@ const LoginForm = () => {
           </Box>
         </Box>
         {error && <ErrorMessage errorMessage={error} />}
+        <Box sx={{ textAlign: "center", marginTop: 2 }}>
+          <Typography variant="body2">
+            Don't have an account? <Link href="/register">Sign Up</Link>
+          </Typography>
+        </Box>
         <ContactInfo />
       </Box>
     </GoogleOAuthProvider>

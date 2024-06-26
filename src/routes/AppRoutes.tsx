@@ -1,5 +1,5 @@
 import React from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "../contexts/AuthProvider";
 import ProtectedRoute from "./ProtectedRoute";
 import ActivitiesPage from "../components/ActivitiesPage/ActivitiesPage";
@@ -8,14 +8,16 @@ import MainPage from "../components/MainPage";
 import SignInPage from "../components/SignInPage/SignInPage";
 import SignUpPage from "../components/SignUpPage/SignUpPage";
 import TripsPage from "../components/TripsPage/TripsPage";
+import ProfilePage from "../components/ProfilePage/ProfilePage"; 
 import { CircularProgress } from "@mui/material";
-import TripPage from "../components/TripPage/TripPage";
+import SchedulePage from "../components/SchedulePage/SchedulePage";
 
 const AppRoutes: React.FC = () => {
   const { isLoggedIn, loading } = useAuth();
+  const location = useLocation();
 
   if (loading) {
-    return <CircularProgress />; 
+    return <CircularProgress />;
   }
 
   if (location.pathname === '/' && isLoggedIn) {
@@ -48,6 +50,29 @@ const AppRoutes: React.FC = () => {
         element={
           <ProtectedRoute>
             <ActivitiesPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/schedule"
+        element={
+          <ProtectedRoute>
+            <SchedulePage />
+          </ProtectedRoute>
+        }
+      />      <Route 
+        path="/profile" 
+        element={
+          <ProtectedRoute>
+            <ProfilePage />
+          </ProtectedRoute>
+        } 
+      />
+      <Route
+        path="/schedule"
+        element={
+          <ProtectedRoute>
+            <SchedulePage />
           </ProtectedRoute>
         }
       />

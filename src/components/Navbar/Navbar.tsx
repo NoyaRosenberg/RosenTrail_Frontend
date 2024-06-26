@@ -1,7 +1,8 @@
+import React from "react";
 import { Box, Typography, ButtonGroup, Button } from "@mui/material";
 import { Link } from "react-router-dom";
 import AccountMenu from "./AccountMenu";
-import React from "react";
+import '../../styles/Navbar.css'; 
 
 export interface NavbarProps {
   isUserLoggedIn: boolean;
@@ -9,35 +10,27 @@ export interface NavbarProps {
 
 const Navbar = ({ isUserLoggedIn }: NavbarProps) => {
   return (
-    <Box
-      sx={{
-        padding: "1rem",
-        width: "100%",
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-      }}
-    >
+    <Box className="navbar-container">
       <Typography
         variant="h5"
         component="a"
         href=""
-        sx={{ textDecoration: "none", color: "black", cursor: "pointer"}}
+        className="navbar-title"
       >
         WonderPlan
       </Typography>
       <div>
         {!isUserLoggedIn ? (
-          <ButtonGroup variant="text" aria-label="Basic button group">
-            <Button component={Link} to="/signin" sx={{ fontWeight: "bold" }}>
+          <ButtonGroup variant="text" className="button-group" aria-label="Basic button group">
+            <Button component={Link} to="/signin">
               Login
             </Button>
-            <Button component={Link} to="/register" sx={{ fontWeight: "bold" }}>
+            <Button component={Link} to="/register">
               Sign Up
             </Button>
           </ButtonGroup>
         ) : (
-          <AccountMenu/>
+          <AccountMenu />
         )}
       </div>
     </Box>

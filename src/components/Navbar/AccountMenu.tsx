@@ -9,13 +9,14 @@ import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
+import TravelExplore from '@mui/icons-material/TravelExplore'; // Import My Trips icon
 import { useNavigate } from "react-router-dom";
 import { useAuth } from '../../contexts/AuthProvider';
 
 const AccountMenu = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
-  const { logout } = useAuth();
+  const { authData, logout, refreshAuthData } = useAuth();
   const navigate = useNavigate();
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -24,6 +25,15 @@ const AccountMenu = () => {
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const navigateToProfile = () => {
+    navigate('/profile');
+  };
+
+  const navigateToMyTrips = () => {
+    refreshAuthData(); // Refresh authData before navigation
+    window.location.href = '/trips';
   };
 
   const logoutUser = () => {
@@ -43,7 +53,11 @@ const AccountMenu = () => {
             aria-haspopup="true"
             aria-expanded={open ? 'true' : undefined}
           >
-            <Avatar sx={{ width: 32, height: 32 }}>M</Avatar>
+            {authData?.imageData ? (
+              <Avatar src={authData.imageData} sx={{ width: 32, height: 32 }} />
+            ) : (
+              <Avatar sx={{ width: 32, height: 32 }}>{authData?.username?.charAt(0)}</Avatar>
+            )}
           </IconButton>
         </Tooltip>
       </Box>
@@ -80,13 +94,20 @@ const AccountMenu = () => {
                 zIndex: 0,
               },
             },
-          } 
+          }
         }}
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        <MenuItem onClick={handleClose}>
-          <Avatar /> Profile
+        <MenuItem onClick={navigateToProfile}>
+          <Avatar src={authData?.imageData} sx={{ width: 32, height: 32 }} />
+          My Profile 
+        </MenuItem>
+        <MenuItem onClick={navigateToMyTrips}>
+          <ListItemIcon>
+            <TravelExplore fontSize="small" />
+          </ListItemIcon>
+          My Trips
         </MenuItem>
         <Divider />
         <MenuItem onClick={handleClose}>
@@ -104,6 +125,6 @@ const AccountMenu = () => {
       </Menu>
     </React.Fragment>
   );
-}
+};
 
 export default AccountMenu;

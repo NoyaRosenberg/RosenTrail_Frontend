@@ -1,38 +1,80 @@
-import { useState } from "react";
-import { Box, TextField, Button, Grid } from "@mui/material";
+import React, { useState } from 'react';
+import { Box, TextField, Button, Grid, Autocomplete } from "@mui/material";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import ContactInfo from "../Forms/ContactInfo";
 import FormHeader from "../Forms/FormHeader";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { useNavigate } from "react-router-dom";
+import { useTrips } from "../../contexts/TripProvider";
 import "../../styles/Forms.css";
-import React from 'react';
+import tripService from '../../services/trip.service';
 
-const CreateTripForm = () => {
+const CreateTripForm: React.FC = () => {
+  const { fetchTrips } = useTrips();
   const [trip, setTrip] = useState({
     startDate: new Date(),
     endDate: new Date(),
-    destination: "",
-    city: "",
-    participants: [],
+    destinations: [] as string[],
+    participants: [] as string[],
+    ownerId: JSON.parse(localStorage.getItem('currentUser') || '{}')?.userId || '',
   });
+  const navigate = useNavigate();
 
-  const handleChange = (e: { target: { name: string; value: unknown } }) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setTrip({
-      ...trip,
-      [name]: value,
-    });
+    setTrip((prevTrip) => ({
+      ...prevTrip,
+      [name]: value.split(","),
+    }));
   };
 
   const handleDateChange = (date: Date | null, name: string) => {
-    setTrip({
-      ...trip,
+    setTrip((prevTrip) => ({
+      ...prevTrip,
       [name]: date,
-    });
+    }));
   };
 
-  const handleSave = () => {
-    console.log("Trip details saved:", trip);
+  const updateParticipants = (event: any, newVal: string[]) => {
+    setTrip((prevTrip) => ({
+      ...prevTrip,
+      participants: newVal,
+    }));
+  };
+
+  const updateDestinations = (event: any, newVal: string[]) => {
+    setTrip((prevTrip) => ({
+      ...prevTrip,
+      destinations: newVal,
+    }));
+  };
+
+  const handleSave = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!trip || !trip.participants || !trip.destinations) {
+      console.error("Invalid trip data:", trip);
+      return;
+    }
+    try {
+      const cleanedTrip = {
+        ...trip,
+        participants: trip.participants.map((participant: string) =>
+          participant ? participant.trim() : ""
+        ),
+        destinations: trip.destinations.map((destination: string) =>
+          destination ? destination.trim() : ""
+        ),
+      };
+      await tripService.CreateTrip(cleanedTrip);
+      toast.success("Trip created successfully");
+      fetchTrips(); 
+      navigate("/trips");
+    } catch (error) {
+      toast.error("Failed to create trip");
+      console.error("Failed to save trip:", error);
+    }
   };
 
   return (
@@ -66,33 +108,37 @@ const CreateTripForm = () => {
             />
           </Grid>
           <Grid item xs={6}>
-            <TextField
-              type="text"
-              name="destination"
-              label="Destination"
-              value={trip.destination}
-              onChange={handleChange}
-              fullWidth
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              type="text"
-              name="city"
-              label="City"
-              value={trip.city}
-              onChange={handleChange}
-              fullWidth
+            <Autocomplete
+              multiple
+              id="tags-filled"
+              freeSolo
+              onChange={updateDestinations}
+              options={[]}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant="filled"
+                  label="Destinations"
+                  placeholder="Destinations"
+                />
+              )}
             />
           </Grid>
           <Grid item xs={12}>
-            <TextField
-              type="text"
-              name="participants"
-              label="Participants"
-              value={trip.participants}
-              onChange={handleChange}
-              fullWidth
+            <Autocomplete
+              multiple
+              id="tags-filled"
+              freeSolo
+              onChange={updateParticipants}
+              options={[]}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant="filled"
+                  label="Participants"
+                  placeholder="Participants"
+                />
+              )}
             />
           </Grid>
           <Grid item xs={12}>
