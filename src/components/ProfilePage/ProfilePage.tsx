@@ -11,7 +11,7 @@ const ProfilePage = () => {
     userId: authData?.userId || '',
     username: '',
     email: '',
-    number: '',
+    phoneNumber: '',
     gender: '',
     age: '',
     imageData: ''
@@ -34,7 +34,7 @@ const ProfilePage = () => {
         userId: data._id || '',
         username: data.username || '',
         email: data.email || '',
-        number: data.phoneNumber || '',
+        phoneNumber: data.phoneNumber || '',
         gender: data.gender || '',
         age: data.age || '',
         imageData: data.imageData || ''
@@ -101,7 +101,6 @@ const ProfilePage = () => {
   const handleSave = async () => {
     try {
       const updatedUserData = { ...userData };
-
       if (!userData.userId) {
         setErrorMessage('User ID is missing');
         return;
@@ -109,10 +108,12 @@ const ProfilePage = () => {
 
       const response = await axios.put(`http://localhost:3000/users/${userData.userId}`, updatedUserData);
       const newUserData = {
-        ...response.data,
-        userId: response.data._id || userData.userId, // Preserve userId
+        ...authData,
+        ...response.data
       };
-      setAuthData(newUserData);
+      
+      localStorage.setItem('currentUser', JSON.stringify(newUserData)); 
+      setAuthData(newUserData); 
       setUserData(newUserData);
       setSuccessMessage('Profile updated successfully');
       setErrorMessage('');
@@ -145,9 +146,9 @@ const ProfilePage = () => {
               variant="outlined"
             />
             <TextField
-              label="Number"
-              name="number"
-              value={userData.number}
+              label="Phone Number"
+              name="phoneNumber"
+              value={userData.phoneNumber}
               onChange={handleChange}
               fullWidth
               variant="outlined"

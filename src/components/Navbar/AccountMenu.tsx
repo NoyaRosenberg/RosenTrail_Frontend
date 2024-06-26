@@ -27,12 +27,13 @@ const AccountMenu = () => {
   };
 
   const navigateToProfile = () => {
+    refreshAuthData();
     navigate('/profile');
   };
 
   const navigateToMyTrips = () => {
     refreshAuthData(); // Refresh authData before navigation
-    window.location.href = '/trips';
+    window.location.assign('/trips'); // Force a full refresh
   };
 
   const logoutUser = () => {
