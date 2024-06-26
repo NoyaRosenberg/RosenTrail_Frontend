@@ -112,8 +112,8 @@ const ProfilePage = () => {
         ...response.data
       };
       
-      localStorage.setItem('currentUser', JSON.stringify(newUserData)); // Update local storage
-      setAuthData(newUserData); // Update context
+      localStorage.setItem('currentUser', JSON.stringify(newUserData)); 
+      setAuthData(newUserData); 
       setUserData(newUserData);
       setSuccessMessage('Profile updated successfully');
       setErrorMessage('');
