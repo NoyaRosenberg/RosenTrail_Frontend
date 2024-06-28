@@ -17,6 +17,7 @@ import "../../styles/TripDialog.css";
 import { Trip } from "../../services/trip.service";
 import { useNavigate } from "react-router-dom";
 import TripParticipants from "./TripParticipants";
+import dayjs from "dayjs";
 
 type TripDialogProps = {
   trip: Trip;
@@ -61,6 +62,10 @@ const TripDialog: React.FC<TripDialogProps> = ({
     } catch (error) {
       console.error("Failed to delete trip:", error);
     }
+  };
+
+  const formatDate = (date) => {
+    return dayjs(date).format("DD/MM/YYYY");
   };
 
   return (
@@ -115,8 +120,26 @@ const TripDialog: React.FC<TripDialogProps> = ({
                   >
                     {trip.description}
                   </Typography>
+                  
                 </Stack>
+                <Typography variant="body1" sx={{ fontSize: 16, color: "#666" }}>
+                    {formatDate(trip.startDate)} - {formatDate(trip.endDate)}
+                  </Typography>
                 <TripParticipants tripId={trip._id!} />
+                {trip.unregisteredParticipants && trip.unregisteredParticipants.length > 0 && (
+                  <Box>
+                    <Typography variant="body2" color="textSecondary">
+                      Unregistered Participants:
+                    </Typography>
+                    <Box display="flex" flexWrap="wrap" gap="10px">
+                      {trip.unregisteredParticipants.map((participant, index) => (
+                        <Typography key={index} variant="body1">
+                          {participant}
+                        </Typography>
+                      ))}
+                    </Box>
+                  </Box>
+                )}
               </Stack>
               <Stack>
                 <Stack spacing={5}>
