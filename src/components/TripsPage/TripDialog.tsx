@@ -138,7 +138,7 @@ const TripDialog: React.FC<TripDialogProps> = ({
                           <Edit />
                         </IconButton>
                       </Box>
-                      <Divider orientation="vertical" flexItem />
+                      <Divider orientation="vertical" variant="middle" flexItem />
                       <Box className="icon-text">
                         <Typography variant="body1">Delete Trip</Typography>
                         <IconButton color="error" onClick={handleDelete}>

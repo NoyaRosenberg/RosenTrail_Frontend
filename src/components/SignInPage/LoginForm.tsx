@@ -6,7 +6,6 @@ import {
   GoogleLogin,
   GoogleCredentialResponse,
 } from "@react-oauth/google";
-import ContactInfo from "../Forms/ContactInfo";
 import FormHeader from "../Forms/FormHeader";
 import authService, { AuthData } from "../../services/auth.service";
 import ErrorMessage from "../Forms/ErrorMessage";
@@ -97,7 +96,6 @@ const LoginForm = () => {
             Don't have an account? <Link href="/register">Sign Up</Link>
           </Typography>
         </Box>
-        <ContactInfo />
       </Box>
     </GoogleOAuthProvider>
   );
