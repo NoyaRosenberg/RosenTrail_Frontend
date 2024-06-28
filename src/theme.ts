@@ -9,16 +9,33 @@ const theme = createTheme({
     },
   },
   typography: {
-    fontFamily: 'Quicksand, sans-serif',
+    fontFamily: "Quicksand, sans-serif",
   },
   components: {
     MuiOutlinedInput: {
       styleOverrides: {
         root: {
-          borderRadius: '8px',
+          borderRadius: "8px",
         },
       },
     },
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          color: "white",
+        },
+        outlined: {
+          color: lightGreen[500],
+        },
+      },
+    },
+    MuiButtonGroup: {
+      styleOverrides: {
+        grouped: {
+          color: lightGreen[500]
+        }
+      }
+    }
   },
 });
 
@@ -29,7 +46,7 @@ export const StyledTextField = styled(TextField)({
   },
   "&.search .MuiOutlinedInput-input": {
     padding: "12px 0",
-  }
+  },
 });
 
 export default theme;
