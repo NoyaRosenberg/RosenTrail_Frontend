@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Box, TextField, Button, Grid, Autocomplete } from "@mui/material";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import ContactInfo from "../Forms/ContactInfo";
 import FormHeader from "../Forms/FormHeader";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
@@ -147,7 +146,6 @@ const CreateTripForm: React.FC = () => {
             </Button>
           </Grid>
         </Grid>
-        <ContactInfo />
       </Box>
     </LocalizationProvider>
   );
