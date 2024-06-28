@@ -10,7 +10,7 @@ import {
   Stack,
   Divider,
 } from "@mui/material";
-import { Delete, Edit } from "@mui/icons-material";
+import { Delete, Edit, AddCircle } from "@mui/icons-material";
 import CloseIcon from "@mui/icons-material/Close";
 import "../../styles/Forms.css";
 import "../../styles/TripDialog.css";
@@ -38,6 +38,10 @@ const TripDialog: React.FC<TripDialogProps> = ({
   const showSchedule = () => {
     navigate("/schedule", { state: { trip } });
   };
+
+  const handleAddActivity = () => {
+    navigate("/AddActivities", { state: { trip } });
+  }
 
   const handleEdit = () => {
     // Edit logic
@@ -117,7 +121,7 @@ const TripDialog: React.FC<TripDialogProps> = ({
               <Stack>
                 <Stack spacing={5}>
                   <Box display="flex" alignItems="center" gap="40px">
-                  <Button
+                    <Button
                       variant="contained"
                       color="primary"
                       onClick={showSchedule}
@@ -131,14 +135,29 @@ const TripDialog: React.FC<TripDialogProps> = ({
                   </Box>
                   <Stack>
                     <Divider />
-                    <Box display="flex" gap={3}>
-                    <Box className="icon-text">
+                    <Box display="flex" justifyContent="center" gap={2}>
+                      <Box className="icon-text">
+                        <Typography variant="body1">Add Activity</Typography>
+                        <IconButton color="primary" onClick={handleAddActivity}>
+                          <AddCircle />
+                        </IconButton>
+                      </Box>
+                      <Divider
+                        orientation="vertical"
+                        variant="middle"
+                        flexItem
+                      />
+                      <Box className="icon-text">
                         <Typography variant="body1">Edit Trip</Typography>
                         <IconButton color="primary" onClick={handleEdit}>
                           <Edit />
                         </IconButton>
                       </Box>
-                      <Divider orientation="vertical" variant="middle" flexItem />
+                      <Divider
+                        orientation="vertical"
+                        variant="middle"
+                        flexItem
+                      />
                       <Box className="icon-text">
                         <Typography variant="body1">Delete Trip</Typography>
                         <IconButton color="error" onClick={handleDelete}>
