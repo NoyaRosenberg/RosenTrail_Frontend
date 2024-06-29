@@ -19,6 +19,7 @@ import { useNavigate } from "react-router-dom";
 import TripParticipants from "./TripParticipants";
 import EditTripDialog from "./EditTripDialog";
 import { User } from "../../services/user.service";
+import dayjs from "dayjs";
 
 type TripDialogProps = {
   trip: Trip;
@@ -85,6 +86,10 @@ const TripDialog: React.FC<TripDialogProps> = ({
     }
   };
 
+  const formatDate = (date) => {
+    return dayjs(date).format("DD/MM/YYYY");
+  };
+
   return (
     <>
       <Dialog
@@ -121,7 +126,7 @@ const TripDialog: React.FC<TripDialogProps> = ({
             </Grid>
             <Grid item xs={12} sm={7}>
               <Stack
-                spacing={15}
+                spacing={9}
                 paddingTop="50px"
                 paddingRight="80px"
                 paddingBottom="40px"
@@ -139,59 +144,94 @@ const TripDialog: React.FC<TripDialogProps> = ({
                       {trip.description}
                     </Typography>
                   </Stack>
-                  {error && <p>Failed To Fetch Participants</p>}
+                  <Typography
+                    variant="body1"
+                    sx={{ fontSize: 16, color: "#666" }}
+                  >
+                    {formatDate(trip.startDate)} - {formatDate(trip.endDate)}
+                  </Typography>
                   <TripParticipants participants={participants} />
-                </Stack>
-                <Stack>
-                  <Stack spacing={5}>
-                    <Box display="flex" alignItems="center" gap="40px">
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={showSchedule}
-                        sx={{ width: "150px", height: "50px" }}
-                      >
-                        Schedule
-                      </Button>
-                      <Typography variant="h6" component="p" color="#666">
-                        {price} €
-                      </Typography>
-                    </Box>
-                    <Stack>
-                      <Divider />
-                      <Box display="flex" justifyContent="center" gap={2}>
-                        <Box className="icon-text">
-                          <Typography variant="body1">Add Activity</Typography>
-                          <IconButton
-                            color="primary"
-                            onClick={handleAddActivity}
-                          >
-                            <AddCircle />
-                          </IconButton>
-                        </Box>
-                        <Divider
-                          orientation="vertical"
-                          variant="middle"
-                          flexItem
-                        />
-                        <Box className="icon-text">
-                          <Typography variant="body1">Edit Trip</Typography>
-                          <IconButton color="primary" onClick={handleEdit}>
-                            <Edit />
-                          </IconButton>
-                        </Box>
-                        <Divider
-                          orientation="vertical"
-                          variant="middle"
-                          flexItem
-                        />
-                        <Box className="icon-text">
-                          <Typography variant="body1">Delete Trip</Typography>
-                          <IconButton color="error" onClick={handleDelete}>
-                            <Delete />
-                          </IconButton>
+                  {trip.unregisteredParticipants &&
+                    trip.unregisteredParticipants.length > 0 && (
+                      <Box>
+                        <Typography
+                          variant="body2"
+                          color="textSecondary"
+                          component="span"
+                        >
+                          Unregistered Participants:
+                        </Typography>
+                        <Box display="inline" marginLeft="10px">
+                          {trip.unregisteredParticipants.map(
+                            (participant, index) => (
+                              <Typography
+                                key={index}
+                                variant="body1"
+                                component="span"
+                                marginLeft="5px"
+                              >
+                                {participant}
+                              </Typography>
+                            )
+                          )}
                         </Box>
                       </Box>
+                    )}
+                </Stack>
+                <Stack>
+                  <Stack>
+                    <Stack spacing={5}>
+                      <Box display="flex" alignItems="center" gap="40px">
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          onClick={showSchedule}
+                          sx={{ width: "150px", height: "50px" }}
+                        >
+                          Schedule
+                        </Button>
+                        <Typography variant="h6" component="p" color="#666">
+                          {price} €
+                        </Typography>
+                      </Box>
+                      <Stack>
+                        <Divider />
+                        <Box display="flex" justifyContent="center" gap={2}>
+                          <Box className="icon-text">
+                            <Typography variant="body1">
+                              Add Activity
+                            </Typography>
+                            <IconButton
+                              color="primary"
+                              onClick={handleAddActivity}
+                            >
+                              <AddCircle />
+                            </IconButton>
+                          </Box>
+                          <Divider
+                            orientation="vertical"
+                            variant="middle"
+                            flexItem
+                          />
+                          <Box className="icon-text">
+                            <Typography variant="body1">Edit Trip</Typography>
+                            <IconButton color="primary" onClick={handleEdit}>
+                              <Edit />
+                            </IconButton>
+                          </Box>
+                          <Divider
+                            orientation="vertical"
+                            variant="middle"
+                            flexItem
+                          />
+                          <Box className="icon-text">
+                            <Typography variant="body1">Delete Trip</Typography>
+                            <IconButton color="error" onClick={handleDelete}>
+                              <Delete />
+                            </IconButton>
+                          </Box>
+                        </Box>
+                      </Stack>
                     </Stack>
                   </Stack>
                 </Stack>
