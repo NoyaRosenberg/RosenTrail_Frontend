@@ -120,20 +120,20 @@ const TripDialog: React.FC<TripDialogProps> = ({
                   >
                     {trip.description}
                   </Typography>
-                  
+
                 </Stack>
                 <Typography variant="body1" sx={{ fontSize: 16, color: "#666" }}>
-                    {formatDate(trip.startDate)} - {formatDate(trip.endDate)}
-                  </Typography>
+                  {formatDate(trip.startDate)} - {formatDate(trip.endDate)}
+                </Typography>
                 <TripParticipants tripId={trip._id!} />
                 {trip.unregisteredParticipants && trip.unregisteredParticipants.length > 0 && (
                   <Box>
-                    <Typography variant="body2" color="textSecondary">
+                    <Typography variant="body2" color="textSecondary" component="span">
                       Unregistered Participants:
                     </Typography>
-                    <Box display="flex" flexWrap="wrap" gap="10px">
+                    <Box display="inline" marginLeft="10px">
                       {trip.unregisteredParticipants.map((participant, index) => (
-                        <Typography key={index} variant="body1">
+                        <Typography key={index} variant="body1" component="span" marginLeft="5px">
                           {participant}
                         </Typography>
                       ))}
