@@ -1,4 +1,5 @@
 import axios from "axios";
+import { User } from "./user.service";
 
 export interface Trip {
   _id?: string;
@@ -8,19 +9,8 @@ export interface Trip {
   ownerId?: string;
   participantsId?: string[];
   unregisteredParticipants?: string[];
-  activitiesId?: string[];
   description?: string;
   imgUrl?: string;
-}
-
-export interface User {
-  _id: string;
-  username: string;
-  email: string;
-  imageData: string;
-  gender: string;
-  age: number;
-  phoneNumber: number;
 }
 
 class TripService {
@@ -58,6 +48,15 @@ class TripService {
       return response.json();
     } else {
       this.handleError(response);
+    }
+  }
+
+  async updateTrip(trip: Trip): Promise<Trip | undefined> {
+    try {
+      const response = await axios.put<Trip | undefined>(`${this.baseURL}`, {...trip});
+      return response.data;
+    } catch (error) {
+      this.handleError(error);
     }
   }
 

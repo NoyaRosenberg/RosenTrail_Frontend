@@ -7,6 +7,7 @@ interface TripsContextProps {
   loading: boolean;
   error: string | null;
   fetchTrips: () => void;
+  updateTrip: (trip: Trip) => Promise<Trip | undefined>;
 }
 
 const TripsContext = createContext<TripsContextProps | undefined>(undefined);
@@ -32,12 +33,24 @@ export const TripsProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     }
   };
 
+  const updateTrip = async (trip: Trip) => {
+    try {
+      const updatedTrip = await tripService.updateTrip(trip);
+      fetchTrips();
+      setError(null);
+
+      return updatedTrip;
+    } catch (err) {
+      setError("Failed to update trip");
+    }
+  };
+
   useEffect(() => {
     fetchTrips();
   }, [authData, isLoggedIn]);
 
   return (
-    <TripsContext.Provider value={{ trips, loading, error, fetchTrips }}>
+    <TripsContext.Provider value={{ trips, loading, error, fetchTrips, updateTrip }}>
       {children}
     </TripsContext.Provider>
   );
@@ -48,5 +61,6 @@ export const useTrips = (): TripsContextProps => {
   if (!context) {
     throw new Error('useTrips must be used within a TripsProvider');
   }
+
   return context;
 };

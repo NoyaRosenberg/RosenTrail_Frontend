@@ -3,14 +3,16 @@ import { Trip } from "../../services/trip.service";
 import { Dialog, DialogContent, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import EditTripForm from "./EditTripForm";
+import { User } from "../../services/user.service";
 
 type EditTripProps = {
   trip: Trip;
+  participants: User[];
   open: boolean;
   onClose: () => void;
 };
 
-const EditTripDialog = ({ trip, open, onClose }: EditTripProps) => {
+const EditTripDialog = ({ trip, participants, open, onClose }: EditTripProps) => {
   return (
     <Dialog
       open={open}
@@ -21,12 +23,7 @@ const EditTripDialog = ({ trip, open, onClose }: EditTripProps) => {
       PaperProps={{
         sx: {
           borderRadius: "15px",
-        },
-        component: "form",
-        onSubmit: (event: React.FormEvent<HTMLFormElement>) => {
-          event.preventDefault();
-          onClose();
-        },
+        }
       }}
     >
       <IconButton
@@ -42,7 +39,7 @@ const EditTripDialog = ({ trip, open, onClose }: EditTripProps) => {
         <CloseIcon />
       </IconButton>
       <DialogContent>
-        <EditTripForm trip={trip}></EditTripForm>
+        <EditTripForm trip={trip} participants={participants}></EditTripForm>
       </DialogContent>
     </Dialog>
   );

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Typography,
   Button,
@@ -14,10 +14,11 @@ import { Delete, Edit, AddCircle } from "@mui/icons-material";
 import CloseIcon from "@mui/icons-material/Close";
 import "../../styles/Forms.css";
 import "../../styles/TripDialog.css";
-import { Trip } from "../../services/trip.service";
+import tripService, { Trip } from "../../services/trip.service";
 import { useNavigate } from "react-router-dom";
 import TripParticipants from "./TripParticipants";
 import EditTripDialog from "./EditTripDialog";
+import { User } from "../../services/user.service";
 
 type TripDialogProps = {
   trip: Trip;
@@ -36,6 +37,21 @@ const TripDialog: React.FC<TripDialogProps> = ({
 }) => {
   const navigate = useNavigate();
   const [isEditDialogOpen, setIsEditDialogOpen] = React.useState(false);
+  const [participants, setParticipants] = useState<User[]>([]);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const getUserParticipants = async () => {
+      try {
+        const participants = await tripService.getTripParticipants(trip._id!);
+        setParticipants(participants!);
+      } catch (err) {
+        setError((err as Error).message);
+      }
+    };
+
+    getUserParticipants();
+  }, [trip]);
 
   const showSchedule = () => {
     navigate("/schedule", { state: { trip } });
@@ -123,7 +139,8 @@ const TripDialog: React.FC<TripDialogProps> = ({
                       {trip.description}
                     </Typography>
                   </Stack>
-                  <TripParticipants tripId={trip._id!} />
+                  {error && <p>Failed To Fetch Participants</p>}
+                  <TripParticipants participants={participants} />
                 </Stack>
                 <Stack>
                   <Stack spacing={5}>
@@ -188,6 +205,7 @@ const TripDialog: React.FC<TripDialogProps> = ({
           open={isEditDialogOpen}
           onClose={onEditDialogClose}
           trip={trip}
+          participants={participants}
         />
       )}
     </>
