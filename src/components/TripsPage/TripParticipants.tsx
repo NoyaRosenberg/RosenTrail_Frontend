@@ -1,28 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Box, Avatar, Tooltip, Chip } from "@mui/material";
-import tripService, { User } from "../../services/trip.service";
+import { User } from "../../services/auth.service";
 
 interface TripParticipantsProps {
-  tripId: string;
+  participants: User[];
 }
 
-const TripParticipants = ({ tripId }: TripParticipantsProps) => {
-  const [participants, setParticipants] = useState<User[]>([]);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const getUserParticipants = async () => {
-      try {
-        const participants = await tripService.getTripParticipants(tripId);
-        setParticipants(participants!);
-      } catch (err) {
-        setError((err as Error).message);
-      }
-    };
-
-    getUserParticipants();
-  }, [tripId]);
-
+const TripParticipants = ({ participants }: TripParticipantsProps) => {
   return (
     <Box display="flex" alignItems="center" gap="2">
       <Chip
@@ -38,7 +22,6 @@ const TripParticipants = ({ tripId }: TripParticipantsProps) => {
         }}
       />
       <Box display="flex">
-        {error && <p>Failed To Fetch Participants</p>}
         {participants.map((participant, index) => (
           <Tooltip title={participant.username} key={index}>
             {participant.imageData ? (

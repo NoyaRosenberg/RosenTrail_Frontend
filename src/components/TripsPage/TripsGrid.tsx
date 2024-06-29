@@ -1,4 +1,4 @@
-import { Grid, Button } from "@mui/material";
+import { Grid } from "@mui/material";
 import PlaceCard from "../PlaceCard";
 import { Trip } from "../../services/trip.service";
 import { useNavigate } from "react-router-dom";
