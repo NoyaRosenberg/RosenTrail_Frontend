@@ -60,14 +60,14 @@ const TripsPage = () => {
           My Wonderful Trips
         </Typography>
         <Typography variant="overline" display="block" gutterBottom>
-          Create a new trip or enter your former trip to edit, publish or print pictures from you wonderful trips
+          Create a new trip or enter your former trip to edit, publish or print pictures from your wonderful trips
         </Typography>
         <Box width="100%">
-          <SearchBar placeholder="search a trip..." onSearch={onTripSearch} />
+          <SearchBar placeholder="Search a trip..." onSearch={onTripSearch} />
         </Box>
       </Stack>
       <Box width="100%">
-        <TripsGrid trips={filteredTrips} fetchTrips={fetchTrips}/>
+        <TripsGrid trips={filteredTrips} fetchTrips={fetchTrips} />
       </Box>
     </Container>
   );
