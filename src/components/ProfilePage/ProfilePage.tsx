@@ -195,7 +195,7 @@ const ProfilePage = () => {
             <Avatar
               alt="Profile Picture"
               src={imageDataPreview || ""}
-              className="profile-avatar"
+              sx={{ width: 150, height: 150 }}
             />
             <input
               accept="image/*"

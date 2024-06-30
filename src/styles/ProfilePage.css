@@ -21,7 +21,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin-left: 40px; /* Ensure it is on the right side */ 
+  margin-left: 150px; /* Ensure it is on the right side */ 
 }
 
 .profile-avatar {
