@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Avatar, Tooltip, Chip } from "@mui/material";
-import { User } from "../../services/auth.service";
+import { User } from "../../services/user.service";
 
 interface TripParticipantsProps {
   participants: User[];
@@ -23,7 +23,7 @@ const TripParticipants = ({ participants }: TripParticipantsProps) => {
       />
       <Box display="flex">
         {participants.map((participant, index) => (
-          <Tooltip title={participant.username} key={index}>
+          <Tooltip title={participant.username || participant.email} key={index}>
             {participant.imageData ? (
               <Avatar
                 src={participant.imageData}
@@ -31,7 +31,7 @@ const TripParticipants = ({ participants }: TripParticipantsProps) => {
               ></Avatar>
             ) : (
               <Avatar className="participant-avatar">
-                {participant.username.charAt(0).toUpperCase()}
+                {participant.email.charAt(0).toUpperCase()}
               </Avatar>
             )}
           </Tooltip>
