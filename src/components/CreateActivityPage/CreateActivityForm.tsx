@@ -7,6 +7,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { TextField, Button, IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { useNavigate } from 'react-router-dom';
 import {
     FormContainer,
     Title,
@@ -24,6 +25,7 @@ type CreateActivityFormProps = {
     onClose: () => void,
     activity?: Activity | null
 };
+
 const CreateActivityForm: React.FC<CreateActivityFormProps> = ({ location, description, trip, onClose, activity = null }) => {
     const [formData, setFormData] = useState({
         date: new Date(),
@@ -37,6 +39,8 @@ const CreateActivityForm: React.FC<CreateActivityFormProps> = ({ location, descr
         name: location ?? '',
         activityId: activity?._id ?? '',
     });
+
+    const navigate = useNavigate(); // Hook to navigate
 
     useEffect(() => {
       if (activity) {
@@ -77,7 +81,8 @@ const CreateActivityForm: React.FC<CreateActivityFormProps> = ({ location, descr
             await activityService.addActivity(formData);
             toast.success("Activity created successfully");
           }
-            onClose();
+          onClose();
+          navigate('/schedule', { state: { trip } }); // Pass state
         } catch (error) {
             toast.error("Failed to create activity");
             console.error("Failed to save trip:", error);
@@ -160,6 +165,7 @@ const CreateActivityForm: React.FC<CreateActivityFormProps> = ({ location, descr
           </SaveButton>
         </StyledForm>
       </FormContainer>
+      <ToastContainer />
     </LocalizationProvider>
     );
 };

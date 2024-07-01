@@ -5,12 +5,15 @@
     justify-content: space-between;
     align-items: center;
     background-color: white; 
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
   }
   
   .navbar-title {
     text-decoration: none;
     color: black;
     cursor: pointer;
+    font-family: 'Nunito', sans-serif !important;
+    font-weight: 500 !important;
   }
   
   .button-group button {

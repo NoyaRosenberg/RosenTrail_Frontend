@@ -50,24 +50,24 @@ const TripsPage = () => {
         justifyContent: "center",
         alignItems: "center",
         gap: 6,
-        paddingTop: "14px",
+        paddingTop: "50px",
         paddingBottom: "20px",
-        width: "68%",
+        width: "68%"
       }}
     >
-      <Stack spacing={2} alignItems="center">
+      <Stack spacing={2} alignItems="center" width="100%">
         <Typography variant="h4" gutterBottom>
           My Wonderful Trips
         </Typography>
         <Typography variant="overline" display="block" gutterBottom>
-          Create a new trip or enter your former trip to edit, publish or print pictures from you wonderful trips
+          Create a new trip or enter your former trip to edit, publish or print pictures from your wonderful trips
         </Typography>
         <Box width="100%">
-          <SearchBar placeholder="search a trip..." onSearch={onTripSearch} />
+          <SearchBar placeholder="Search a trip..." onSearch={onTripSearch} />
         </Box>
       </Stack>
       <Box width="100%">
-        <TripsGrid trips={filteredTrips} fetchTrips={fetchTrips}/>
+        <TripsGrid trips={filteredTrips} fetchTrips={fetchTrips} />
       </Box>
     </Container>
   );

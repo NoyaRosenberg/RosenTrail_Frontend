@@ -21,7 +21,7 @@ import {
 } from '@mui/material';
 import { Delete, Edit } from '@mui/icons-material';
 import "../../styles/Forms.css";
-import '../../styles/TripPage.css';
+import '../../styles/TripDialog.css';
 import { useLocation } from 'react-router-dom';
 import { useActivities } from '../../contexts/ActivityProvider';
 import { Activity } from '../../services/activity.service';

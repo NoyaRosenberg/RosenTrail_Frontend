@@ -7,7 +7,6 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
-import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
 import TravelExplore from '@mui/icons-material/TravelExplore'; // Import My Trips icon
 import { useNavigate } from "react-router-dom";
@@ -16,7 +15,7 @@ import { useAuth } from '../../contexts/AuthProvider';
 const AccountMenu = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
-  const { authData, logout } = useAuth();
+  const { authData, logout, refreshAuthData } = useAuth();
   const navigate = useNavigate();
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -28,11 +27,13 @@ const AccountMenu = () => {
   };
 
   const navigateToProfile = () => {
+    refreshAuthData();
     navigate('/profile');
   };
 
   const navigateToMyTrips = () => {
-    navigate('/trips');
+    refreshAuthData(); // Refresh authData before navigation
+    window.location.assign('/trips'); // Force a full refresh
   };
 
   const logoutUser = () => {
@@ -109,12 +110,6 @@ const AccountMenu = () => {
           My Trips
         </MenuItem>
         <Divider />
-        <MenuItem onClick={handleClose}>
-          <ListItemIcon>
-            <Settings fontSize="small" />
-          </ListItemIcon>
-          Settings
-        </MenuItem>
         <MenuItem onClick={logoutUser}>
           <ListItemIcon>
             <Logout fontSize="small" />

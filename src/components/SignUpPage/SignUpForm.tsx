@@ -3,7 +3,6 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../styles/Forms.css";
 import FormHeader from "../Forms/FormHeader";
-import ContactInfo from "../Forms/ContactInfo";
 import authService from "../../services/auth.service";
 import ErrorMessage from "../Forms/ErrorMessage";
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
@@ -175,7 +174,6 @@ const SignUpForm = () => {
           </Typography>
         </Grid>
       </Grid>
-      <ContactInfo />
     </Box>
   );
 };

@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { Box, TextField, Button, Grid, Autocomplete } from "@mui/material";
-import { ToastContainer, toast } from 'react-toastify';
+import { Box, TextField, Button, Grid, Autocomplete, Typography } from "@mui/material";
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import ContactInfo from "../Forms/ContactInfo";
 import FormHeader from "../Forms/FormHeader";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
@@ -22,6 +21,7 @@ const CreateTripForm: React.FC = () => {
     participants: [] as string[],
     ownerId: JSON.parse(localStorage.getItem('currentUser') || '{}')?.userId || '',
   });
+  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -55,10 +55,20 @@ const CreateTripForm: React.FC = () => {
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!trip || !trip.participants || !trip.destinations) {
-      console.error("Invalid trip data:", trip);
+    if (!trip.startDate || !trip.endDate) {
+      setError("Start date and end date must be chosen.");
       return;
     }
+    if (trip.startDate > trip.endDate) {
+      setError("Start date cannot be after the end date.");
+      return;
+    }
+    if (!trip.participants || !trip.destinations) {
+      setError("Invalid trip data.");
+      return;
+    }
+
+    setError(null);
     try {
       const updatedDestinations = [...trip.destinations];
     if (currentDestination && !updatedDestinations.includes(currentDestination)) {
@@ -77,8 +87,8 @@ const CreateTripForm: React.FC = () => {
         destinations: updatedDestinations.map((destination: string) =>
           destination ? destination.trim() : ""
         ),
-      };      
-      await tripService.CreateTrip(cleanedTrip);
+      };
+      await tripService.createTrip(cleanedTrip);
       toast.success("Trip created successfully");
       fetchTrips();
       navigate("/trips");
@@ -118,7 +128,7 @@ const CreateTripForm: React.FC = () => {
               renderInput={(params) => <TextField {...params} fullWidth />}
             />
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={12}>
             <Autocomplete
               multiple
               id="tags-filled"
@@ -131,7 +141,7 @@ const CreateTripForm: React.FC = () => {
               renderInput={(params) => (
                 <TextField
                   {...params}
-                  variant="filled"
+                  variant="outlined"
                   label="Destinations"
                   placeholder="Destinations"
                 />
@@ -151,7 +161,7 @@ const CreateTripForm: React.FC = () => {
               renderInput={(params) => (
                 <TextField
                   {...params}
-                  variant="filled"
+                  variant="outlined"
                   label="Participants"
                   placeholder="Participants"
                 />
@@ -163,8 +173,12 @@ const CreateTripForm: React.FC = () => {
               Create Trip
             </Button>
           </Grid>
+          {error && (
+            <Grid item xs={12}>
+              <Typography color="error">{error}</Typography>
+            </Grid>
+          )}
         </Grid>
-        <ContactInfo />
       </Box>
     </LocalizationProvider>
   );

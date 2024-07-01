@@ -1,4 +1,5 @@
 import axios from "axios";
+import { User } from "./user.service";
 
 export interface Trip {
   _id?: string;
@@ -8,7 +9,6 @@ export interface Trip {
   ownerId?: string;
   participantsId?: string[];
   unregisteredParticipants?: string[];
-  activitiesId?: string[];
   description?: string;
   imgUrl?: string;
 }
@@ -18,27 +18,47 @@ class TripService {
 
   async getUserTrips(userId: string): Promise<Trip[] | void> {
     try {
-      const response = await axios.get<Trip[]>(`${this.baseURL}?participant=${userId}`);
+      const response = await axios.get<Trip[]>(
+        `${this.baseURL}?participant=${userId}`
+      );
       return response.data;
     } catch (error) {
       this.handleError(error);
     }
   }
 
-  async CreateTrip(trip: Trip): Promise<Trip | undefined> {
+  async getTripParticipants(tripId: string): Promise<User[] | undefined> {
+    try {
+      const response = await axios.get<User[]>(`${this.baseURL}/${tripId}/participants`);
+      return response.data;
+    } catch (error) {
+      this.handleError(error);
+    }
+  }
+
+  async createTrip(trip: Trip): Promise<Trip | undefined> {
     const response = await fetch(`${this.baseURL}/create-trip`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(trip),
-      });
-      if (response.ok) {
-        return response.json();
-      } else {
-        this.handleError(response);
-      }
-}
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(trip),
+    });
+    if (response.ok) {
+      return response.json();
+    } else {
+      this.handleError(response);
+    }
+  }
+
+  async updateTrip(trip: Trip): Promise<Trip | undefined> {
+    try {
+      const response = await axios.put<Trip | undefined>(`${this.baseURL}`, {...trip});
+      return response.data;
+    } catch (error) {
+      this.handleError(error);
+    }
+  }
 
   handleError(error: unknown): void {
     if (axios.isAxiosError(error) && error.response) {

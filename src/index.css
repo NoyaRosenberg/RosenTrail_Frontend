@@ -2,7 +2,10 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: 'Nunito', sans-serif !important;
 }
 html, body, #root {
   height: 100%;
+  font-family: 'Nunito', sans-serif !important;
+  background-color: #FEFEFE;
 }

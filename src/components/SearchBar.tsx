@@ -1,12 +1,12 @@
 import {
   Box,
-  Button,
   InputAdornment,
   Stack
 } from "@mui/material";
 import { useState, ChangeEvent } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import { StyledTextField } from "../theme";
+import React from "react";
 
 export interface SearchBarProps {
   placeholder: string;
@@ -17,8 +17,10 @@ const SearchBar = ({ placeholder, onSearch }: SearchBarProps) => {
   const [searchValue, setSearchValue] = useState<string>("");
 
   const handleSearchInput = (e: ChangeEvent<HTMLInputElement>) => {
-    setSearchValue(e.target.value);
-  };
+    const value = e.target.value;
+    setSearchValue(value);
+    onSearch(value); 
+    };
 
   return (
     <Stack spacing={2} sx={{ alignItems: "flex-start" }}>
@@ -47,16 +49,8 @@ const SearchBar = ({ placeholder, onSearch }: SearchBarProps) => {
               </InputAdornment>
             ),
           }}
-          sx={{ width: "90%" }}
+          sx={{ width: "100%" }}
         />
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => onSearch(searchValue)}
-          sx={{ padding: 1, width: "10%", borderRadius: '50px' }}
-        >
-          Search
-        </Button>
       </Box>
     </Stack>
   );

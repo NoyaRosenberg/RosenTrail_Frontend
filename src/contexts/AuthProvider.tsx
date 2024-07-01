@@ -7,7 +7,8 @@ interface AuthContextType {
   loading: boolean;
   login: (authData: AuthData) => void;
   logout: () => void;
-  setAuthData: (authData: AuthData) => void; 
+  setAuthData: (authData: AuthData) => void;
+  refreshAuthData: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -41,13 +42,17 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const logout = () => {
     console.log("Logging out");
-    localStorage.removeItem(authDataKey); 
+    localStorage.removeItem(authDataKey);
     setIsLoggedIn(false);
     setAuthData(null);
   };
 
+  const refreshAuthData = () => {
+    setAuthData(getAuthData());
+  };
+
   return (
-    <AuthContext.Provider value={{ isLoggedIn, loading, authData, login, logout, setAuthData }}>
+    <AuthContext.Provider value={{ isLoggedIn, loading, authData, login, logout, setAuthData, refreshAuthData }}>
       {children}
     </AuthContext.Provider>
   );

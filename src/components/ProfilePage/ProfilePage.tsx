@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, TextField, Button, Avatar, MenuItem, Box, Typography, Snackbar, Alert, IconButton } from '@mui/material';
 import { useAuth } from '../../contexts/AuthProvider';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
@@ -9,16 +9,43 @@ const ProfilePage = () => {
   const { authData, setAuthData } = useAuth();
   const [userData, setUserData] = useState({
     userId: authData?.userId || '',
-    username: authData?.username || '',
-    email: authData?.email || '',
-    number: authData?.phoneNumber || '',
-    gender: authData?.gender || '',
-    age: authData?.age || '',
-    imageData: authData?.imageData || '/public/woman_profile.png'
+    username: '',
+    email: '',
+    phoneNumber: '',
+    gender: '',
+    age: '',
+    imageData: ''
   });
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-  const [imageDataPreview, setImageDataPreview] = useState<string>(userData.imageData);
+  const [imageDataPreview, setImageDataPreview] = useState<string>(userData.imageData || '');
+
+  useEffect(() => {
+    if (authData?.userId) {
+      fetchUserData(authData.userId);
+    }
+  }, [authData]);
+
+  const fetchUserData = async (userId: string) => {
+    try {
+      const response = await axios.get(`http://localhost:3000/users/${userId}`);
+      const data = response.data;
+      setUserData({
+        userId: data._id || '',
+        username: data.username || '',
+        email: data.email || '',
+        phoneNumber: data.phoneNumber || '',
+        gender: data.gender || '',
+        age: data.age || '',
+        imageData: data.imageData || ''
+      });
+      setImageDataPreview(data.imageData || '');
+      setErrorMessage('');
+    } catch (error) {
+      console.error('Failed to fetch user data:', error);
+      setErrorMessage('Failed to fetch user data');
+    }
+  };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -74,13 +101,25 @@ const ProfilePage = () => {
   const handleSave = async () => {
     try {
       const updatedUserData = { ...userData };
+      if (!userData.userId) {
+        setErrorMessage('User ID is missing');
+        return;
+      }
 
       const response = await axios.put(`http://localhost:3000/users/${userData.userId}`, updatedUserData);
-      setAuthData(response.data);
+      const newUserData = {
+        ...authData,
+        ...response.data
+      };
+      
+      localStorage.setItem('currentUser', JSON.stringify(newUserData)); 
+      setAuthData(newUserData); 
+      setUserData(newUserData);
       setSuccessMessage('Profile updated successfully');
+      setErrorMessage('');
     } catch (error) {
-      setErrorMessage('Failed to update profile');
       console.error('Failed to update profile:', error);
+      setErrorMessage('Failed to update profile');
     }
   };
 
@@ -107,11 +146,11 @@ const ProfilePage = () => {
               variant="outlined"
             />
             <TextField
-              label="Number"
-              name="number"
-              value={userData.number}
+              label="Phone Number"
+              name="phoneNumber"
+              value={userData.phoneNumber}
               onChange={handleChange}
-              className="full-width"
+              fullWidth
               variant="outlined"
             />
             <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -121,7 +160,7 @@ const ProfilePage = () => {
                 value={userData.gender}
                 onChange={handleChange}
                 select
-                className="half-width"
+                fullWidth
                 variant="outlined"
               >
                 <MenuItem value="male">Male</MenuItem>
@@ -134,7 +173,7 @@ const ProfilePage = () => {
                 value={userData.age}
                 onChange={handleChange}
                 select
-                className="half-width"
+                fullWidth
                 variant="outlined"
               >
                 {[...Array(100).keys()].map((number) => (
@@ -156,7 +195,7 @@ const ProfilePage = () => {
             <Avatar
               alt="Profile Picture"
               src={imageDataPreview || ""}
-              className="profile-avatar"
+              sx={{ width: 150, height: 150 }}
             />
             <input
               accept="image/*"
