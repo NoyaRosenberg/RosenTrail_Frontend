@@ -12,6 +12,8 @@ import tripService from '../../services/trip.service';
 
 const CreateTripForm: React.FC = () => {
   const { fetchTrips } = useTrips();
+  const [currentDestination, setCurrentDestination] = useState("");
+  const [currentParticipant, setCurrentParticipant] = useState("");
   const [trip, setTrip] = useState({
     startDate: new Date(),
     endDate: new Date(),
@@ -68,18 +70,27 @@ const CreateTripForm: React.FC = () => {
 
     setError(null);
     try {
+      const updatedDestinations = [...trip.destinations];
+    if (currentDestination && !updatedDestinations.includes(currentDestination)) {
+      updatedDestinations.push(currentDestination);
+    }
+
+    const updatedParticipants = [...trip.participants];
+    if (currentParticipant && !updatedParticipants.includes(currentParticipant)) {
+      updatedParticipants.push(currentParticipant);
+    }
       const cleanedTrip = {
         ...trip,
-        participants: trip.participants.map((participant: string) =>
+        participants: updatedParticipants.map((participant: string) =>
           participant ? participant.trim() : ""
         ),
-        destinations: trip.destinations.map((destination: string) =>
+        destinations: updatedDestinations.map((destination: string) =>
           destination ? destination.trim() : ""
         ),
       };
       await tripService.createTrip(cleanedTrip);
       toast.success("Trip created successfully");
-      fetchTrips(); 
+      fetchTrips();
       navigate("/trips");
     } catch (error) {
       toast.error("Failed to create trip");
@@ -123,6 +134,9 @@ const CreateTripForm: React.FC = () => {
               id="tags-filled"
               freeSolo
               onChange={updateDestinations}
+              onInputChange={(event, newInputValue) => {
+                setCurrentDestination(newInputValue);
+              }}
               options={[]}
               renderInput={(params) => (
                 <TextField
@@ -140,6 +154,9 @@ const CreateTripForm: React.FC = () => {
               id="tags-filled"
               freeSolo
               onChange={updateParticipants}
+              onInputChange={(event, newInputValue) => {
+                setCurrentParticipant(newInputValue);
+              }}
               options={[]}
               renderInput={(params) => (
                 <TextField
