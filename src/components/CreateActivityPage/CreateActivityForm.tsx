@@ -99,7 +99,7 @@ const CreateActivityForm: React.FC<CreateActivityFormProps> = ({ location, descr
         >
           <CloseIcon />
         </IconButton>
-        <Title>Edit Your Activity</Title>
+        <Title>{activity ? "Edit" : "Create"} Your Activity</Title>
         <Subtitle>You can edit your activity plans here</Subtitle>
         <StyledForm onSubmit={handleSubmit}>
           <DatePicker
