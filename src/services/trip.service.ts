@@ -8,7 +8,6 @@ export interface Trip {
   endDate?: Date;
   ownerId?: string;
   participantsId?: string[];
-  unregisteredParticipants?: string[];
   description?: string;
   imgUrl?: string;
 }
