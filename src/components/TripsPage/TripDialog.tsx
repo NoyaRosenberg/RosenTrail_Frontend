@@ -150,33 +150,11 @@ const TripDialog: React.FC<TripDialogProps> = ({
                   >
                     {formatDate(trip.startDate)} - {formatDate(trip.endDate)}
                   </Typography>
-                  <TripParticipants participants={participants} />
-                  {trip.unregisteredParticipants &&
-                    trip.unregisteredParticipants.length > 0 && (
-                      <Box>
-                        <Typography
-                          variant="body2"
-                          color="textSecondary"
-                          component="span"
-                        >
-                          Unregistered Participants:
-                        </Typography>
-                        <Box display="inline" marginLeft="10px">
-                          {trip.unregisteredParticipants.map(
-                            (participant, index) => (
-                              <Typography
-                                key={index}
-                                variant="body1"
-                                component="span"
-                                marginLeft="5px"
-                              >
-                                {participant}
-                              </Typography>
-                            )
-                          )}
-                        </Box>
-                      </Box>
-                    )}
+                  {error ? (
+                    <Typography>Failed To fetch participants</Typography>
+                  ) : (
+                    <TripParticipants participants={participants} />
+                  )}
                 </Stack>
                 <Stack>
                   <Stack>

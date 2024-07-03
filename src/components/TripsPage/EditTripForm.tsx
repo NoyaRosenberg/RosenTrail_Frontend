@@ -249,6 +249,7 @@ const EditTripForm = ({ trip, participants }: EditTripFormProps) => {
                   (participant) => participant.email
                 )}
                 onChange={updateParticipants}
+                onInputChange={() => setUserNotFoundError(null)}
                 options={[]}
                 renderInput={(params) => (
                   <TextField
