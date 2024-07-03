@@ -1,14 +1,22 @@
-import React, { useState } from 'react';
-import { Box, TextField, Button, Grid, Autocomplete, Typography } from "@mui/material";
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import React, { useState } from "react";
+import {
+  Box,
+  TextField,
+  Button,
+  Grid,
+  Autocomplete,
+  Typography,
+} from "@mui/material";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import FormHeader from "../Forms/FormHeader";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { useNavigate } from "react-router-dom";
 import { useTrips } from "../../contexts/TripProvider";
 import "../../styles/Forms.css";
-import tripService from '../../services/trip.service';
+import tripService from "../../services/trip.service";
+import userService, { User } from "../../services/user.service";
 
 const CreateTripForm: React.FC = () => {
   const { fetchTrips } = useTrips();
@@ -19,18 +27,14 @@ const CreateTripForm: React.FC = () => {
     endDate: new Date(),
     destinations: [] as string[],
     participants: [] as string[],
-    ownerId: JSON.parse(localStorage.getItem('currentUser') || '{}')?.userId || '',
+    ownerId:
+      JSON.parse(localStorage.getItem("currentUser") || "{}")?.userId || "",
   });
   const [error, setError] = useState<string | null>(null);
+  const [userNotFoundError, setUserNotFoundError] = useState<string | null>(
+    null
+  );
   const navigate = useNavigate();
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setTrip((prevTrip) => ({
-      ...prevTrip,
-      [name]: value.split(","),
-    }));
-  };
 
   const handleDateChange = (date: Date | null, name: string) => {
     setTrip((prevTrip) => ({
@@ -39,14 +43,34 @@ const CreateTripForm: React.FC = () => {
     }));
   };
 
-  const updateParticipants = (event: any, newVal: string[]) => {
-    setTrip((prevTrip) => ({
-      ...prevTrip,
-      participants: newVal,
-    }));
+  const updateParticipants = async (event: unknown, newParticipants: string[]) => {
+    setUserNotFoundError(null);
+    
+    const lastParticipantEmail = newParticipants[newParticipants.length - 1];
+
+    try {
+      await fetchParticipantByEmail(lastParticipantEmail);
+
+      setCurrentParticipant(lastParticipantEmail);
+      setTrip((trip) => ({
+        ...trip,
+        participants: newParticipants,
+      }));
+      
+    } catch (error) {
+      setUserNotFoundError(error.message);
+    }
   };
 
-  const updateDestinations = (event: any, newVal: string[]) => {
+  const fetchParticipantByEmail = async (email: string): Promise<User> => {
+    try {
+      return (await userService.getByEmail(email)) as User;
+    } catch (error) {
+      throw new Error((error as Error).message);
+    }
+  };
+
+  const updateDestinations = (event: unknown, newVal: string[]) => {
     setTrip((prevTrip) => ({
       ...prevTrip,
       destinations: newVal,
@@ -71,14 +95,20 @@ const CreateTripForm: React.FC = () => {
     setError(null);
     try {
       const updatedDestinations = [...trip.destinations];
-    if (currentDestination && !updatedDestinations.includes(currentDestination)) {
-      updatedDestinations.push(currentDestination);
-    }
+      if (
+        currentDestination &&
+        !updatedDestinations.includes(currentDestination)
+      ) {
+        updatedDestinations.push(currentDestination);
+      }
 
-    const updatedParticipants = [...trip.participants];
-    if (currentParticipant && !updatedParticipants.includes(currentParticipant)) {
-      updatedParticipants.push(currentParticipant);
-    }
+      const updatedParticipants = [...trip.participants];
+      if (
+        currentParticipant &&
+        !updatedParticipants.includes(currentParticipant)
+      ) {
+        updatedParticipants.push(currentParticipant);
+      }
       const cleanedTrip = {
         ...trip,
         participants: updatedParticipants.map((participant: string) =>
@@ -153,10 +183,9 @@ const CreateTripForm: React.FC = () => {
               multiple
               id="tags-filled"
               freeSolo
+              value={trip.participants}
               onChange={updateParticipants}
-              onInputChange={(event, newInputValue) => {
-                setCurrentParticipant(newInputValue);
-              }}
+              onInputChange={() => setUserNotFoundError(null)}
               options={[]}
               renderInput={(params) => (
                 <TextField
@@ -164,6 +193,8 @@ const CreateTripForm: React.FC = () => {
                   variant="outlined"
                   label="Participants"
                   placeholder="Participants"
+                  error={!!userNotFoundError}
+                  helperText={userNotFoundError}
                 />
               )}
             />
