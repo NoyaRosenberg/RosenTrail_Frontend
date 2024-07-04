@@ -8,16 +8,20 @@ import recommendationService, {
   Recommendation,
 } from "../../services/recommendation.service";
 import { useLocation } from "react-router-dom";
+import CardsSkeleton from "../Skeletons/CardsSkeleton";
 
 const ActivitiesPage: React.FC = () => {
   const location = useLocation();
   const trip = location.state.trip;
 
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [searchValue, setSearchValue] = useState<string>("");
   const [selectedFilters, setSelectedFilters] = useState<Category[]>([]);
   const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
-  const [filteredRecommendations, setFilteredRecommendations] = useState<Recommendation[]>([]);
+  const [filteredRecommendations, setFilteredRecommendations] = useState<
+    Recommendation[]
+  >([]);
 
   useEffect(() => {
     const getRecommendations = async () => {
@@ -26,6 +30,7 @@ const ActivitiesPage: React.FC = () => {
           await recommendationService.getRecommendations();
         setRecommendations(recommendations!);
         setFilteredRecommendations(recommendations!);
+        setLoading(false);
       } catch (error) {
         setError((error as Error).message);
       }
@@ -81,24 +86,22 @@ const ActivitiesPage: React.FC = () => {
           <Typography variant="h3" sx={{ fontSize: 20, color: "#333" }}>
             Recommendations For Attractions
           </Typography>
-          {error ? (
-            <Typography color="error">Failed To Fetch recommendations</Typography>
-          ) : filteredRecommendations.length == 0 ? (
-            <Typography variant="body1" sx={{ color: "#666" }}>
-              There's no recommendation that answer this critiria
+          <Typography variant="body1" sx={{ color: "#666" }}>
+            Click an activity to add it to your trip!
+          </Typography>
+          {loading ? (
+            <CardsSkeleton numInRow={4} />
+          ) : error ? (
+            <Typography color="error">
+              Failed To Fetch recommendations
             </Typography>
           ) : (
-            <>
-              <Typography variant="body1" sx={{ color: "#666" }}>
-                Click an activity to add it to your trip!
-              </Typography>
-              <Box sx={{ width: "100%" }}>
-                <RecommendationsGrid
-                  recommendations={filteredRecommendations}
-                  trip={trip}
-                />
-              </Box>
-            </>
+            <Box sx={{ width: "100%" }}>
+              <RecommendationsGrid
+                recommendations={filteredRecommendations}
+                trip={trip}
+              />
+            </Box>
           )}
         </Stack>
       </Stack>
