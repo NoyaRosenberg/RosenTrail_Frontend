@@ -1,15 +1,9 @@
 import { Dialog, DialogActions, DialogContent, DialogTitle, Grid } from "@mui/material";
 import PlaceCard from "../PlaceCard";
 import { Trip } from "../../services/trip.service";
+import { Recommendation } from '../../services/recommendation.service'
 import React, { useState } from "react";
-import CreateActivityForm from "../CreateActivityPage/CreateActivityForm";
 import CreateActivityPage from "../CreateActivityPage/CreateActivityPage";
-
-export interface Recommendation {
-  name: string;
-  description: string;
-  image: string;
-}
 
 export interface RecommendationsGrisProps {
   recommendations: Recommendation[];
