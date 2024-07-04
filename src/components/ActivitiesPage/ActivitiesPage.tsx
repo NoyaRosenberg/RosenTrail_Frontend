@@ -13,11 +13,11 @@ const ActivitiesPage: React.FC = () => {
   const location = useLocation();
   const trip = location.state.trip;
 
-  const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
-  const [filteredRecommendations, setFilteredReccomendations] = useState<
-    Recommendation[]
-  >([]);
   const [error, setError] = useState<string | null>(null);
+  const [searchValue, setSearchValue] = useState<string>("");
+  const [selectedFilters, setSelectedFilters] = useState<Category[]>([]);
+  const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
+  const [filteredRecommendations, setFilteredRecommendations] = useState<Recommendation[]>([]);
 
   useEffect(() => {
     const getRecommendations = async () => {
@@ -25,7 +25,7 @@ const ActivitiesPage: React.FC = () => {
         const recommendations =
           await recommendationService.getRecommendations();
         setRecommendations(recommendations!);
-        setFilteredReccomendations(recommendations!);
+        setFilteredRecommendations(recommendations!);
       } catch (error) {
         setError((error as Error).message);
       }
@@ -34,25 +34,34 @@ const ActivitiesPage: React.FC = () => {
     getRecommendations();
   }, []);
 
-  const onActivitySearch = (searchValue: string) => {
-    const newFilteredRecommendations = recommendations.filter(
-      (recommendation) =>
-        recommendation.name.toLowerCase().includes(searchValue.toLowerCase())
-    );
-    setFilteredReccomendations(newFilteredRecommendations);
+  const applyFilters = (filters: Category[], search: string) => {
+    let newFilteredRecommendations = recommendations;
+
+    if (filters.length > 0) {
+      const filtersId = filters.map((filter) => filter.id);
+      newFilteredRecommendations = newFilteredRecommendations.filter((rec) =>
+        filtersId.every((id) => rec.categoriesId.includes(id))
+      );
+    }
+
+    if (search) {
+      newFilteredRecommendations = newFilteredRecommendations.filter(
+        (recommendation) =>
+          recommendation.name.toLowerCase().includes(search.toLowerCase())
+      );
+    }
+
+    setFilteredRecommendations(newFilteredRecommendations);
+  };
+
+  const onActivitySearch = (search: string) => {
+    setSearchValue(search);
+    applyFilters(selectedFilters, search);
   };
 
   const filterRecommendations = (filters: Category[]) => {
-    if (filters.length == 0) {
-      setFilteredReccomendations(recommendations);
-    } else {
-      const filtersId = filters.map((filter) => filter.id);
-      const newFilteredRecommendations = recommendations.filter((rec) =>
-        filtersId.every((id) => rec.categoriesId.includes(id))
-      );
-
-      setFilteredReccomendations(newFilteredRecommendations);
-    }
+    setSelectedFilters(filters);
+    applyFilters(filters, searchValue);
   };
 
   return (
