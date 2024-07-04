@@ -9,89 +9,89 @@ import CloseIcon from '@mui/icons-material/Close';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { useNavigate } from 'react-router-dom';
 import {
-    FormContainer,
-    Title,
-    Subtitle,
-    StyledForm,
-    StyledTextField,
-    ParticipantsContainer,
-    SaveButton
-  } from '../../styles/CreateActivityForm.styles.ts';
+  FormContainer,
+  Title,
+  Subtitle,
+  StyledForm,
+  StyledTextField,
+  ParticipantsContainer,
+  SaveButton
+} from '../../styles/CreateActivityForm.styles.ts';
 
 type CreateActivityFormProps = {
-    location?: string,
-    description?: string,
-    cost?: number,
-    trip: Trip,
-    onClose: () => void,
-    activity?: Activity | null
+  location?: string,
+  description?: string,
+  cost?: number,
+  trip: Trip,
+  onClose: () => void,
+  activity?: Activity | null
 };
 
 const CreateActivityForm: React.FC<CreateActivityFormProps> = ({ location, description, cost, trip, onClose, activity = null }) => {
-    const [formData, setFormData] = useState({
-        date: new Date(),
-        location: location ?? '',
-        startTime: '',
-        endTime: '',
-        description: description ?? '',
-        participants: 1,
-        cost: cost ?? 0,
-        tripId: trip._id ?? '',
-        name: location ?? '',
+  const [formData, setFormData] = useState({
+    date: trip.startDate ?? new Date(),
+    location: location ?? '',
+    startTime: '',
+    endTime: '',
+    description: description ?? '',
+    participants: 1,
+    cost: cost ?? 0,
+    tripId: trip._id ?? '',
+    name: location ?? '',
+    activityId: activity?._id ?? '',
+  });
+
+  const navigate = useNavigate(); // Hook to navigate
+
+  useEffect(() => {
+    if (activity) {
+      // If an activity is provided, populate the form with its data
+      setFormData({
+        ...activity,
         activityId: activity?._id ?? '',
-    });
+        participants: formData.participants
+      });
+    }
+  }, [activity, trip._id]);
 
-    const navigate = useNavigate(); // Hook to navigate
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
 
-    useEffect(() => {
+  const handleDateChange = (date: Date | null, name: string) => {
+    setFormData((prevTrip) => ({
+      ...prevTrip,
+      [name]: date,
+    }));
+  };
+
+  const handleParticipantsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, participants: parseInt(e.target.value) });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
       if (activity) {
-        // If an activity is provided, populate the form with its data
-        setFormData({
-          ...activity,
-          activityId: activity?._id ?? '',
-          participants: formData.participants
-        });
+        // If activity exists, update it
+        await activityService.updateActivity(formData);
+        toast.success("Activity updated successfully");
+      } else {
+        // If no activity, create a new one
+        await activityService.addActivity(formData);
+        toast.success("Activity created successfully");
       }
-    }, [activity, trip._id]);
+      onClose();
+      navigate('/schedule', { state: { trip } }); // Pass state
+    } catch (error) {
+      toast.error("Failed to create activity");
+      console.error("Failed to save trip:", error);
+    }
+  };
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
-    };
-
-    const handleDateChange = (date: Date | null, name: string) => {
-        setFormData((prevTrip) => ({
-            ...prevTrip,
-            [name]: date,
-        }));
-    };
-
-    const handleParticipantsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setFormData({ ...formData, participants: parseInt(e.target.value) });
-    };
-
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        try {
-          if (activity) {
-            // If activity exists, update it
-            await activityService.updateActivity(formData);
-            toast.success("Activity updated successfully");
-          } else {
-            // If no activity, create a new one
-            await activityService.addActivity(formData);
-            toast.success("Activity created successfully");
-          }
-          onClose();
-          navigate('/schedule', { state: { trip } }); // Pass state
-        } catch (error) {
-            toast.error("Failed to create activity");
-            console.error("Failed to save trip:", error);
-        }
-    };
-
-    return (
-        <LocalizationProvider dateAdapter={AdapterDateFns}>
+  return (
+    <LocalizationProvider dateAdapter={AdapterDateFns}>
       <FormContainer>
         <IconButton
           aria-label="close"
@@ -106,6 +106,8 @@ const CreateActivityForm: React.FC<CreateActivityFormProps> = ({ location, descr
           <DatePicker
             label="Date"
             value={formData.date}
+            minDate={new Date(trip.startDate || new Date())}
+            maxDate={new Date(trip.endDate || new Date())}
             onChange={(date) => handleDateChange(date, "date")}
             renderInput={(params) => <StyledTextField {...params} fullWidth />}
           />
@@ -168,7 +170,7 @@ const CreateActivityForm: React.FC<CreateActivityFormProps> = ({ location, descr
       </FormContainer>
       <ToastContainer />
     </LocalizationProvider>
-    );
+  );
 };
 
 export default CreateActivityForm;
