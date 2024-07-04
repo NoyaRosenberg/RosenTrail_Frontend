@@ -4,6 +4,7 @@ import RecommendationsGrid from "./RecommendationsGrid";
 import SearchBar from "../SearchBar";
 import ActivityFilters from "./ActivityFilters";
 import recommendationService, {
+  Category,
   Recommendation,
 } from "../../services/recommendation.service";
 import { useLocation } from "react-router-dom";
@@ -31,7 +32,6 @@ const ActivitiesPage: React.FC = () => {
     };
 
     getRecommendations();
-    onActivitySearch("");
   }, []);
 
   const onActivitySearch = (searchValue: string) => {
@@ -40,6 +40,19 @@ const ActivitiesPage: React.FC = () => {
         recommendation.name.toLowerCase().includes(searchValue.toLowerCase())
     );
     setFilteredReccomendations(newFilteredRecommendations);
+  };
+
+  const filterRecommendations = (filters: Category[]) => {
+    if (filters.length == 0) {
+      setFilteredReccomendations(recommendations);
+    } else {
+      const filtersId = filters.map((filter) => filter.id);
+      const newFilteredRecommendations = recommendations.filter((rec) =>
+        filtersId.every((id) => rec.categoriesId.includes(id))
+      );
+
+      setFilteredReccomendations(newFilteredRecommendations);
+    }
   };
 
   return (
@@ -53,25 +66,31 @@ const ActivitiesPage: React.FC = () => {
             placeholder="Search for Attractions..."
             onSearch={onActivitySearch}
           />
-          <ActivityFilters />
+          <ActivityFilters onFilterSelected={filterRecommendations} />
         </Stack>
         <Stack spacing={2} sx={{ alignItems: "flex-start", width: "100%" }}>
           <Typography variant="h3" sx={{ fontSize: 20, color: "#333" }}>
             Recommendations For Attractions
           </Typography>
-          <Typography variant="body1" sx={{ color: "#666" }}>
-            Click an activity to add it to your trip!
-          </Typography>
-          <Box sx={{ width: "100%" }}>
-            {error ? (
-              <Typography>Failed To Fetch recommendations</Typography>
-            ) : (
-              <RecommendationsGrid
-                recommendations={filteredRecommendations}
-                trip={trip}
-              />
-            )}
-          </Box>
+          {error ? (
+            <Typography color="error">Failed To Fetch recommendations</Typography>
+          ) : filteredRecommendations.length == 0 ? (
+            <Typography variant="body1" sx={{ color: "#666" }}>
+              There's no recommendation that answer this critiria
+            </Typography>
+          ) : (
+            <>
+              <Typography variant="body1" sx={{ color: "#666" }}>
+                Click an activity to add it to your trip!
+              </Typography>
+              <Box sx={{ width: "100%" }}>
+                <RecommendationsGrid
+                  recommendations={filteredRecommendations}
+                  trip={trip}
+                />
+              </Box>
+            </>
+          )}
         </Stack>
       </Stack>
     </Container>
