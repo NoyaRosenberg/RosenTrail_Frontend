@@ -3,61 +3,57 @@ import { Box, Container, Stack, Typography } from "@mui/material";
 import RecommendationsGrid from "./RecommendationsGrid";
 import SearchBar from "../SearchBar";
 import ActivityFilters from "./ActivityFilters";
-import { Recommendation } from "./RecommendationsGrid";
-import { useLocation } from 'react-router-dom';
-
+import recommendationService, {
+  Category,
+  Recommendation,
+} from "../../services/recommendation.service";
+import { useLocation } from "react-router-dom";
 
 const ActivitiesPage: React.FC = () => {
   const location = useLocation();
-  const [filteredRecommendations, setFilteredReccomendations] = useState<Recommendation[]>([]);
   const trip = location.state.trip;
+
+  const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
+  const [filteredRecommendations, setFilteredReccomendations] = useState<
+    Recommendation[]
+  >([]);
+  const [error, setError] = useState<string | null>(null);
+
   useEffect(() => {
-    onActivitySearch('');
+    const getRecommendations = async () => {
+      try {
+        const recommendations =
+          await recommendationService.getRecommendations();
+        setRecommendations(recommendations!);
+        setFilteredReccomendations(recommendations!);
+      } catch (error) {
+        setError((error as Error).message);
+      }
+    };
+
+    getRecommendations();
   }, []);
-  const [recommendations, setRecommendations] = useState<Recommendation[]>([
-    {
-      name: "Central Park",
-      description: "Most visited urban park in the United States",
-      image: "IMG_0316.jpeg",
-    },
-    {
-      name: "Bryant Park",
-      description: "Relax, play, eat",
-      image: "IMG_0037.jpeg",
-    },
-    {
-      name: "Roof Top Bar",
-      description: "Eat and enjoy the view",
-      image: "IMG_0129.jpeg",
-    },
-    {
-      name: "Vessel",
-      description: "Landmark in New York",
-      image: "IMG_9899.jpeg",
-    },
-    {
-      name: "Pizza Place",
-      description: "Best pizza in town",
-      image: "IMG_0048.jpeg",
-    },
-    {
-      name: "Grand Central",
-      description: "Historic train station",
-      image: "IMG_9957.jpeg",
-    },
-    {
-      name: "Skyline View",
-      description: "Beautiful cityscape",
-      image: "IMG_9880.jpeg",
-    },
-  ]);
 
   const onActivitySearch = (searchValue: string) => {
-    const newFilteredRecommendations = recommendations.filter(recommendation =>
-      recommendation.name.toLowerCase().includes(searchValue.toLowerCase())
+    const newFilteredRecommendations = recommendations.filter(
+      (recommendation) =>
+        recommendation.name.toLowerCase().includes(searchValue.toLowerCase())
     );
     setFilteredReccomendations(newFilteredRecommendations);
-  }
+  };
+
+  const filterRecommendations = (filters: Category[]) => {
+    if (filters.length == 0) {
+      setFilteredReccomendations(recommendations);
+    } else {
+      const filtersId = filters.map((filter) => filter.id);
+      const newFilteredRecommendations = recommendations.filter((rec) =>
+        filtersId.every((id) => rec.categoriesId.includes(id))
+      );
+
+      setFilteredReccomendations(newFilteredRecommendations);
+    }
+  };
 
   return (
     <Container sx={{ paddingTop: "14px", paddingBottom: "14px" }}>
@@ -66,19 +62,35 @@ const ActivitiesPage: React.FC = () => {
           <Typography variant="h3" sx={{ fontSize: 20, color: "#333" }}>
             Search For Attractions In New York
           </Typography>
-          <SearchBar placeholder="Search for Attractions..." onSearch={onActivitySearch}/>
-          <ActivityFilters />
+          <SearchBar
+            placeholder="Search for Attractions..."
+            onSearch={onActivitySearch}
+          />
+          <ActivityFilters onFilterSelected={filterRecommendations} />
         </Stack>
         <Stack spacing={2} sx={{ alignItems: "flex-start", width: "100%" }}>
           <Typography variant="h3" sx={{ fontSize: 20, color: "#333" }}>
             Recommendations For Attractions
           </Typography>
-          <Typography variant="body1" sx={{ color: "#666" }}>
-            Click an activity to add it to your trip!
-          </Typography>
-          <Box sx={{ width: "100%" }}>
-            <RecommendationsGrid recommendations={filteredRecommendations} trip={trip} />
-          </Box>
+          {error ? (
+            <Typography color="error">Failed To Fetch recommendations</Typography>
+          ) : filteredRecommendations.length == 0 ? (
+            <Typography variant="body1" sx={{ color: "#666" }}>
+              There's no recommendation that answer this critiria
+            </Typography>
+          ) : (
+            <>
+              <Typography variant="body1" sx={{ color: "#666" }}>
+                Click an activity to add it to your trip!
+              </Typography>
+              <Box sx={{ width: "100%" }}>
+                <RecommendationsGrid
+                  recommendations={filteredRecommendations}
+                  trip={trip}
+                />
+              </Box>
+            </>
+          )}
         </Stack>
       </Stack>
     </Container>
