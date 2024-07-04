@@ -4,7 +4,7 @@ import { Trip } from '../../services/trip.service.ts';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { TextField, Button, IconButton } from '@mui/material';
+import { IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { useNavigate } from 'react-router-dom';
@@ -21,12 +21,13 @@ import {
 type CreateActivityFormProps = {
     location?: string,
     description?: string,
+    cost?: number,
     trip: Trip,
     onClose: () => void,
     activity?: Activity | null
 };
 
-const CreateActivityForm: React.FC<CreateActivityFormProps> = ({ location, description, trip, onClose, activity = null }) => {
+const CreateActivityForm: React.FC<CreateActivityFormProps> = ({ location, description, cost, trip, onClose, activity = null }) => {
     const [formData, setFormData] = useState({
         date: new Date(),
         location: location ?? '',
@@ -34,7 +35,7 @@ const CreateActivityForm: React.FC<CreateActivityFormProps> = ({ location, descr
         endTime: '',
         description: description ?? '',
         participants: 1,
-        cost: 0,
+        cost: cost ?? 0,
         tripId: trip._id ?? '',
         name: location ?? '',
         activityId: activity?._id ?? '',

@@ -11,11 +11,12 @@ interface CreateActivityPageProps {
   activityToEdit?: Activity | null;
   location?: string,
   description?: string,
+  cost?: number
   trip: Trip,
   onClose: () => void,
 }
 
-const CreateActivityPage: React.FC<CreateActivityPageProps> = ({ activityToEdit, location, description, trip, onClose }) => {
+const CreateActivityPage: React.FC<CreateActivityPageProps> = ({ activityToEdit, location, description, cost, trip, onClose }) => {
   
   return (
     <Box className="form-page-main-container">
@@ -23,7 +24,7 @@ const CreateActivityPage: React.FC<CreateActivityPageProps> = ({ activityToEdit,
       <Box className="form-page-background-image create-trip-image" />
     </Box>
     <Box className="form-page-right-container">
-      <CreateActivityForm location={location} description={description} trip={trip} onClose={onClose} activity={activityToEdit} />
+      <CreateActivityForm location={location} description={description} cost={cost} trip={trip} onClose={onClose} activity={activityToEdit} />
     </Box>
   </Box>
   );
