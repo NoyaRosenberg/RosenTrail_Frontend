@@ -43,8 +43,6 @@ const ActivityFilters = ({ onFilterSelected }: ActivityFiltersProps) => {
     <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
       {error ? (
         <Typography color="error">Failed To Get Filters</Typography>
-      ) : activityFilters.length == 0 ? (
-        <Typography>No Recommandationds Found For This Category</Typography>
       ) : (
         activityFilters.map((filter) => (
           <Chip
