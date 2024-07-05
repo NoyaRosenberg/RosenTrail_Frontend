@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Box, Container, Stack, Typography } from "@mui/material";
+import { Box, Container, Stack, Typography, Button } from "@mui/material";
+import { useLocation, useNavigate } from "react-router-dom";
+import { Schedule } from '@mui/icons-material';
 import RecommendationsGrid from "./RecommendationsGrid";
 import SearchBar from "../SearchBar";
 import ActivityFilters from "./ActivityFilters";
@@ -7,11 +9,11 @@ import recommendationService, {
   Category,
   Recommendation,
 } from "../../services/recommendation.service";
-import { useLocation } from "react-router-dom";
 import CardsSkeleton from "../Skeletons/CardsSkeleton";
 
 const ActivitiesPage: React.FC = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const trip = location.state.trip;
 
   const [loading, setLoading] = useState<boolean>(true);
@@ -69,13 +71,27 @@ const ActivitiesPage: React.FC = () => {
     applyFilters(filters, searchValue);
   };
 
+  const goBackToSchedule = () => {
+    navigate("/schedule", { state: { trip } });
+  };
+
   return (
     <Container sx={{ paddingTop: "14px", paddingBottom: "14px" }}>
       <Stack spacing={8} sx={{ marginTop: 5 }}>
-        <Stack spacing={2}>
+        <Box display="flex" justifyContent="space-between" alignItems="center">
           <Typography variant="h3" sx={{ fontSize: 20, color: "#333" }}>
             Search For Attractions In New York
           </Typography>
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<Schedule />}
+            onClick={goBackToSchedule}
+          >
+            Trip Schedule
+          </Button>
+        </Box>
+        <Stack spacing={2}>
           <SearchBar
             placeholder="Search for Attractions..."
             onSearch={onActivitySearch}
