@@ -39,7 +39,6 @@ const TripSchedulePage: React.FC = () => {
   const [open, setOpen] = useState(false);
   const [editingActivity, setEditingActivity] = useState<Activity | null>(null);
 
-
   useEffect(() => {
     fetchActivities(trip._id ?? '');
   }, [trip._id, fetchActivities]);
@@ -83,7 +82,7 @@ const TripSchedulePage: React.FC = () => {
 
   const handleClose = async () => {
     setOpen(false);
-    await fetchActivities(trip._id ?? '')
+    await fetchActivities(trip._id ?? '');
   };
 
   const handleDelete = async (activityId: string) => {
@@ -111,9 +110,9 @@ const TripSchedulePage: React.FC = () => {
           Schedule
         </Typography>
         <Box>
-          <Button variant="contained" color="primary" sx={{ mr: 2 }}>
+          {/* <Button variant="contained" color="primary" sx={{ mr: 2 }}>
             Manage Budget
-          </Button>
+          </Button> */}
           <Button variant="contained" color="primary" onClick={addActivity}>
             Add Attractions
           </Button>
@@ -138,6 +137,9 @@ const TripSchedulePage: React.FC = () => {
               <TableRow>
                 <TableCell>Time</TableCell>
                 <TableCell>Activity</TableCell>
+                <TableCell>Description</TableCell>
+                <TableCell>Participants</TableCell>
+                <TableCell>Total Cost</TableCell>
                 <TableCell align="center">Actions</TableCell>
               </TableRow>
             </TableHead>
@@ -153,10 +155,18 @@ const TripSchedulePage: React.FC = () => {
                     <TableCell>
                       <Typography>{activity.name}</Typography>
                     </TableCell>
+                    <TableCell>
+                      <Typography>{activity.description}</Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography>{(activity.participantsId ?? []).length + (activity.unregisteredParticipants ?? []).length}</Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography>${activity.cost}</Typography>
+                    </TableCell>
                     <TableCell align="center">
                       <IconButton color="primary" onClick={() => handleEdit(activity ?? '')}>
                         <Edit />
-
                       </IconButton>
                       <IconButton color="secondary" onClick={() => handleDelete(activity._id ?? '')}>
                         <Delete />
@@ -166,7 +176,7 @@ const TripSchedulePage: React.FC = () => {
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={3} align="center">
+                  <TableCell colSpan={6} align="center">
                     <Typography>No activities scheduled for this day.</Typography>
                   </TableCell>
                 </TableRow>
