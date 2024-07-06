@@ -159,7 +159,7 @@ const TripSchedulePage: React.FC = () => {
                       <Typography>{activity.description}</Typography>
                     </TableCell>
                     <TableCell>
-                      <Typography>{(activity.participantsId ?? []).length + (activity.unregisteredParticipants ?? []).length}</Typography>
+                      <Typography>{activity.participants}</Typography>
                     </TableCell>
                     <TableCell>
                       <Typography>${activity.cost}</Typography>

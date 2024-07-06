@@ -10,7 +10,7 @@ export interface Activity {
   location: string;
   description: string;
   cost: number;
-  participantsId?: string[];
+  participants?: number;
   unregisteredParticipants?: string[];
 }
 
