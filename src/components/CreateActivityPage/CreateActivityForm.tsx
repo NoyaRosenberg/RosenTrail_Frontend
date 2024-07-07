@@ -34,7 +34,7 @@ const CreateActivityForm: React.FC<CreateActivityFormProps> = ({ location, descr
     startTime: '',
     endTime: '',
     description: description ?? '',
-    participants: 1,
+    participants: activity?.participants ?? 1,
     cost: cost ?? 0,
     tripId: trip._id ?? '',
     name: location ?? '',
