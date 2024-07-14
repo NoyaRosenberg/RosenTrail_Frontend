@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export interface Activity {
-  _id?: string;
+  _id: string;
   tripId: string;
   name: string;
   date: Date;

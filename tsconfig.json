@@ -22,6 +22,6 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src/**/*.ts", "src/express.d.ts"],
+  "include": ["src/**/*.ts", "src/express.d.ts", "src/components/BudgetPage/DailyBudgetGauges.tsx", "src/components/BudgetPage/DailyBudgetChart.tsx"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

@@ -1,0 +1,26 @@
+.budget-container {
+  margin-top: 16px;
+  background-color: #f5e3ce;
+  padding: 16px;
+  border-radius: 8px;
+}
+
+.currency-select {
+  width: 80px;
+}
+
+.budget-input {
+  width: 100px;
+}
+
+.budget-container .MuiTypography-h4 {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 700;
+  color: #2c3e50;
+}
+
+.budget-container .MuiTypography-h6 {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500;
+  color: #34495e;
+}

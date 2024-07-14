@@ -22,11 +22,10 @@ import {
 import { Delete, Edit } from '@mui/icons-material';
 import "../../styles/Forms.css";
 import '../../styles/TripDialog.css';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useActivities } from '../../contexts/ActivityProvider';
 import { Activity } from '../../services/activity.service';
 import { Trip } from '../../services/trip.service';
-import { useNavigate } from "react-router-dom";
 import CreateActivityPage from '../CreateActivityPage/CreateActivityPage';
 
 const TripSchedulePage: React.FC = () => {
@@ -74,6 +73,10 @@ const TripSchedulePage: React.FC = () => {
     navigate("/AddActivities", { state: { trip } });
   };
 
+  const manageBudget = () => {
+    navigate("/budget", { state: { trip } });
+  };
+
   const handleEdit = (activity: Activity) => {
     setEditingActivity(activity);
     setOpen(true);
@@ -110,9 +113,9 @@ const TripSchedulePage: React.FC = () => {
           Schedule
         </Typography>
         <Box>
-          {/* <Button variant="contained" color="primary" sx={{ mr: 2 }}>
+          <Button variant="contained" color="primary" onClick={manageBudget} sx={{ mr: 2 }}>
             Manage Budget
-          </Button> */}
+          </Button>
           <Button variant="contained" color="primary" onClick={addActivity}>
             Add Attractions
           </Button>
@@ -165,10 +168,10 @@ const TripSchedulePage: React.FC = () => {
                       <Typography>${activity.cost}</Typography>
                     </TableCell>
                     <TableCell align="center">
-                      <IconButton color="primary" onClick={() => handleEdit(activity ?? '')}>
+                      <IconButton color="primary" onClick={() => handleEdit(activity)}>
                         <Edit />
                       </IconButton>
-                      <IconButton color="secondary" onClick={() => handleDelete(activity._id ?? '')}>
+                      <IconButton color="secondary" onClick={() => handleDelete(activity._id)}>
                         <Delete />
                       </IconButton>
                     </TableCell>

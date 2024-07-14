@@ -11,6 +11,7 @@ import ProfilePage from "../components/ProfilePage/ProfilePage";
 import { CircularProgress } from "@mui/material";
 import SchedulePage from "../components/SchedulePage/SchedulePage";
 import MainPage from "../components/MainPage/MainPage";
+import BudgetPage from "../components/BudgetPage/BudgetPage";
 
 const AppRoutes: React.FC = () => {
   const { isLoggedIn, loading } = useAuth();
@@ -60,11 +61,20 @@ const AppRoutes: React.FC = () => {
             <SchedulePage />
           </ProtectedRoute>
         }
-      />      <Route 
+      />
+      <Route 
         path="/profile" 
         element={
           <ProtectedRoute>
             <ProfilePage />
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/budget" 
+        element={
+          <ProtectedRoute>
+            <BudgetPage/>
           </ProtectedRoute>
         } 
       />
