@@ -6,19 +6,18 @@ import {
   Button,
   IconButton,
   Box,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  Pagination,
+  Card,
+  CardMedia,
+  CardContent,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
+  List,
+  ListItem,
+  ListItemText,
 } from '@mui/material';
+import { alpha } from '@mui/material/styles';
 import { Delete, Edit } from '@mui/icons-material';
 import "../../styles/Forms.css";
 import '../../styles/TripDialog.css';
@@ -27,6 +26,8 @@ import { useActivities } from '../../contexts/ActivityProvider';
 import { Activity } from '../../services/activity.service';
 import { Trip } from '../../services/trip.service';
 import CreateActivityPage from '../CreateActivityPage/CreateActivityPage';
+
+const DEFAULT_IMAGE_URL = 'https://via.placeholder.com/150'; // Default image URL
 
 const TripSchedulePage: React.FC = () => {
   const navigate = useNavigate();
@@ -44,17 +45,12 @@ const TripSchedulePage: React.FC = () => {
 
   useEffect(() => {
     if (activities.length && trip.startDate && trip.endDate) {
-      const tripDuration = Math.ceil(
-        (new Date(trip.endDate).getTime() - new Date(trip.startDate).getTime()) /
-        (1000 * 3600 * 24)
-      ) + 1;
-
       const currentDate = new Date(trip.startDate);
       currentDate.setDate(currentDate.getDate() + page - 1);
       const activitiesForCurrentDate = activities.filter(
         (activity) =>
           new Date(activity.date).toDateString() === currentDate.toDateString()
-      );
+      ).sort((a, b) => a.startTime.localeCompare(b.startTime));
 
       setCurrentActivities(activitiesForCurrentDate);
     }
@@ -64,10 +60,6 @@ const TripSchedulePage: React.FC = () => {
     (new Date(trip.endDate).getTime() - new Date(trip.startDate).getTime()) /
     (1000 * 3600 * 24)
   ) + 1 : 0;
-
-  const handleChangePage = (event: ChangeEvent<unknown>, page: number): void => {
-    setPage(page);
-  };
 
   const addActivity = () => {
     navigate("/AddActivities", { state: { trip } });
@@ -103,6 +95,12 @@ const TripSchedulePage: React.FC = () => {
     }
   };
 
+  const formatDate = (startDate: string, page: number) => {
+    const date = new Date(startDate);
+    date.setDate(date.getDate() + page - 1);
+    return date.toLocaleDateString('en-GB', { weekday: 'short', day: '2-digit', month: '2-digit', year: '2-digit' });
+  };
+
   return (
     <Container maxWidth="lg" sx={{ mt: 4, backgroundColor: '#f5e3ce', padding: 2, borderRadius: 2 }}>
       <Typography variant="h4" gutterBottom>
@@ -121,81 +119,90 @@ const TripSchedulePage: React.FC = () => {
           </Button>
         </Box>
       </Box>
-      <Stack direction="row" spacing={2} justifyContent="space-between" alignItems="center" mb={2}>
-        <Pagination
-          count={tripDuration}
-          page={page}
-          onChange={handleChangePage}
-          color="primary"
-        />
-      </Stack>
-      {loading ? (
-        <Typography>Loading...</Typography>
-      ) : error ? (
-        <Typography>Error: {error}</Typography>
-      ) : (
-        <TableContainer component={Paper} sx={{ backgroundColor: '#fff', borderRadius: 2 }}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Time</TableCell>
-                <TableCell>Activity</TableCell>
-                <TableCell>Description</TableCell>
-                <TableCell>Participants</TableCell>
-                <TableCell>Total Cost</TableCell>
-                <TableCell align="center">Actions</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
+      <Box display="flex">
+        <List sx={{ minWidth: 150, mr: 4 }}>
+          {Array.from({ length: tripDuration }).map((_, index) => (
+            <ListItem
+              key={index + 1}
+              onClick={() => setPage(index + 1)}
+              sx={{
+                backgroundColor: page === index + 1 ? "primary" : 'transparent',
+                color: page === index + 1 ? 'white' : 'black',
+                mb: 1,
+                borderRadius: 1,
+                '&.Mui-selected': {
+                  fontWeight: 'bold',
+                  backgroundColor: (theme) => alpha(theme.palette.primary.main, 0.5),
+                }
+              }}
+            >
+              <ListItemText
+                primary={trip.startDate ? formatDate(trip.startDate.toString(), index + 1) : ''}
+                sx={{ textAlign: 'center' }}
+              />
+            </ListItem>
+          ))}
+        </List>
+        <Box sx={{ flex: 1 }}>
+          {loading ? (
+            <Typography>Loading...</Typography>
+          ) : error ? (
+            <Typography>Error: {error}</Typography>
+          ) : (
+            <Box>
               {currentActivities.length > 0 ? (
                 currentActivities.map((activity) => (
-                  <TableRow key={activity._id}>
-                    <TableCell component="th" scope="row">
-                      <Typography fontWeight="bold">
-                        {activity.startTime} - {activity.endTime}
-                      </Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Typography>{activity.name}</Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Typography>{activity.description}</Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Typography>{activity.participants}</Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Typography>${activity.cost}</Typography>
-                    </TableCell>
-                    <TableCell align="center">
-                      <IconButton color="primary" onClick={() => handleEdit(activity)}>
-                        <Edit />
-                      </IconButton>
-                      <IconButton color="secondary" onClick={() => handleDelete(activity._id)}>
-                        <Delete />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
+                  <Card key={activity._id} sx={{ display: 'flex', mb: 2 }}>
+                    <CardMedia
+                      component="img"
+                      sx={{ width: 151 }}
+                      image={activity.imageUrl || DEFAULT_IMAGE_URL}
+                      alt={activity.name}
+                    />
+                    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                      <CardContent>
+                        <Typography variant="h5" component="div">
+                          {activity.name}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          {activity.description}
+                        </Typography>
+                        <Typography component="div" variant="subtitle1" color="text.secondary" >
+                          {activity.startTime} - {activity.endTime}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          Participants: {activity.participants}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          Cost: ${activity.cost}
+                        </Typography>
+                      </CardContent>
+                      <Box sx={{ display: 'flex', alignItems: 'center', pl: 1, pb: 1 }}>
+                        <IconButton color="primary" onClick={() => handleEdit(activity)}>
+                          <Edit />
+                        </IconButton>
+                        <IconButton color="error" onClick={() => handleDelete(activity._id)}>
+                          <Delete />
+                        </IconButton>
+                      </Box>
+                    </Box>
+                  </Card>
                 ))
               ) : (
-                <TableRow>
-                  <TableCell colSpan={6} align="center">
-                    <Typography>No activities scheduled for this day.</Typography>
-                  </TableCell>
-                </TableRow>
+                <Typography>No activities scheduled for this day.</Typography>
               )}
-            </TableBody>
-          </Table>
-          <Dialog open={open} onClose={handleClose} maxWidth="lg" fullWidth>
-            <DialogTitle>Edit Your Activity</DialogTitle>
-            <DialogContent>
-              <CreateActivityPage trip={trip} activityToEdit={editingActivity} onClose={handleClose} />
-            </DialogContent>
-            <DialogActions>
-            </DialogActions>
-          </Dialog>
-        </TableContainer>
-      )}
+              <Dialog open={open} onClose={handleClose} maxWidth="lg" fullWidth>
+                <DialogTitle>Edit Your Activity</DialogTitle>
+                <DialogContent>
+                  <CreateActivityPage trip={trip} activityToEdit={editingActivity} onClose={handleClose} />
+                </DialogContent>
+                <DialogActions>
+                </DialogActions>
+              </Dialog>
+            </Box>
+          )}
+        </Box>
+      </Box>
     </Container>
   );
 };
