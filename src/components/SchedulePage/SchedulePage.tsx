@@ -27,8 +27,6 @@ import { Activity } from '../../services/activity.service';
 import { Trip } from '../../services/trip.service';
 import CreateActivityPage from '../CreateActivityPage/CreateActivityPage';
 
-const DEFAULT_IMAGE_URL = 'https://via.placeholder.com/150'; // Default image URL
-
 const TripSchedulePage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -124,6 +122,8 @@ const TripSchedulePage: React.FC = () => {
           {Array.from({ length: tripDuration }).map((_, index) => (
             <ListItem
               key={index + 1}
+              button
+              selected={page === index + 1}
               onClick={() => setPage(index + 1)}
               sx={{
                 backgroundColor: page === index + 1 ? "primary" : 'transparent',
@@ -153,11 +153,10 @@ const TripSchedulePage: React.FC = () => {
               {currentActivities.length > 0 ? (
                 currentActivities.map((activity) => (
                   <Card key={activity._id} sx={{ display: 'flex', mb: 2 }}>
-                    <CardMedia
-                      component="img"
-                      sx={{ width: 151 }}
-                      image={activity.imageUrl || DEFAULT_IMAGE_URL}
+                    <img
+                      src={activity.imageUrl}
                       alt={activity.name}
+                      style={{ width: 151 }}
                     />
                     <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                       <CardContent>
