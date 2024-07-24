@@ -6,9 +6,28 @@ import { useTrips } from "../../contexts/TripProvider";
 import { Trip } from "../../services/trip.service";
 import CardsSkeleton from "../Skeletons/CardsSkeleton";
 
-const TripsPage = () => {
-  const { trips, loading, error, fetchTrips } = useTrips();
+export interface TripsPageProps {
+  trips: Trip[];
+  title: string;
+  subTitle: string;
+  includeAddTrip: boolean;
+  fetchTrips: () => void;
+}
+
+const TripsPage = ({
+  trips,
+  title,
+  subTitle,
+  includeAddTrip,
+  fetchTrips,
+}: TripsPageProps) => {
+  const { loading, error } = useTrips();
   const [filteredTrips, setFilteredTrips] = useState<Trip[]>(trips);
+
+  useEffect(() => {
+    fetchTrips();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     setFilteredTrips(trips);
@@ -39,11 +58,10 @@ const TripsPage = () => {
     >
       <Stack spacing={2} alignItems="center" width="100%">
         <Typography variant="h4" gutterBottom>
-          My Wonderful Trips
+          {title}
         </Typography>
         <Typography variant="overline" display="block" gutterBottom>
-          Create a new trip or enter your former trip to edit, publish or print
-          pictures from your wonderful trips
+          {subTitle}
         </Typography>
         <Box width="100%">
           <SearchBar placeholder="Search a trip..." onSearch={onTripSearch} />
@@ -55,7 +73,7 @@ const TripsPage = () => {
         ) : error ? (
           <Typography color="error">{error}</Typography>
         ) : (
-          <TripsGrid trips={filteredTrips} fetchTrips={fetchTrips} />
+          <TripsGrid trips={filteredTrips} includeAddTrip={includeAddTrip} fetchTrips={fetchTrips} />
         )}
       </Box>
     </Container>

@@ -10,10 +10,20 @@ export interface Trip {
   participantsId?: string[];
   description?: string;
   imgUrl?: string;
+  public: boolean;
 }
 
 class TripService {
   private baseURL: string = "http://localhost:3000/trips/";
+
+  async getCommunityTrips(): Promise<Trip[] | void> {
+    try {
+      const response = await axios.get<Trip[]>(this.baseURL);
+      return response.data;
+    } catch (error) {
+      this.handleError(error);
+    }
+  }
 
   async getUserTrips(userId: string): Promise<Trip[] | void> {
     try {

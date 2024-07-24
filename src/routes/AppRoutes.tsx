@@ -6,22 +6,25 @@ import ActivitiesPage from "../components/ActivitiesPage/ActivitiesPage";
 import CreateTripPage from "../components/CreateTripPage/CreateTripPage";
 import SignInPage from "../components/SignInPage/SignInPage";
 import SignUpPage from "../components/SignUpPage/SignUpPage";
-import TripsPage from "../components/TripsPage/TripsPage";
-import ProfilePage from "../components/ProfilePage/ProfilePage"; 
+import ProfilePage from "../components/ProfilePage/ProfilePage";
 import { CircularProgress } from "@mui/material";
 import SchedulePage from "../components/SchedulePage/SchedulePage";
 import MainPage from "../components/MainPage/MainPage";
 import BudgetPage from "../components/BudgetPage/BudgetPage";
+import TripsPage from "../components/TripsPage/TripsPage";
+import { useTrips } from "../contexts/TripProvider";
 
 const AppRoutes: React.FC = () => {
   const { isLoggedIn, loading } = useAuth();
+  const { communityTrips, fetchCommunityTrips, userTrips, fetchUserTrips } =
+    useTrips();
   const location = useLocation();
 
   if (loading) {
     return <CircularProgress />;
   }
 
-  if (location.pathname === '/' && isLoggedIn) {
+  if (location.pathname === "/" && isLoggedIn) {
     return <Navigate to="/trips" replace />;
   }
 
@@ -31,10 +34,29 @@ const AppRoutes: React.FC = () => {
       <Route path="/signin" element={<SignInPage />} />
       <Route path="/register" element={<SignUpPage />} />
       <Route
+        path="/communityTrips"
+        element={
+          <TripsPage
+            trips={communityTrips}
+            fetchTrips={fetchCommunityTrips}
+            includeAddTrip={false}
+            title="Community Trips"
+            subTitle="Search for a trip and get ideas to plan your next journey"
+          />
+        }
+      />
+      <Route
         path="/trips"
         element={
           <ProtectedRoute>
-            <TripsPage />
+            <TripsPage
+              trips={userTrips}
+              fetchTrips={fetchUserTrips}
+              includeAddTrip={true}
+              title="My Wonderful Trips"
+              subTitle="Create a new trip or enter your former trip to edit, 
+              publish or print pictures from your wonderful trips"
+            />
           </ProtectedRoute>
         }
       />
@@ -62,21 +84,21 @@ const AppRoutes: React.FC = () => {
           </ProtectedRoute>
         }
       />
-      <Route 
-        path="/profile" 
+      <Route
+        path="/profile"
         element={
           <ProtectedRoute>
             <ProfilePage />
           </ProtectedRoute>
-        } 
+        }
       />
-      <Route 
-        path="/budget" 
+      <Route
+        path="/budget"
         element={
           <ProtectedRoute>
-            <BudgetPage/>
+            <BudgetPage />
           </ProtectedRoute>
-        } 
+        }
       />
       <Route
         path="/schedule"

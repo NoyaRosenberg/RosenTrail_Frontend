@@ -8,10 +8,11 @@ import React from "react";
 
 export interface TripsGridProps {
   trips: Trip[];
+  includeAddTrip: boolean;
   fetchTrips: () => void;
 }
 
-const TripsGrid = ({ trips, fetchTrips }: TripsGridProps) => {
+const TripsGrid = ({ trips, includeAddTrip, fetchTrips }: TripsGridProps) => {
   const [isTripDialogOpen, setIsTripDialogOpen] = useState<boolean>(false);
   const [selectedTrip, setSelectedTrip] = useState<Trip | null>(null);
   const navigate = useNavigate();
@@ -38,15 +39,17 @@ const TripsGrid = ({ trips, fetchTrips }: TripsGridProps) => {
         display="flex"
         justifyContent={trips.length == 0 ? "center" : ""}
       >
-        <Grid item xs={12} sm={6} md={4} sx={{ display: "flex" }}>
-          <PlaceCard
-            name="New Trip"
-            description="Create a new wonderful plan!"
-            image="/public/createTripBackground.jpeg"
-            isNew={true}
-            onCardClick={createNewTripClick}
-          />
-        </Grid>
+        {includeAddTrip && (
+          <Grid item xs={12} sm={6} md={4} sx={{ display: "flex" }}>
+            <PlaceCard
+              name="New Trip"
+              description="Create a new wonderful plan!"
+              image="/public/createTripBackground.jpeg"
+              isNew={true}
+              onCardClick={createNewTripClick}
+            />
+          </Grid>
+        )}
 
         {trips.map((trip, index) => (
           <Grid item xs={12} sm={6} md={4} key={index} sx={{ display: "flex" }}>
