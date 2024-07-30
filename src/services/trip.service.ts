@@ -16,9 +16,12 @@ export interface Trip {
 class TripService {
   private baseURL: string = "http://localhost:3000/trips/";
 
-  async getCommunityTrips(): Promise<Trip[] | void> {
+  async getCommunityTrips(userId?: string): Promise<Trip[] | void> {
     try {
-      const response = await axios.get<Trip[]>(this.baseURL);
+      const response = userId
+        ? await axios.get<Trip[]>(`${this.baseURL}?userId=${userId}`)
+        : await axios.get<Trip[]>(this.baseURL);
+        
       return response.data;
     } catch (error) {
       this.handleError(error);
@@ -38,7 +41,9 @@ class TripService {
 
   async getTripParticipants(tripId: string): Promise<User[] | undefined> {
     try {
-      const response = await axios.get<User[]>(`${this.baseURL}/${tripId}/participants`);
+      const response = await axios.get<User[]>(
+        `${this.baseURL}/${tripId}/participants`
+      );
       return response.data;
     } catch (error) {
       this.handleError(error);
@@ -62,7 +67,9 @@ class TripService {
 
   async updateTrip(trip: Trip): Promise<Trip | undefined> {
     try {
-      const response = await axios.put<Trip | undefined>(`${this.baseURL}`, {...trip});
+      const response = await axios.put<Trip | undefined>(`${this.baseURL}`, {
+        ...trip,
+      });
       return response.data;
     } catch (error) {
       this.handleError(error);

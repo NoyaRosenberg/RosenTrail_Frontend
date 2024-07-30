@@ -33,7 +33,10 @@ export const TripsProvider: React.FC<{ children: ReactNode }> = ({
     setLoading(true);
 
     try {
-      const fetchedTrips = await tripService.getCommunityTrips();
+      const fetchedTrips =
+        authData && isLoggedIn
+          ? await tripService.getCommunityTrips(authData.userId)
+          : await tripService.getCommunityTrips();
       setCommunityTrips(fetchedTrips || []);
       setError(null);
     } catch (err) {
@@ -46,9 +49,10 @@ export const TripsProvider: React.FC<{ children: ReactNode }> = ({
   const fetchUserTrips = async () => {
     if (authData && isLoggedIn) {
       setLoading(true);
+
       try {
         const fetchedTrips = await tripService.getUserTrips(authData.userId);
-        setUserTrips(fetchedTrips || []); 
+        setUserTrips(fetchedTrips || []);
         setError(null);
       } catch (err) {
         setError("Failed to fetch trips");
@@ -76,7 +80,15 @@ export const TripsProvider: React.FC<{ children: ReactNode }> = ({
 
   return (
     <TripsContext.Provider
-      value={{ userTrips, communityTrips, loading, error, fetchUserTrips,fetchCommunityTrips, updateTrip }}
+      value={{
+        userTrips,
+        communityTrips,
+        loading,
+        error,
+        fetchUserTrips,
+        fetchCommunityTrips,
+        updateTrip,
+      }}
     >
       {children}
     </TripsContext.Provider>
