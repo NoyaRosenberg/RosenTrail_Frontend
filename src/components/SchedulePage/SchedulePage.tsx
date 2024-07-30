@@ -1,4 +1,4 @@
-import React, { useState, useEffect, ChangeEvent } from 'react';
+import React, { useState, useEffect, ChangeEvent } from "react";
 import {
   Container,
   Stack,
@@ -18,20 +18,23 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-} from '@mui/material';
-import { Delete, Edit } from '@mui/icons-material';
+} from "@mui/material";
+import { Delete, Edit } from "@mui/icons-material";
 import "../../styles/Forms.css";
-import '../../styles/TripDialog.css';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { useActivities } from '../../contexts/ActivityProvider';
-import { Activity } from '../../services/activity.service';
-import { Trip } from '../../services/trip.service';
-import CreateActivityPage from '../CreateActivityPage/CreateActivityPage';
+import "../../styles/TripDialog.css";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useActivities } from "../../contexts/ActivityProvider";
+import { Activity } from "../../services/activity.service";
+import { Trip } from "../../services/trip.service";
+import CreateActivityPage from "../CreateActivityPage/CreateActivityPage";
 
 const TripSchedulePage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { trip } = location.state as { trip: Trip };
+  const { trip, showActions } = location.state as {
+    trip: Trip;
+    showActions: boolean;
+  };
   const { activities, loading, error, fetchActivities } = useActivities();
   const [page, setPage] = useState(1);
   const [currentActivities, setCurrentActivities] = useState<Activity[]>([]);
@@ -39,16 +42,11 @@ const TripSchedulePage: React.FC = () => {
   const [editingActivity, setEditingActivity] = useState<Activity | null>(null);
 
   useEffect(() => {
-    fetchActivities(trip._id ?? '');
+    fetchActivities(trip._id ?? "");
   }, [trip._id, fetchActivities]);
 
   useEffect(() => {
     if (activities.length && trip.startDate && trip.endDate) {
-      const tripDuration = Math.ceil(
-        (new Date(trip.endDate).getTime() - new Date(trip.startDate).getTime()) /
-        (1000 * 3600 * 24)
-      ) + 1;
-
       const currentDate = new Date(trip.startDate);
       currentDate.setDate(currentDate.getDate() + page - 1);
       const activitiesForCurrentDate = activities.filter(
@@ -60,12 +58,19 @@ const TripSchedulePage: React.FC = () => {
     }
   }, [page, activities, trip.startDate, trip.endDate]);
 
-  const tripDuration = trip.startDate && trip.endDate ? Math.ceil(
-    (new Date(trip.endDate).getTime() - new Date(trip.startDate).getTime()) /
-    (1000 * 3600 * 24)
-  ) + 1 : 0;
+  const tripDuration =
+    trip.startDate && trip.endDate
+      ? Math.ceil(
+          (new Date(trip.endDate).getTime() -
+            new Date(trip.startDate).getTime()) /
+            (1000 * 3600 * 24)
+        ) + 1
+      : 0;
 
-  const handleChangePage = (event: ChangeEvent<unknown>, page: number): void => {
+  const handleChangePage = (
+    event: ChangeEvent<unknown>,
+    page: number
+  ): void => {
     setPage(page);
   };
 
@@ -85,16 +90,19 @@ const TripSchedulePage: React.FC = () => {
 
   const handleClose = async () => {
     setOpen(false);
-    await fetchActivities(trip._id ?? '');
+    await fetchActivities(trip._id ?? "");
   };
 
   const handleDelete = async (activityId: string) => {
     try {
-      const response = await fetch(`http://localhost:3000/activities/${activityId}`, {
-        method: "DELETE",
-      });
+      const response = await fetch(
+        `http://localhost:3000/activities/${activityId}`,
+        {
+          method: "DELETE",
+        }
+      );
       if (response.ok) {
-        fetchActivities(trip._id ?? ''); // Refresh activities list
+        fetchActivities(trip._id ?? ""); // Refresh activities list
       } else {
         console.error("Failed to delete activity");
       }
@@ -104,24 +112,45 @@ const TripSchedulePage: React.FC = () => {
   };
 
   return (
-    <Container maxWidth="lg" sx={{ mt: 4, backgroundColor: '#f5e3ce', padding: 2, borderRadius: 2 }}>
+    <Container
+      maxWidth="lg"
+      sx={{ mt: 4, backgroundColor: "#f5e3ce", padding: 2, borderRadius: 2 }}
+    >
       <Typography variant="h4" gutterBottom>
         Daily Planner
       </Typography>
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        mb={2}
+      >
         <Typography variant="h6" fontWeight="bold">
           Schedule
         </Typography>
-        <Box>
-          <Button variant="contained" color="primary" onClick={manageBudget} sx={{ mr: 2 }}>
-            Manage Budget
-          </Button>
-          <Button variant="contained" color="primary" onClick={addActivity}>
-            Add Attractions
-          </Button>
-        </Box>
+        {showActions && (
+          <Box>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={manageBudget}
+              sx={{ mr: 2 }}
+            >
+              Manage Budget
+            </Button>
+            <Button variant="contained" color="primary" onClick={addActivity}>
+              Add Attractions
+            </Button>
+          </Box>
+        )}
       </Box>
-      <Stack direction="row" spacing={2} justifyContent="space-between" alignItems="center" mb={2}>
+      <Stack
+        direction="row"
+        spacing={2}
+        justifyContent="space-between"
+        alignItems="center"
+        mb={2}
+      >
         <Pagination
           count={tripDuration}
           page={page}
@@ -134,7 +163,10 @@ const TripSchedulePage: React.FC = () => {
       ) : error ? (
         <Typography>Error: {error}</Typography>
       ) : (
-        <TableContainer component={Paper} sx={{ backgroundColor: '#fff', borderRadius: 2 }}>
+        <TableContainer
+          component={Paper}
+          sx={{ backgroundColor: "#fff", borderRadius: 2 }}
+        >
           <Table>
             <TableHead>
               <TableRow>
@@ -143,7 +175,7 @@ const TripSchedulePage: React.FC = () => {
                 <TableCell>Description</TableCell>
                 <TableCell>Participants</TableCell>
                 <TableCell>Total Cost</TableCell>
-                <TableCell align="center">Actions</TableCell>
+                {showActions && <TableCell align="center">Actions</TableCell>}
               </TableRow>
             </TableHead>
             <TableBody>
@@ -167,20 +199,30 @@ const TripSchedulePage: React.FC = () => {
                     <TableCell>
                       <Typography>${activity.cost}</Typography>
                     </TableCell>
-                    <TableCell align="center">
-                      <IconButton color="primary" onClick={() => handleEdit(activity)}>
-                        <Edit />
-                      </IconButton>
-                      <IconButton color="secondary" onClick={() => handleDelete(activity._id)}>
-                        <Delete />
-                      </IconButton>
-                    </TableCell>
+                    {showActions && (
+                      <TableCell align="center">
+                        <IconButton
+                          color="primary"
+                          onClick={() => handleEdit(activity)}
+                        >
+                          <Edit />
+                        </IconButton>
+                        <IconButton
+                          color="secondary"
+                          onClick={() => handleDelete(activity._id)}
+                        >
+                          <Delete />
+                        </IconButton>
+                      </TableCell>
+                    )}
                   </TableRow>
                 ))
               ) : (
                 <TableRow>
                   <TableCell colSpan={6} align="center">
-                    <Typography>No activities scheduled for this day.</Typography>
+                    <Typography>
+                      No activities scheduled for this day.
+                    </Typography>
                   </TableCell>
                 </TableRow>
               )}
@@ -189,10 +231,13 @@ const TripSchedulePage: React.FC = () => {
           <Dialog open={open} onClose={handleClose} maxWidth="lg" fullWidth>
             <DialogTitle>Edit Your Activity</DialogTitle>
             <DialogContent>
-              <CreateActivityPage trip={trip} activityToEdit={editingActivity} onClose={handleClose} />
+              <CreateActivityPage
+                trip={trip}
+                activityToEdit={editingActivity}
+                onClose={handleClose}
+              />
             </DialogContent>
-            <DialogActions>
-            </DialogActions>
+            <DialogActions></DialogActions>
           </Dialog>
         </TableContainer>
       )}

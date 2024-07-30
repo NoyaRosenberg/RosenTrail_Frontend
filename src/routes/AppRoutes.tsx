@@ -76,14 +76,7 @@ const AppRoutes: React.FC = () => {
           </ProtectedRoute>
         }
       />
-      <Route
-        path="/schedule"
-        element={
-          <ProtectedRoute>
-            <SchedulePage />
-          </ProtectedRoute>
-        }
-      />
+      <Route path="/schedule" element={<SchedulePage />} />
       <Route
         path="/profile"
         element={
@@ -97,14 +90,6 @@ const AppRoutes: React.FC = () => {
         element={
           <ProtectedRoute>
             <BudgetPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/schedule"
-        element={
-          <ProtectedRoute>
-            <SchedulePage />
           </ProtectedRoute>
         }
       />

@@ -57,7 +57,7 @@ const TripDialog: React.FC<TripDialogProps> = ({
   }, [trip]);
 
   const showSchedule = () => {
-    navigate("/schedule", { state: { trip } });
+    navigate("/schedule", { state: { trip, showActions } });
   };
 
   const handleAddActivity = () => {
