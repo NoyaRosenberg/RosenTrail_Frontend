@@ -39,7 +39,7 @@ const AppRoutes: React.FC = () => {
           <TripsPage
             trips={communityTrips}
             fetchTrips={fetchCommunityTrips}
-            includeAddTrip={false}
+            isCommunityTrips={true}
             title="Community Trips"
             subTitle="Search for a trip and get ideas to plan your next journey"
           />
@@ -52,7 +52,7 @@ const AppRoutes: React.FC = () => {
             <TripsPage
               trips={userTrips}
               fetchTrips={fetchUserTrips}
-              includeAddTrip={true}
+              isCommunityTrips={false}
               title="My Wonderful Trips"
               subTitle="Create a new trip or enter your former trip to edit, 
               publish or print pictures from your wonderful trips"

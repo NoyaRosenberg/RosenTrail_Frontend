@@ -8,11 +8,11 @@ import React from "react";
 
 export interface TripsGridProps {
   trips: Trip[];
-  includeAddTrip: boolean;
+  isCommunityTrips: boolean;
   fetchTrips: () => void;
 }
 
-const TripsGrid = ({ trips, includeAddTrip, fetchTrips }: TripsGridProps) => {
+const TripsGrid = ({ trips, isCommunityTrips, fetchTrips }: TripsGridProps) => {
   const [isTripDialogOpen, setIsTripDialogOpen] = useState<boolean>(false);
   const [selectedTrip, setSelectedTrip] = useState<Trip | null>(null);
   const navigate = useNavigate();
@@ -39,7 +39,7 @@ const TripsGrid = ({ trips, includeAddTrip, fetchTrips }: TripsGridProps) => {
         display="flex"
         justifyContent={trips.length == 0 ? "center" : ""}
       >
-        {includeAddTrip && (
+        {!isCommunityTrips && (
           <Grid item xs={12} sm={6} md={4} sx={{ display: "flex" }}>
             <PlaceCard
               name="New Trip"
@@ -65,9 +65,10 @@ const TripsGrid = ({ trips, includeAddTrip, fetchTrips }: TripsGridProps) => {
       {selectedTrip && (
         <TripDialog
           open={isTripDialogOpen}
-          onClose={onDialogClose}
           trip={selectedTrip}
           price={299}
+          showActions={!isCommunityTrips}
+          onClose={onDialogClose}
           onDelete={fetchTrips}
         />
       )}

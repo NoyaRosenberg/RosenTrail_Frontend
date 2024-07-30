@@ -10,7 +10,7 @@ export interface TripsPageProps {
   trips: Trip[];
   title: string;
   subTitle: string;
-  includeAddTrip: boolean;
+  isCommunityTrips: boolean;
   fetchTrips: () => void;
 }
 
@@ -18,7 +18,7 @@ const TripsPage = ({
   trips,
   title,
   subTitle,
-  includeAddTrip,
+  isCommunityTrips,
   fetchTrips,
 }: TripsPageProps) => {
   const { loading, error } = useTrips();
@@ -73,7 +73,7 @@ const TripsPage = ({
         ) : error ? (
           <Typography color="error">{error}</Typography>
         ) : (
-          <TripsGrid trips={filteredTrips} includeAddTrip={includeAddTrip} fetchTrips={fetchTrips} />
+          <TripsGrid trips={filteredTrips} isCommunityTrips={isCommunityTrips} fetchTrips={fetchTrips} />
         )}
       </Box>
     </Container>

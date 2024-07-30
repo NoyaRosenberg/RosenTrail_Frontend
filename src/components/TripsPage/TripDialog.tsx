@@ -25,6 +25,7 @@ type TripDialogProps = {
   trip: Trip;
   price: number;
   open: boolean;
+  showActions: boolean;
   onClose: () => void;
   onDelete: () => void;
 };
@@ -33,6 +34,7 @@ const TripDialog: React.FC<TripDialogProps> = ({
   trip,
   price,
   open,
+  showActions,
   onClose,
   onDelete,
 }) => {
@@ -172,44 +174,48 @@ const TripDialog: React.FC<TripDialogProps> = ({
                           {price} €
                         </Typography>
                       </Box>
-                      <Stack>
-                        <Divider />
-                        <Box display="flex" justifyContent="center" gap={2}>
-                          <Box className="icon-text">
-                            <Typography variant="body1">
-                              Add Activity
-                            </Typography>
-                            <IconButton
-                              color="primary"
-                              onClick={handleAddActivity}
-                            >
-                              <AddCircle />
-                            </IconButton>
+                      {showActions && (
+                        <Stack>
+                          <Divider />
+                          <Box display="flex" justifyContent="center" gap={2}>
+                            <Box className="icon-text">
+                              <Typography variant="body1">
+                                Add Activity
+                              </Typography>
+                              <IconButton
+                                color="primary"
+                                onClick={handleAddActivity}
+                              >
+                                <AddCircle />
+                              </IconButton>
+                            </Box>
+                            <Divider
+                              orientation="vertical"
+                              variant="middle"
+                              flexItem
+                            />
+                            <Box className="icon-text">
+                              <Typography variant="body1">Edit Trip</Typography>
+                              <IconButton color="primary" onClick={handleEdit}>
+                                <Edit />
+                              </IconButton>
+                            </Box>
+                            <Divider
+                              orientation="vertical"
+                              variant="middle"
+                              flexItem
+                            />
+                            <Box className="icon-text">
+                              <Typography variant="body1">
+                                Delete Trip
+                              </Typography>
+                              <IconButton color="error" onClick={handleDelete}>
+                                <Delete />
+                              </IconButton>
+                            </Box>
                           </Box>
-                          <Divider
-                            orientation="vertical"
-                            variant="middle"
-                            flexItem
-                          />
-                          <Box className="icon-text">
-                            <Typography variant="body1">Edit Trip</Typography>
-                            <IconButton color="primary" onClick={handleEdit}>
-                              <Edit />
-                            </IconButton>
-                          </Box>
-                          <Divider
-                            orientation="vertical"
-                            variant="middle"
-                            flexItem
-                          />
-                          <Box className="icon-text">
-                            <Typography variant="body1">Delete Trip</Typography>
-                            <IconButton color="error" onClick={handleDelete}>
-                              <Delete />
-                            </IconButton>
-                          </Box>
-                        </Box>
-                      </Stack>
+                        </Stack>
+                      )}
                     </Stack>
                   </Stack>
                 </Stack>
