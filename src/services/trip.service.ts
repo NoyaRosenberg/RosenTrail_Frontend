@@ -10,7 +10,7 @@ export interface Trip {
   participantsId?: string[];
   description?: string;
   imgUrl?: string;
-  public: boolean;
+  isPublic: boolean;
 }
 
 class TripService {
