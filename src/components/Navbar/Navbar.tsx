@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Typography, ButtonGroup, Button } from "@mui/material";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import AccountMenu from "./AccountMenu";
 import "../../styles/Navbar.css";
 
@@ -9,8 +9,6 @@ export interface NavbarProps {
 }
 
 const Navbar = ({ isUserLoggedIn }: NavbarProps) => {
-  const navigate = useNavigate();
-
   return (
     <Box className="navbar-container">
       <Typography variant="h5" component="a" href="" className="navbar-title">
@@ -23,6 +21,9 @@ const Navbar = ({ isUserLoggedIn }: NavbarProps) => {
             className="button-group"
             aria-label="Basic button group"
           >
+            <Button component={Link} to="/communityTrips">
+              Community Trips
+            </Button>
             <Button component={Link} to="/signin">
               Login
             </Button>
@@ -32,13 +33,12 @@ const Navbar = ({ isUserLoggedIn }: NavbarProps) => {
           </ButtonGroup>
         ) : (
           <Box display="flex" alignItems="center" gap="5">
-            <Button
-              variant="outlined"
-              sx={{ height: "90%", paddingRight: "30px", paddingLeft: "30px" }}
-              onClick={() => navigate("/trips")}
-            >
-              My Trips
-            </Button>
+            <ButtonGroup variant="outlined" aria-label="Basic button group">
+              <Button component={Link} to="/communityTrips">
+                Community Trips
+              </Button>
+              <Button component={Link} to="/trips">My Trips</Button>
+            </ButtonGroup>
             <AccountMenu />
           </Box>
         )}

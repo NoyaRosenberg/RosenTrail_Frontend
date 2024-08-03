@@ -9,6 +9,7 @@ import {
   DialogContent,
   Stack,
   Divider,
+  Chip,
 } from "@mui/material";
 import { Delete, Edit, AddCircle } from "@mui/icons-material";
 import CloseIcon from "@mui/icons-material/Close";
@@ -25,6 +26,7 @@ type TripDialogProps = {
   trip: Trip;
   price: number;
   open: boolean;
+  showActions: boolean;
   onClose: () => void;
   onDelete: () => void;
 };
@@ -33,6 +35,7 @@ const TripDialog: React.FC<TripDialogProps> = ({
   trip,
   price,
   open,
+  showActions,
   onClose,
   onDelete,
 }) => {
@@ -55,7 +58,7 @@ const TripDialog: React.FC<TripDialogProps> = ({
   }, [trip]);
 
   const showSchedule = () => {
-    navigate("/schedule", { state: { trip } });
+    navigate("/schedule", { state: { trip, showActions } });
   };
 
   const handleAddActivity = () => {
@@ -131,25 +134,39 @@ const TripDialog: React.FC<TripDialogProps> = ({
                 paddingRight="80px"
                 paddingBottom="40px"
               >
-                <Stack spacing={3}>
-                  <Stack>
-                    <Typography variant="h4" gutterBottom>
-                      {trip.destinations.join(", ")}
-                    </Typography>
+                <Stack spacing={5}>
+                  <Stack spacing={1}>
+                    <Stack>
+                      <Box
+                        display="flex"
+                        justifyContent="space-between"
+                        alignItems="center"
+                      >
+                        <Typography variant="h4" gutterBottom>
+                          {trip.destinations.join(", ")}
+                        </Typography>
+                        <Chip
+                          key="accessMode"
+                          label={trip.isPublic ? "public" : "private"}
+                          color="default"
+                          sx={{ marginBottom: "0.35em" }}
+                        />
+                      </Box>
+                      <Typography
+                        variant="body1"
+                        sx={{ fontSize: 16, color: "#666" }}
+                        gutterBottom
+                      >
+                        {trip.description}
+                      </Typography>
+                    </Stack>
                     <Typography
                       variant="body1"
-                      sx={{ fontSize: 16, color: "#666" }}
-                      gutterBottom
+                      sx={{ fontSize: 16, color: "#a4a2a2", marginTop: "5px" }}
                     >
-                      {trip.description}
+                      {formatDate(trip.startDate)} - {formatDate(trip.endDate)}
                     </Typography>
                   </Stack>
-                  <Typography
-                    variant="body1"
-                    sx={{ fontSize: 16, color: "#666" }}
-                  >
-                    {formatDate(trip.startDate)} - {formatDate(trip.endDate)}
-                  </Typography>
                   {error ? (
                     <Typography>Failed To fetch participants</Typography>
                   ) : (
@@ -172,44 +189,48 @@ const TripDialog: React.FC<TripDialogProps> = ({
                           {price} €
                         </Typography>
                       </Box>
-                      <Stack>
-                        <Divider />
-                        <Box display="flex" justifyContent="center" gap={2}>
-                          <Box className="icon-text">
-                            <Typography variant="body1">
-                              Add Activity
-                            </Typography>
-                            <IconButton
-                              color="primary"
-                              onClick={handleAddActivity}
-                            >
-                              <AddCircle />
-                            </IconButton>
+                      {showActions && (
+                        <Stack>
+                          <Divider />
+                          <Box display="flex" justifyContent="center" gap={2}>
+                            <Box className="icon-text">
+                              <Typography variant="body1">
+                                Add Activity
+                              </Typography>
+                              <IconButton
+                                color="primary"
+                                onClick={handleAddActivity}
+                              >
+                                <AddCircle />
+                              </IconButton>
+                            </Box>
+                            <Divider
+                              orientation="vertical"
+                              variant="middle"
+                              flexItem
+                            />
+                            <Box className="icon-text">
+                              <Typography variant="body1">Edit Trip</Typography>
+                              <IconButton color="primary" onClick={handleEdit}>
+                                <Edit />
+                              </IconButton>
+                            </Box>
+                            <Divider
+                              orientation="vertical"
+                              variant="middle"
+                              flexItem
+                            />
+                            <Box className="icon-text">
+                              <Typography variant="body1">
+                                Delete Trip
+                              </Typography>
+                              <IconButton color="error" onClick={handleDelete}>
+                                <Delete />
+                              </IconButton>
+                            </Box>
                           </Box>
-                          <Divider
-                            orientation="vertical"
-                            variant="middle"
-                            flexItem
-                          />
-                          <Box className="icon-text">
-                            <Typography variant="body1">Edit Trip</Typography>
-                            <IconButton color="primary" onClick={handleEdit}>
-                              <Edit />
-                            </IconButton>
-                          </Box>
-                          <Divider
-                            orientation="vertical"
-                            variant="middle"
-                            flexItem
-                          />
-                          <Box className="icon-text">
-                            <Typography variant="body1">Delete Trip</Typography>
-                            <IconButton color="error" onClick={handleDelete}>
-                              <Delete />
-                            </IconButton>
-                          </Box>
-                        </Box>
-                      </Stack>
+                        </Stack>
+                      )}
                     </Stack>
                   </Stack>
                 </Stack>
