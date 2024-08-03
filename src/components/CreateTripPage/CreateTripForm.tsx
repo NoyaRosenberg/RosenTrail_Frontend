@@ -6,6 +6,11 @@ import {
   Grid,
   Autocomplete,
   Typography,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
 } from "@mui/material";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -19,7 +24,7 @@ import tripService from "../../services/trip.service";
 import userService, { User } from "../../services/user.service";
 
 const CreateTripForm: React.FC = () => {
-  const { fetchTrips } = useTrips();
+  const { fetchUserTrips } = useTrips();
   const [currentDestination, setCurrentDestination] = useState("");
   const [currentParticipant, setCurrentParticipant] = useState("");
   const [trip, setTrip] = useState({
@@ -29,6 +34,7 @@ const CreateTripForm: React.FC = () => {
     participants: [] as string[],
     ownerId:
       JSON.parse(localStorage.getItem("currentUser") || "{}")?.userId || "",
+    isPublic: true,
   });
   const [error, setError] = useState<string | null>(null);
   const [userNotFoundError, setUserNotFoundError] = useState<string | null>(
@@ -43,9 +49,12 @@ const CreateTripForm: React.FC = () => {
     }));
   };
 
-  const updateParticipants = async (event: unknown, newParticipants: string[]) => {
+  const updateParticipants = async (
+    event: unknown,
+    newParticipants: string[]
+  ) => {
     setUserNotFoundError(null);
-    
+
     const lastParticipantEmail = newParticipants[newParticipants.length - 1];
 
     try {
@@ -56,7 +65,6 @@ const CreateTripForm: React.FC = () => {
         ...trip,
         participants: newParticipants,
       }));
-      
     } catch (error) {
       setUserNotFoundError(error.message);
     }
@@ -77,8 +85,16 @@ const CreateTripForm: React.FC = () => {
     }));
   };
 
+  const handlePublicChange = (event: SelectChangeEvent) => {
+    setTrip((prevTrip) => ({
+      ...prevTrip,
+      isPublic: event.target.value === "true",
+    }));
+  };
+
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
+
     if (!trip.startDate || !trip.endDate) {
       setError("Start date and end date must be chosen.");
       return;
@@ -93,8 +109,10 @@ const CreateTripForm: React.FC = () => {
     }
 
     setError(null);
+
     try {
       const updatedDestinations = [...trip.destinations];
+
       if (
         currentDestination &&
         !updatedDestinations.includes(currentDestination)
@@ -109,6 +127,7 @@ const CreateTripForm: React.FC = () => {
       ) {
         updatedParticipants.push(currentParticipant);
       }
+
       const cleanedTrip = {
         ...trip,
         participants: updatedParticipants.map((participant: string) =>
@@ -118,9 +137,10 @@ const CreateTripForm: React.FC = () => {
           destination ? destination.trim() : ""
         ),
       };
+
       await tripService.createTrip(cleanedTrip);
       toast.success("Trip created successfully");
-      fetchTrips();
+      fetchUserTrips();
       navigate("/trips");
     } catch (error) {
       toast.error("Failed to create trip");
@@ -148,6 +168,32 @@ const CreateTripForm: React.FC = () => {
               value={trip.startDate}
               onChange={(date) => handleDateChange(date, "startDate")}
               renderInput={(params) => <TextField {...params} fullWidth />}
+              PopperProps={{
+                placement: "top",
+                modifiers: [
+                  {
+                    name: "offset",
+                    options: {
+                      offset: [0, -10],
+                    },
+                  },
+                  {
+                    name: "flip",
+                    options: {
+                      fallbackPlacements: ["bottom"],
+                    },
+                  },
+                  {
+                    name: "preventOverflow",
+                    options: {
+                      altAxis: true,
+                      altBoundary: true,
+                      tether: true,
+                      rootBoundary: "document",
+                    },
+                  },
+                ],
+              }}
             />
           </Grid>
           <Grid item xs={6}>
@@ -156,9 +202,35 @@ const CreateTripForm: React.FC = () => {
               value={trip.endDate}
               onChange={(date) => handleDateChange(date, "endDate")}
               renderInput={(params) => <TextField {...params} fullWidth />}
+              PopperProps={{
+                placement: "top",
+                modifiers: [
+                  {
+                    name: "offset",
+                    options: {
+                      offset: [0, -10],
+                    },
+                  },
+                  {
+                    name: "flip",
+                    options: {
+                      fallbackPlacements: ["bottom"],
+                    },
+                  },
+                  {
+                    name: "preventOverflow",
+                    options: {
+                      altAxis: true,
+                      altBoundary: true,
+                      tether: true,
+                      rootBoundary: "document",
+                    },
+                  },
+                ],
+              }}
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid item xs={6}>
             <Autocomplete
               multiple
               id="tags-filled"
@@ -177,6 +249,21 @@ const CreateTripForm: React.FC = () => {
                 />
               )}
             />
+          </Grid>
+          <Grid item xs={6}>
+            <FormControl fullWidth>
+              <InputLabel id="public-select-label">Access Mode</InputLabel>
+              <Select
+                labelId="public-select-label"
+                id="public-select"
+                value={trip.isPublic.toString()}
+                label="Access Mode"
+                onChange={handlePublicChange}
+              >
+                <MenuItem value="true">public</MenuItem>
+                <MenuItem value="false">private</MenuItem>
+              </Select>
+            </FormControl>
           </Grid>
           <Grid item xs={12}>
             <Autocomplete

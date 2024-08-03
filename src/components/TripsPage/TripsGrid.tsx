@@ -8,10 +8,11 @@ import React from "react";
 
 export interface TripsGridProps {
   trips: Trip[];
+  isCommunityTrips: boolean;
   fetchTrips: () => void;
 }
 
-const TripsGrid = ({ trips, fetchTrips }: TripsGridProps) => {
+const TripsGrid = ({ trips, isCommunityTrips, fetchTrips }: TripsGridProps) => {
   const [isTripDialogOpen, setIsTripDialogOpen] = useState<boolean>(false);
   const [selectedTrip, setSelectedTrip] = useState<Trip | null>(null);
   const navigate = useNavigate();
@@ -38,15 +39,17 @@ const TripsGrid = ({ trips, fetchTrips }: TripsGridProps) => {
         display="flex"
         justifyContent={trips.length == 0 ? "center" : ""}
       >
-        <Grid item xs={12} sm={6} md={4} sx={{ display: "flex" }}>
-          <PlaceCard
-            name="New Trip"
-            description="Create a new wonderful plan!"
-            image="/public/createTripBackground.jpeg"
-            isNew={true}
-            onCardClick={createNewTripClick}
-          />
-        </Grid>
+        {!isCommunityTrips && (
+          <Grid item xs={12} sm={6} md={4} sx={{ display: "flex" }}>
+            <PlaceCard
+              name="New Trip"
+              description="Create a new wonderful plan!"
+              image="/public/createTripBackground.jpeg"
+              isNew={true}
+              onCardClick={createNewTripClick}
+            />
+          </Grid>
+        )}
 
         {trips.map((trip, index) => (
           <Grid item xs={12} sm={6} md={4} key={index} sx={{ display: "flex" }}>
@@ -62,9 +65,10 @@ const TripsGrid = ({ trips, fetchTrips }: TripsGridProps) => {
       {selectedTrip && (
         <TripDialog
           open={isTripDialogOpen}
-          onClose={onDialogClose}
           trip={selectedTrip}
           price={299}
+          showActions={!isCommunityTrips}
+          onClose={onDialogClose}
           onDelete={fetchTrips}
         />
       )}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, ChangeEvent } from 'react';
+import React, { useState, useEffect, ChangeEvent } from "react";
 import {
   Container,
   Stack,
@@ -20,17 +20,20 @@ import {
 import { alpha } from '@mui/material/styles';
 import { Delete, Edit } from '@mui/icons-material';
 import "../../styles/Forms.css";
-import '../../styles/TripDialog.css';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { useActivities } from '../../contexts/ActivityProvider';
-import { Activity } from '../../services/activity.service';
-import { Trip } from '../../services/trip.service';
-import CreateActivityPage from '../CreateActivityPage/CreateActivityPage';
+import "../../styles/TripDialog.css";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useActivities } from "../../contexts/ActivityProvider";
+import { Activity } from "../../services/activity.service";
+import { Trip } from "../../services/trip.service";
+import CreateActivityPage from "../CreateActivityPage/CreateActivityPage";
 
 const TripSchedulePage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { trip } = location.state as { trip: Trip };
+  const { trip, showActions } = location.state as {
+    trip: Trip;
+    showActions: boolean;
+  };
   const { activities, loading, error, fetchActivities } = useActivities();
   const [page, setPage] = useState(1);
   const [currentActivities, setCurrentActivities] = useState<Activity[]>([]);
@@ -38,7 +41,7 @@ const TripSchedulePage: React.FC = () => {
   const [editingActivity, setEditingActivity] = useState<Activity | null>(null);
 
   useEffect(() => {
-    fetchActivities(trip._id ?? '');
+    fetchActivities(trip._id ?? "");
   }, [trip._id, fetchActivities]);
 
   useEffect(() => {
@@ -75,16 +78,19 @@ const TripSchedulePage: React.FC = () => {
 
   const handleClose = async () => {
     setOpen(false);
-    await fetchActivities(trip._id ?? '');
+    await fetchActivities(trip._id ?? "");
   };
 
   const handleDelete = async (activityId: string) => {
     try {
-      const response = await fetch(`http://localhost:3000/activities/${activityId}`, {
-        method: "DELETE",
-      });
+      const response = await fetch(
+        `http://localhost:3000/activities/${activityId}`,
+        {
+          method: "DELETE",
+        }
+      );
       if (response.ok) {
-        fetchActivities(trip._id ?? ''); // Refresh activities list
+        fetchActivities(trip._id ?? ""); // Refresh activities list
       } else {
         console.error("Failed to delete activity");
       }
@@ -100,22 +106,37 @@ const TripSchedulePage: React.FC = () => {
   };
 
   return (
-    <Container maxWidth="lg" sx={{ mt: 4, backgroundColor: '#f5e3ce', padding: 2, borderRadius: 2 }}>
+    <Container
+      maxWidth="lg"
+      sx={{ mt: 4, backgroundColor: "#f5e3ce", padding: 2, borderRadius: 2 }}
+    >
       <Typography variant="h4" gutterBottom>
         Daily Planner
       </Typography>
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        mb={2}
+      >
         <Typography variant="h6" fontWeight="bold">
           Schedule
         </Typography>
-        <Box>
-          <Button variant="contained" color="primary" onClick={manageBudget} sx={{ mr: 2 }}>
-            Manage Budget
-          </Button>
-          <Button variant="contained" color="primary" onClick={addActivity}>
-            Add Attractions
-          </Button>
-        </Box>
+        {showActions && (
+          <Box>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={manageBudget}
+              sx={{ mr: 2 }}
+            >
+              Manage Budget
+            </Button>
+            <Button variant="contained" color="primary" onClick={addActivity}>
+              Add Attractions
+            </Button>
+          </Box>
+        )}
       </Box>
       <Box display="flex">
         <List sx={{ minWidth: 150, mr: 4 }}>
@@ -207,3 +228,4 @@ const TripSchedulePage: React.FC = () => {
 };
 
 export default TripSchedulePage;
+

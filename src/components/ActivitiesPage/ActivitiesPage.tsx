@@ -72,7 +72,7 @@ const ActivitiesPage: React.FC = () => {
   };
 
   const goBackToSchedule = () => {
-    navigate("/schedule", { state: { trip } });
+    navigate("/schedule", { state: { trip, showActions: true } });
   };
 
   return (
