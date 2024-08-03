@@ -9,6 +9,7 @@ import {
   DialogContent,
   Stack,
   Divider,
+  Chip,
 } from "@mui/material";
 import { Delete, Edit, AddCircle } from "@mui/icons-material";
 import CloseIcon from "@mui/icons-material/Close";
@@ -133,25 +134,39 @@ const TripDialog: React.FC<TripDialogProps> = ({
                 paddingRight="80px"
                 paddingBottom="40px"
               >
-                <Stack spacing={3}>
-                  <Stack>
-                    <Typography variant="h4" gutterBottom>
-                      {trip.destinations.join(", ")}
-                    </Typography>
+                <Stack spacing={5}>
+                  <Stack spacing={1}>
+                    <Stack>
+                      <Box
+                        display="flex"
+                        justifyContent="space-between"
+                        alignItems="center"
+                      >
+                        <Typography variant="h4" gutterBottom>
+                          {trip.destinations.join(", ")}
+                        </Typography>
+                        <Chip
+                          key="accessMode"
+                          label={trip.isPublic ? "public" : "private"}
+                          color="default"
+                          sx={{ marginBottom: "0.35em" }}
+                        />
+                      </Box>
+                      <Typography
+                        variant="body1"
+                        sx={{ fontSize: 16, color: "#666" }}
+                        gutterBottom
+                      >
+                        {trip.description}
+                      </Typography>
+                    </Stack>
                     <Typography
                       variant="body1"
-                      sx={{ fontSize: 16, color: "#666" }}
-                      gutterBottom
+                      sx={{ fontSize: 16, color: "#a4a2a2", marginTop: "5px" }}
                     >
-                      {trip.description}
+                      {formatDate(trip.startDate)} - {formatDate(trip.endDate)}
                     </Typography>
                   </Stack>
-                  <Typography
-                    variant="body1"
-                    sx={{ fontSize: 16, color: "#666" }}
-                  >
-                    {formatDate(trip.startDate)} - {formatDate(trip.endDate)}
-                  </Typography>
                   {error ? (
                     <Typography>Failed To fetch participants</Typography>
                   ) : (
