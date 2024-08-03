@@ -8,6 +8,10 @@ import {
   Avatar,
   Box,
   IconButton,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
 } from "@mui/material";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
@@ -213,7 +217,7 @@ const EditTripForm = ({ trip, participants }: EditTripFormProps) => {
                 )}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={6}>
               <Autocomplete
                 multiple
                 id="tags-filled"
@@ -240,6 +244,21 @@ const EditTripForm = ({ trip, participants }: EditTripFormProps) => {
                 )}
               />
             </Grid>
+            <Grid item xs={6}>
+            <FormControl fullWidth>
+              <InputLabel id="public-select-label">Access Mode</InputLabel>
+              <Select
+                labelId="public-select-label"
+                id="public-select"
+                value={updatedTrip.isPublic.toString()}
+                label="Access Mode"
+                onChange={event => handleChange('isPublic', event.target.value === 'true')}
+              >
+                <MenuItem value="true">public</MenuItem>
+                <MenuItem value="false">private</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
             <Grid item xs={12}>
               <Autocomplete
                 multiple
