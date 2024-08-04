@@ -10,6 +10,7 @@ import recommendationService, {
   Recommendation,
 } from "../../services/recommendation.service";
 import CardsSkeleton from "../Skeletons/CardsSkeleton";
+import activityService from "../../services/activity.service";
 
 const ActivitiesPage: React.FC = () => {
   const location = useLocation();
@@ -30,6 +31,7 @@ const ActivitiesPage: React.FC = () => {
       try {
         const recommendations =
           await recommendationService.getRecommendations();
+          await activityService.getActivitiesFromAI(['junk food', 'kid friendly'], 'new york');
         setRecommendations(recommendations!);
         setFilteredRecommendations(recommendations!);
         setLoading(false);

@@ -27,6 +27,15 @@ class ActivityService {
     }
   }
 
+  async getActivitiesFromAI(recommendations: string[], activityLocation: string) {
+    try {
+      const response = await axios.post(`${this.baseURL}get-activities-from-ai`, { recommendations, activityLocation });
+      return response.data;
+    } catch (error) {
+      this.handleError(error);
+    }
+  }
+
   async addActivity(activity: Activity): Promise<Activity | void> {
     try {
       const response = await axios.post<Activity>(this.baseURL, activity);
