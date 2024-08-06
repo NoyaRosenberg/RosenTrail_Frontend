@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Box, Container, Stack, Typography, Button } from "@mui/material";
+import { Box, Container, Stack, Typography, Button, Grid } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Schedule } from '@mui/icons-material';
+import { Schedule } from "@mui/icons-material";
 import RecommendationsGrid from "./RecommendationsGrid";
-import SearchBar from "../SearchBar";
+// import SearchBar from "../SearchBar";
 import ActivityFilters from "./ActivityFilters";
 import recommendationService, {
   Category,
@@ -11,6 +11,8 @@ import recommendationService, {
 } from "../../services/recommendation.service";
 import CardsSkeleton from "../Skeletons/CardsSkeleton";
 import activityService from "../../services/activity.service";
+import MapComponent from "./Map";
+import "../../styles/ActivitiesPage.css";
 
 const ActivitiesPage: React.FC = () => {
   const location = useLocation();
@@ -31,7 +33,10 @@ const ActivitiesPage: React.FC = () => {
       try {
         const recommendations =
           await recommendationService.getRecommendations();
-          await activityService.getActivitiesFromAI(['junk food', 'kid friendly'], 'new york');
+        await activityService.getActivitiesFromAI(
+          ["junk food", "kid friendly"],
+          "new york"
+        );
         setRecommendations(recommendations!);
         setFilteredRecommendations(recommendations!);
         setLoading(false);
@@ -63,10 +68,10 @@ const ActivitiesPage: React.FC = () => {
     setFilteredRecommendations(newFilteredRecommendations);
   };
 
-  const onActivitySearch = (search: string) => {
-    setSearchValue(search);
-    applyFilters(selectedFilters, search);
-  };
+  // const onActivitySearch = (search: string) => {
+  //   setSearchValue(search);
+  //   applyFilters(selectedFilters, search);
+  // };
 
   const filterRecommendations = (filters: Category[]) => {
     setSelectedFilters(filters);
@@ -78,52 +83,67 @@ const ActivitiesPage: React.FC = () => {
   };
 
   return (
-    <Container sx={{ paddingTop: "14px", paddingBottom: "14px" }}>
-      <Stack spacing={8} sx={{ marginTop: 5 }}>
-        <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Typography variant="h3" sx={{ fontSize: 20, color: "#333" }}>
-            Search For Attractions In New York
-          </Typography>
-          <Button
-            variant="contained"
-            color="primary"
-            startIcon={<Schedule />}
-            onClick={goBackToSchedule}
-          >
-            Trip Schedule
-          </Button>
-        </Box>
-        <Stack spacing={2}>
-          <SearchBar
-            placeholder="Search for Attractions..."
-            onSearch={onActivitySearch}
-          />
-          <ActivityFilters onFilterSelected={filterRecommendations} />
-        </Stack>
-        <Stack spacing={2} sx={{ alignItems: "flex-start", width: "100%" }}>
-          <Typography variant="h3" sx={{ fontSize: 20, color: "#333" }}>
-            Recommendations For Attractions
-          </Typography>
-          <Typography variant="body1" sx={{ color: "#666" }}>
-            Click an activity to add it to your trip!
-          </Typography>
-          {loading ? (
-            <CardsSkeleton numInRow={4} />
-          ) : error ? (
-            <Typography color="error">
-              Failed To Fetch recommendations
-            </Typography>
-          ) : (
-            <Box sx={{ width: "100%" }}>
-              <RecommendationsGrid
-                recommendations={filteredRecommendations}
-                trip={trip}
-              />
-            </Box>
-          )}
-        </Stack>
-      </Stack>
-    </Container>
+    <Grid container sx={{ height: '100vh', overflow: 'hidden' }}>
+      <Grid item xs={7} sx={{ height: '100%' }}>
+        <Container sx={{ paddingTop: "20px", paddingBottom: "10px" }}>
+          <Stack spacing={5}>
+            <Stack spacing={3}>
+              <Box
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+              >
+                <Typography variant="h3" sx={{ fontSize: 20, color: "#333" }}>
+                  Search For Attractions In New York
+                </Typography>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  startIcon={<Schedule />}
+                  onClick={goBackToSchedule}
+                >
+                  Trip Schedule
+                </Button>
+              </Box>
+              <Stack spacing={2}>
+                {/* <SearchBar
+                placeholder="Search for Attractions..."
+                onSearch={onActivitySearch}
+              /> */}
+                <ActivityFilters onFilterSelected={filterRecommendations} />
+              </Stack>
+            </Stack>
+            <Stack spacing={2} sx={{ alignItems: "flex-start", width: "100%" }}>
+              <Stack>
+                <Typography variant="h3" sx={{ fontSize: 20, color: "#333" }}>
+                  Recommendations For Attractions
+                </Typography>
+                <Typography variant="body1" sx={{ color: "#666" }}>
+                  Click an activity to add it to your trip!
+                </Typography>
+              </Stack>
+              {loading ? (
+                <CardsSkeleton numInRow={4} />
+              ) : error ? (
+                <Typography color="error">
+                  Failed To Fetch recommendations
+                </Typography>
+              ) : (
+                <Box className="scrollable" sx={{ width: "100%", height: "40vh", overflowY: "auto" }}>
+                  <RecommendationsGrid
+                    recommendations={filteredRecommendations}
+                    trip={trip}
+                  />
+                </Box>
+              )}
+            </Stack>
+          </Stack>
+        </Container>
+      </Grid>
+      <Grid item xs={5}>
+        <MapComponent />
+      </Grid>
+    </Grid>
   );
 };
 

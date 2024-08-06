@@ -4,8 +4,26 @@
   box-sizing: border-box;
   font-family: 'Nunito', sans-serif !important;
 }
+
 html, body, #root {
   height: 100%;
   font-family: 'Nunito', sans-serif !important;
   background-color: #FEFEFE;
+}
+
+/* Scrollbar css */
+.scrollable::-webkit-scrollbar {
+  width: 8px;
+}
+
+.scrollable::-webkit-scrollbar-track {
+  background-color: #f0f0f0;
+}
+
+.scrollable::-webkit-scrollbar-thumb {
+  background-color: #c1c1c1;
+  border-radius: 4px;
+  &:hover {
+    background-color: #a8a8a8;
+  }
 }
