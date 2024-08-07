@@ -29,7 +29,7 @@ const ActivitiesPage: React.FC = () => {
   useEffect(() => {
     const getRecommendations = async () => {
       try {
-        const recommendations = await activityService.getActivitiesFromAI(['junk food', 'kid friendly'], 'new york');
+        const recommendations = await activityService.getActivitiesFromAI(['fun'], trip.destinations);
           // await recommendationService.getRecommendations();
         setRecommendations(recommendations!);
         setFilteredRecommendations(recommendations!);
