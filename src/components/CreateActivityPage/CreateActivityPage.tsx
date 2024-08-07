@@ -14,10 +14,11 @@ interface CreateActivityPageProps {
   cost?: number
   trip: Trip,
   imageUrl?: string,
+  category?: string,
   onClose: () => void,
 }
 
-const CreateActivityPage: React.FC<CreateActivityPageProps> = ({ activityToEdit, location, description, cost, trip, imageUrl, onClose }) => {
+const CreateActivityPage: React.FC<CreateActivityPageProps> = ({ activityToEdit, location, description, cost, trip, imageUrl, category, onClose }) => {
   
   return (
     <Box className="form-page-main-container">
@@ -25,7 +26,7 @@ const CreateActivityPage: React.FC<CreateActivityPageProps> = ({ activityToEdit,
       <Box className="form-page-background-image" style={{ backgroundImage: `url(${imageUrl || '/public/createTripBackground.jpeg'})` }} />
     </Box>
     <Box className="form-page-right-container">
-      <CreateActivityForm location={location} description={description} cost={cost} trip={trip} onClose={onClose} activity={activityToEdit} />
+      <CreateActivityForm location={location} description={description} cost={cost} trip={trip} category={category} onClose={onClose} activity={activityToEdit} />
     </Box>
   </Box>
   );

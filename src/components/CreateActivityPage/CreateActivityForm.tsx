@@ -23,16 +23,18 @@ type CreateActivityFormProps = {
   description?: string,
   cost?: number,
   trip: Trip,
+  category?: string,
   onClose: () => void,
   activity?: Activity | null
 };
 
-const CreateActivityForm: React.FC<CreateActivityFormProps> = ({ location, description, cost, trip, onClose, activity = null }) => {
+const CreateActivityForm: React.FC<CreateActivityFormProps> = ({ location, description, cost, trip, category, onClose, activity = null }) => {
   const [formData, setFormData] = useState({
     date: trip.startDate ?? new Date(),
     location: location ?? '',
     startTime: '',
     endTime: '',
+    category: category ?? '',
     description: description ?? '',
     participants: activity?.participants ?? 1,
     cost: cost ?? 0,
@@ -49,7 +51,9 @@ const CreateActivityForm: React.FC<CreateActivityFormProps> = ({ location, descr
       setFormData({
         ...activity,
         activityId: activity?._id ?? '',
-        participants: formData.participants
+        participants: formData.participants,
+        category: activity?.category ?? ''
+
       });
     }
   }, [activity, trip._id]);

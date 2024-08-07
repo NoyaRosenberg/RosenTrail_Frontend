@@ -54,6 +54,7 @@ const RecommendationsGrid = ({
             cost={selectedRecommendation?.cost ?? 0}
             trip={trip}
             imageUrl={selectedRecommendation?.image}
+            category={selectedRecommendation?.category}
             onClose={handleClose}
           />
         </DialogContent>
