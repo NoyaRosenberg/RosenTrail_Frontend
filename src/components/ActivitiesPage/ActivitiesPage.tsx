@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Box, Container, Stack, Typography, Button } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Schedule } from '@mui/icons-material';
+import { Schedule } from "@mui/icons-material";
 import RecommendationsGrid from "./RecommendationsGrid";
 import SearchBar from "../SearchBar";
 import ActivityFilters from "./ActivityFilters";
@@ -29,8 +29,11 @@ const ActivitiesPage: React.FC = () => {
   useEffect(() => {
     const getRecommendations = async () => {
       try {
-        const recommendations = await activityService.getActivitiesFromAI(['fun'], trip.destinations);
-          // await recommendationService.getRecommendations();
+        const recommendations = await activityService.getActivitiesFromAI(
+          ["fun"],
+          trip.destinations
+        );
+        // await recommendationService.getRecommendations();
         setRecommendations(recommendations!);
         setFilteredRecommendations(recommendations!);
         setLoading(false);

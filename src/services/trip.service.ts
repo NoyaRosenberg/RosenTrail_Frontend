@@ -21,7 +21,7 @@ class TripService {
       const response = userId
         ? await axios.get<Trip[]>(`${this.baseURL}?userId=${userId}`)
         : await axios.get<Trip[]>(this.baseURL);
-        
+
       return response.data;
     } catch (error) {
       this.handleError(error);

@@ -39,7 +39,7 @@ class RecommendationService {
     },
     {
       id: 6,
-      name:  "Fancy Restaurants"
+      name: "Fancy Restaurants"
     },
     {
       id: 7,
