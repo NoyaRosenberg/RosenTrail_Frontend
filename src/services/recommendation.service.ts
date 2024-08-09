@@ -5,6 +5,8 @@ export interface Recommendation {
   description: string;
   image: string;
   categoriesId: number[];
+  location?: string;
+  category?: string;
   cost?: number;
 }
 
@@ -37,7 +39,7 @@ class RecommendationService {
     },
     {
       id: 6,
-      name:  "Fancy Restaurants"
+      name: "Fancy Restaurants"
     },
     {
       id: 7,

@@ -1,132 +1,121 @@
-import React, { useEffect, useState } from 'react';
-import { Container, Typography, Box, TextField, MenuItem, Grid } from '@mui/material';
-import axios from 'axios';
-import { useLocation } from 'react-router-dom';
-import '../../styles/BudgetPage.css';
-import DailyBudgetChart from './DailyBudgetChart';
-import DailyBudgetGauges from './DailyBudgetGauges';
+import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
+import BudgetManagement from "./BudgetManagement";
+import DailyBudget from "./DailyBudget";
+import BudgetPerCategory from "./BudgetPerCategory";
+import TopExpensiveAttractions from "./TopExpensiveAttractions";
+import activityService, { Activity } from "../../services/activity.service";
+import { Trip } from "../../services/trip.service";
+import "../../styles/BudgetPage.css";
 
-const COLORS = ['#dcc7c1', '#8F48CC', '#FCB232', '#5ECFCF'];
-const CURRENCY_OPTIONS = ['$'];
-
-interface Trip {
-  _id: string;
-  startDate: Date;
-  endDate: Date;
+interface BudgetItem {
+  category: string;
+  amount: number;
 }
 
-interface DailyBudget {
+interface DailyBudgetItem {
+  day: string;
+  amount: number;
+}
+
+interface Attraction {
   name: string;
-  value: number;
+  cost: number;
 }
 
-type ExpensesPerCategory = { data: number[], label: string }[];
-
-const BudgetPage: React.FC = () => {
+const BudgetPage = () => {
   const location = useLocation();
   const { trip } = location.state as { trip: Trip };
-  const [tripDurationInDays, setTripDurationInDays] = useState(0);
-  const [expensesPerCategory, setExpensesPerCategory] = useState<ExpensesPerCategory>([]);
-  const [dailyBudget, setDailyBudget] = useState<DailyBudget[]>([]);
-  const [totalBudget, setTotalBudget] = useState<number>(0);
-  const [currency, setCurrency] = useState<string>(CURRENCY_OPTIONS[0]);
-  const [dailyBudgetInput, setDailyBudgetInput] = useState<number>(450);
+  const [activities, setActivities] = useState<Activity[]>([]);
+  const [budgetData, setBudgetData] = useState<BudgetItem[]>([]);
+  const [dailyBudget, setDailyBudget] = useState<DailyBudgetItem[]>([]);
+  const [budgetPerCategory, setBudgetPerCategory] = useState<BudgetItem[]>([]);
+  const [topExpensiveActivities, setTopExpensiveActivities] = useState<
+    Attraction[]
+  >([]);
+  const [totalBudget, setTotalBudget] = useState<number>(50);
 
   useEffect(() => {
-    const fetchActivities = async () => {
+    const getData = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/activities?tripId=${trip._id}`);
-        const activities = response.data;
-
-        if (!activities || !Array.isArray(activities)) {
-          console.error('Invalid activities data:', activities);
+        if (!trip._id) {
+          console.log("No tripId found");
           return;
         }
 
-        calculateDailyBudget(activities);
+        console.log("Fetching activities for tripId:", trip._id);
+        const activities = await activityService.getTripActivities(trip._id);
+
+        if (Array.isArray(activities)) {
+          setActivities(activities);
+          processBudgetData(activities);
+        }
       } catch (error) {
-        console.error('Error fetching activities:', error);
+        console.error("Error fetching activities:", error);
       }
     };
 
-    const calculateDailyBudget = (activities: any[]) => {
-      const budgetMap: { [key: string]: number } = {};
-      let totalCost = 0;
+    const processBudgetData = (activities: Activity[]) => {
+      const budgetData: BudgetItem[] = [];
+      const dailyBudget: DailyBudgetItem[] = [];
+      const budgetPerCategory: BudgetItem[] = [];
+      const topExpensiveActivities: Attraction[] = [];
 
-      activities.forEach(activity => {
-        const date = new Date(activity.date).toDateString();
-        if (!budgetMap[date]) {
-          budgetMap[date] = 0;
+      const categoryMap: { [key: string]: number } = {};
+      const dayMap: { [key: string]: number } = {};
+
+      activities.forEach((activity) => {
+        // Process budget per category
+        if (activity.category) {
+          categoryMap[activity.category] =
+            (categoryMap[activity.category] || 0) + activity.cost;
         }
 
-        if (activity.participantsId.length > 0) {
-          budgetMap[date] += activity.cost * activity.participantsId.length;
-          totalCost += activity.cost * activity.participantsId.length;
-        } else {
-          budgetMap[date] += activity.cost;
-          totalCost += activity.cost;
-        }
+        // Process daily budget
+        const activityDate = new Date(activity.date).toDateString();
+        dayMap[activityDate] = (dayMap[activityDate] || 0) + activity.cost;
+
+        // Process top expensive activities
+        topExpensiveActivities.push({
+          name: activity.name,
+          cost: activity.cost,
+        });
       });
 
-      setTripDurationInDays(Object.keys(budgetMap).length);
-      setExpensesPerCategory([{ data: Object.values(budgetMap), label: 'Expenses' }]);
-      const dailyBudgetData = Object.keys(budgetMap).map((date, index) => ({
-        name: `Day ${index + 1}`,
-        value: budgetMap[date],
-      }));
+      // Convert maps to arrays
+      for (const category in categoryMap) {
+        budgetData.push({ category, amount: categoryMap[category] });
+      }
 
-      setDailyBudget(dailyBudgetData);
-      setTotalBudget(totalCost);
+      for (const day in dayMap) {
+        dailyBudget.push({ day, amount: dayMap[day] });
+      }
+
+      // Sort top expensive activities
+      topExpensiveActivities.sort((a, b) => b.cost - a.cost);
+
+      setBudgetData(budgetData);
+      setDailyBudget(dailyBudget);
+      setBudgetPerCategory(budgetData);
+      setTopExpensiveActivities(topExpensiveActivities.slice(0, 5)); // Get top 5 expensive activities
     };
 
-    fetchActivities();
+    getData();
   }, [trip._id]);
 
   return (
-    <Container maxWidth="lg" className="budget-container">
-      <Box>
-        <Typography variant="h4" gutterBottom>
-          Daily Budget
-        </Typography>
-
-        <Typography variant="h6">Total {totalBudget} {currency}</Typography>
-
-        <Box display="flex" gap="16px" mb={2}>
-          <TextField
-            select
-            variant="outlined"
-            value={currency}
-            onChange={(e) => setCurrency(e.target.value)}
-            size="small"
-            className="currency-select"
-          >
-            {CURRENCY_OPTIONS.map(option => (
-              <MenuItem key={option} value={option}>
-                {option}
-              </MenuItem>
-            ))}
-          </TextField>
-
-          <TextField
-            label="Daily Budget"
-            type="number"
-            value={dailyBudgetInput}
-            onChange={(e) => setDailyBudgetInput(Number(e.target.value))}
-            size="small"
-            className="budget-input"
-          />
-        </Box>
-
-        <Grid container spacing={4}>
-          <Grid item xs={12}>
-            <DailyBudgetGauges baseDailyBudget={dailyBudgetInput} dailyBudgets={dailyBudget} />
-          </Grid>
-          <Grid item xs={12}>
-            <DailyBudgetChart numberOfDays={tripDurationInDays} series={expensesPerCategory} />
-          </Grid>
-        </Grid>
-      </Box>
-    </Container>
+    <div className="budget-page">
+      <div className="budget-content">
+        <BudgetManagement budgetData={budgetData} />
+        <DailyBudget
+          days={dailyBudget}
+          totalBudget={totalBudget}
+          setTotalBudget={setTotalBudget}
+        />
+        <TopExpensiveAttractions attractions={topExpensiveActivities} />
+        <BudgetPerCategory categories={budgetPerCategory} />
+      </div>
+    </div>
   );
 };
 

@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import activityService, { Activity } from '../../services/activity.service.ts';
-import { Trip } from '../../services/trip.service.ts';
-import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { IconButton } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import activityService, { Activity } from "../../services/activity.service.ts";
+import { Trip } from "../../services/trip.service.ts";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { IconButton } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { useNavigate } from "react-router-dom";
 import {
   FormContainer,
   Title,
@@ -15,30 +15,40 @@ import {
   StyledForm,
   StyledTextField,
   ParticipantsContainer,
-  SaveButton
-} from '../../styles/CreateActivityForm.styles.ts';
+  SaveButton,
+} from "../../styles/CreateActivityForm.styles.ts";
 
 type CreateActivityFormProps = {
-  location?: string,
-  description?: string,
-  cost?: number,
-  trip: Trip,
-  onClose: () => void,
-  activity?: Activity | null
+  location?: string;
+  description?: string;
+  cost?: number;
+  trip: Trip;
+  category?: string;
+  onClose: () => void;
+  activity?: Activity | null;
 };
 
-const CreateActivityForm: React.FC<CreateActivityFormProps> = ({ location, description, cost, trip, onClose, activity = null }) => {
+const CreateActivityForm: React.FC<CreateActivityFormProps> = ({
+  location,
+  description,
+  cost,
+  trip,
+  category,
+  onClose,
+  activity = null,
+}) => {
   const [formData, setFormData] = useState({
     date: trip.startDate ?? new Date(),
-    location: location ?? '',
-    startTime: '',
-    endTime: '',
-    description: description ?? '',
+    location: location ?? "",
+    startTime: "",
+    endTime: "",
+    category: category ?? "",
+    description: description ?? "",
     participants: activity?.participants ?? 1,
     cost: cost ?? 0,
-    tripId: trip._id ?? '',
-    name: location ?? '',
-    activityId: activity?._id ?? '',
+    tripId: trip._id ?? "",
+    name: location ?? "",
+    activityId: activity?._id ?? "",
   });
 
   const navigate = useNavigate(); // Hook to navigate
@@ -48,13 +58,16 @@ const CreateActivityForm: React.FC<CreateActivityFormProps> = ({ location, descr
       // If an activity is provided, populate the form with its data
       setFormData({
         ...activity,
-        activityId: activity?._id ?? '',
-        participants: formData.participants
+        activityId: activity?._id ?? "",
+        participants: formData.participants,
+        category: activity?.category ?? "",
       });
     }
   }, [activity, trip._id]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
@@ -83,7 +96,7 @@ const CreateActivityForm: React.FC<CreateActivityFormProps> = ({ location, descr
         toast.success("Activity created successfully");
       }
       onClose();
-      navigate('/schedule', { state: { trip } }); // Pass state
+      navigate("/schedule", { state: { trip } }); // Pass state
     } catch (error) {
       toast.error("Failed to create activity");
       console.error("Failed to save trip:", error);
@@ -96,7 +109,7 @@ const CreateActivityForm: React.FC<CreateActivityFormProps> = ({ location, descr
         <IconButton
           aria-label="close"
           onClick={onClose}
-          style={{ position: 'absolute', right: '10px', top: '10px' }}
+          style={{ position: "absolute", right: "10px", top: "10px" }}
         >
           <CloseIcon />
         </IconButton>
