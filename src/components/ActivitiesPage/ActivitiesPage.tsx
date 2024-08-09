@@ -47,25 +47,25 @@ const ActivitiesPage: React.FC = () => {
     getRecommendations();
   }, []);
 
-  const applyFilters = (filters: Category[], search: string) => {
-    let newFilteredRecommendations = recommendations;
+  // const applyFilters = (filters: Category[], search: string) => {
+  //   let newFilteredRecommendations = recommendations;
 
-    if (filters.length > 0) {
-      const filtersId = filters.map((filter) => filter.id);
-      newFilteredRecommendations = newFilteredRecommendations.filter((rec) =>
-        filtersId.every((id) => rec.categoriesId.includes(id))
-      );
-    }
+  //   if (filters.length > 0) {
+  //     const filtersId = filters.map((filter) => filter.id);
+  //     newFilteredRecommendations = newFilteredRecommendations.filter((rec) =>
+  //       filtersId.every((id) => rec.categoriesId.includes(id))
+  //     );
+  //   }
 
-    if (search) {
-      newFilteredRecommendations = newFilteredRecommendations.filter(
-        (recommendation) =>
-          recommendation.name.toLowerCase().includes(search.toLowerCase())
-      );
-    }
+  //   if (search) {
+  //     newFilteredRecommendations = newFilteredRecommendations.filter(
+  //       (recommendation) =>
+  //         recommendation.name.toLowerCase().includes(search.toLowerCase())
+  //     );
+  //   }
 
-    setFilteredRecommendations(newFilteredRecommendations);
-  };
+  //   setFilteredRecommendations(newFilteredRecommendations);
+  // };
 
   // const onActivitySearch = (search: string) => {
   //   setSearchValue(search);
@@ -74,7 +74,7 @@ const ActivitiesPage: React.FC = () => {
 
   const filterRecommendations = (filters: Category[]) => {
     setSelectedFilters(filters);
-    applyFilters(filters, searchValue);
+    // applyFilters(filters, searchValue);
   };
 
   const goBackToSchedule = () => {

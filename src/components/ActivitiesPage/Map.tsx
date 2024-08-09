@@ -73,7 +73,7 @@ const MapComponent: React.FC = () => {
     };
   }, []);
 
-  return <div id="map" style={{ width: '100%', height: '100%' }}></div>;
+  return <div id="map" style={{ width: '100%', height: '100%', zIndex: 0 }}></div>;
 };
 
 export default MapComponent;
