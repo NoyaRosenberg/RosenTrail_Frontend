@@ -11,7 +11,7 @@ import recommendationService, {
 } from "../../services/recommendation.service";
 import CardsSkeleton from "../Skeletons/CardsSkeleton";
 import activityService from "../../services/activity.service";
-import MapComponent from "./Map";
+import Map from "./Map";
 import "../../styles/ActivitiesPage.css";
 
 const ActivitiesPage: React.FC = () => {
@@ -140,7 +140,7 @@ const ActivitiesPage: React.FC = () => {
         </Container>
       </Grid>
       <Grid item xs={5}>
-        <MapComponent />
+        <Map />
       </Grid>
     </Grid>
   );

@@ -1,63 +1,56 @@
-import React, { useEffect } from 'react';
-import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
-import 'leaflet.locatecontrol/dist/L.Control.Locate.min.css';
-import 'leaflet.locatecontrol';
+import React, { useEffect } from "react";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
+import "leaflet.locatecontrol/dist/L.Control.Locate.min.css";
+import "leaflet.locatecontrol";
+import MapService from "../../services/map.service";
+import LocationIQService, {
+  CountryCode,
+} from "../../services/locationIQ.service";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-const MapComponent: React.FC = () => {
+const Map: React.FC = () => {
   useEffect(() => {
-    // Maps access token
-    const key = 'pk.727039195b0ffb9e6bfbad01dcb1e090';
+    const streets = L.tileLayer(
+      "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+      {
+        attribution:
+          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      }
+    );
 
-    // Add layers that we need to the map
-    const streets = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-    });
+    MapService.initMap([streets], [39.73, -104.99]);
+    MapService.addBuildInControls();
+    addSearchBar();
 
-    // Initialize the map
-    const map = L.map('map', {
-      center: [39.73, -104.99], // Map loads with this location as center
-      zoom: 14,
-      scrollWheelZoom: true,
-      layers: [streets],
-      zoomControl: false,
-    });
+    return () => {
+      MapService.removeMap();
+    };
+  }, []);
 
-    // Add the 'zoom' control
-    L.control.zoom({
-      position: 'topright',
-    }).addTo(map);
-
-    // Add the 'scale' control
-    L.control.scale().addTo(map);
-
-    // Add the 'locate' control
-    L.control.locate({
-      position: 'bottomright',
-    }).addTo(map);
-
-    // Add the geocoder control using LocationIQ API directly
+  const addSearchBar = () => {
     const geocoderControl = L.Control.extend({
       onAdd: function () {
-        const container = L.DomUtil.create('input', 'leaflet-bar leaflet-control leaflet-control-custom');
-        container.type = 'text';
-        container.placeholder = 'Search for an address';
-        container.style.width = '200px';
-        container.style.margin = '10px';
+        const container = L.DomUtil.create("input", "leaflet-bar leaflet-control leaflet-control-custom");
+        container.type = "text";
+        container.placeholder = "Search for an activity...";
+        container.style.width = "200px";
+        container.style.margin = "10px";
 
-        container.onkeypress = function (e) {
-          if (e.key === 'Enter') {
-            fetch(`https://us1.locationiq.com/v1/search.php?key=${key}&q=${container.value}&format=json`)
-              .then(response => response.json())
-              .then(data => {
-                if (data && data.length > 0) {
-                  const result = data[0];
-                  map.setView([result.lat, result.lon], 14);
-                  L.marker([result.lat, result.lon]).addTo(map)
-                    .bindPopup(result.display_name)
-                    .openPopup();
-                }
-              });
+        container.onkeydown = async function (e) {
+          if (e.key === "Enter") {
+            try {
+              const response = await LocationIQService.searchLocations(container.value, [CountryCode.FRANCE]);
+
+              if (response && response.length > 0) {
+                const location = response[0];
+                MapService.setView([location.lat, location.lon]);
+                MapService.addMarker([location.lat, location.lon], location.display_name);
+              }
+            } catch (error: unknown) {
+              toast.error((error as Error).message);
+            }
           }
         };
 
@@ -65,15 +58,12 @@ const MapComponent: React.FC = () => {
       },
     });
 
-    map.addControl(new geocoderControl({ position: 'topleft' }));
+    MapService.addControl(new geocoderControl({ position: "topleft" }));
+  };
 
-    // Cleanup function to remove the map on component unmount
-    return () => {
-      map.remove();
-    };
-  }, []);
-
-  return <div id="map" style={{ width: '100%', height: '100%', zIndex: 0 }}></div>;
+  return (
+    <div id="map" style={{ width: "100%", height: "100%", zIndex: 0 }}></div>
+  );
 };
 
-export default MapComponent;
+export default Map;

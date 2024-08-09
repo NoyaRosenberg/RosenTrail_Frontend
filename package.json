@@ -30,6 +30,7 @@
     "dotenv": "^16.4.5",
     "install": "^0.13.0",
     "leaflet": "^1.9.4",
+    "leaflet-control-geocoder": "^2.4.0",
     "leaflet.locatecontrol": "^0.81.1",
     "npm": "^10.8.1",
     "react": "^18.2.0",
