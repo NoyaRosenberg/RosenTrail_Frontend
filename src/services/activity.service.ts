@@ -16,12 +16,31 @@ export interface Activity {
   imageUrl?: string;
 }
 
+// Create an Axios instance with token handling
+const apiClient = axios.create({
+  baseURL: "http://localhost:3000/activities/",
+});
+
+// Add a request interceptor to include the token in the headers
+apiClient.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("accessToken");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
 class ActivityService {
-  private baseURL: string = "http://localhost:3000/activities/";
+  private apiClient = apiClient;
 
   async getTripActivities(tripId: string): Promise<Activity[] | void> {
     try {
-      const response = await axios.get<Activity[]>(`${this.baseURL}?tripId=${tripId}`);
+      const response = await this.apiClient.get<Activity[]>(`?tripId=${tripId}`);
       return response.data;
     } catch (error) {
       this.handleError(error);
@@ -30,7 +49,10 @@ class ActivityService {
 
   async getActivitiesFromAI(recommendations: string[], activityLocation: string) {
     try {
-      const response = await axios.post(`${this.baseURL}get-activities-from-ai`, { recommendations, activityLocation });
+      const response = await this.apiClient.post(
+        "get-activities-from-ai",
+        { recommendations, activityLocation }
+      );
       return response.data;
     } catch (error) {
       this.handleError(error);
@@ -39,7 +61,7 @@ class ActivityService {
 
   async addActivity(activity: Activity): Promise<Activity | void> {
     try {
-      const response = await axios.post<Activity>(this.baseURL, activity);
+      const response = await this.apiClient.post<Activity>("", activity);
       return response.data;
     } catch (error) {
       this.handleError(error);
@@ -48,7 +70,7 @@ class ActivityService {
 
   async updateActivity(activity: Activity): Promise<Activity | void> {
     try {
-      const response = await axios.put<Activity>(`${this.baseURL}${activity._id}`, activity);
+      const response = await this.apiClient.put<Activity>(`${activity._id}`, activity);
       return response.data;
     } catch (error) {
       this.handleError(error);
@@ -57,7 +79,7 @@ class ActivityService {
 
   async deleteActivity(activityId: string): Promise<void> {
     try {
-      await axios.delete(`${this.baseURL}${activityId}`);
+      await this.apiClient.delete(`${activityId}`);
     } catch (error) {
       this.handleError(error);
     }
