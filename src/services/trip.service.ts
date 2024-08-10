@@ -13,15 +13,33 @@ export interface Trip {
   isPublic: boolean;
 }
 
+// Create an Axios instance
+const apiClient = axios.create({
+  baseURL: "http://localhost:3000/trips/",
+});
+
+// Add a request interceptor to include the token in the headers
+apiClient.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("accessToken"); // Assuming the token is stored in localStorage
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
 class TripService {
-  private baseURL: string = "http://localhost:3000/trips/";
+  private apiClient = apiClient;
 
   async getCommunityTrips(userId?: string): Promise<Trip[] | void> {
     try {
       const response = userId
-        ? await axios.get<Trip[]>(`${this.baseURL}?userId=${userId}`)
-        : await axios.get<Trip[]>(this.baseURL);
-
+        ? await this.apiClient.get<Trip[]>(`?userId=${userId}`)
+        : await this.apiClient.get<Trip[]>("");
       return response.data;
     } catch (error) {
       this.handleError(error);
@@ -30,9 +48,7 @@ class TripService {
 
   async getUserTrips(userId: string): Promise<Trip[] | void> {
     try {
-      const response = await axios.get<Trip[]>(
-        `${this.baseURL}?participant=${userId}`
-      );
+      const response = await this.apiClient.get<Trip[]>(`?participant=${userId}`);
       return response.data;
     } catch (error) {
       this.handleError(error);
@@ -41,9 +57,7 @@ class TripService {
 
   async getTripParticipants(tripId: string): Promise<User[] | undefined> {
     try {
-      const response = await axios.get<User[]>(
-        `${this.baseURL}/${tripId}/participants`
-      );
+      const response = await this.apiClient.get<User[]>(`/${tripId}/participants`);
       return response.data;
     } catch (error) {
       this.handleError(error);
@@ -51,23 +65,30 @@ class TripService {
   }
 
   async createTrip(trip: Trip): Promise<Trip | undefined> {
-    const response = await fetch(`${this.baseURL}/create-trip`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(trip),
-    });
-    if (response.ok) {
-      return response.json();
-    } else {
-      this.handleError(response);
+    try {
+      const token = localStorage.getItem("accessToken");
+      const response = await fetch(`${this.apiClient.defaults.baseURL}/create-trip`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`, // Add token to headers
+        },
+        body: JSON.stringify(trip),
+      });
+
+      if (response.ok) {
+        return response.json();
+      } else {
+        this.handleError(response);
+      }
+    } catch (error) {
+      this.handleError(error);
     }
   }
 
   async updateTrip(trip: Trip): Promise<Trip | undefined> {
     try {
-      const response = await axios.put<Trip | undefined>(`${this.baseURL}`, {
+      const response = await this.apiClient.put<Trip | undefined>("", {
         ...trip,
       });
       return response.data;
