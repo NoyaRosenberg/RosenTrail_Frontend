@@ -29,7 +29,7 @@ const ActivitiesPage: React.FC = () => {
   useEffect(() => {
     const getRecommendations = async () => {
       try {
-        const recommendations = await activityService.getActivitiesFromAI(['fun'], trip.destinations);
+        const recommendations = await activityService.getActivitiesFromAI(trip.destinations);
           // await recommendationService.getRecommendations();
         setRecommendations(recommendations!);
         setFilteredRecommendations(recommendations!);
@@ -46,9 +46,9 @@ const ActivitiesPage: React.FC = () => {
     let newFilteredRecommendations = recommendations;
 
     if (filters.length > 0) {
-      const filtersId = filters.map((filter) => filter.id);
+      const filtersNames = filters.map((filter) => filter.name);
       newFilteredRecommendations = newFilteredRecommendations.filter((rec) =>
-        filtersId.every((id) => rec.categoriesId.includes(id))
+        filtersNames.every((name) => rec.category == (name))
       );
     }
 
