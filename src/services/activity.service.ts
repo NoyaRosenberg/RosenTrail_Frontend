@@ -28,9 +28,9 @@ class ActivityService {
     }
   }
 
-  async getActivitiesFromAI(recommendations: string[], activityLocation: string) {
+  async getActivitiesFromAI(activityLocation: string) {
     try {
-      const response = await axios.post(`${this.baseURL}get-activities-from-ai`, { recommendations, activityLocation });
+      const response = await axios.post(`${this.baseURL}get-activities-from-ai`, { activityLocation });
       return response.data;
     } catch (error) {
       this.handleError(error);
