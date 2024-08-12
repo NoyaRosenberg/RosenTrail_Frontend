@@ -1,26 +1,242 @@
-.budget-container {
-  margin-top: 16px;
+.budget-page {
   background-color: #f5e3ce;
-  padding: 16px;
-  border-radius: 8px;
+  padding: 50px;
 }
 
-.currency-select {
+.budget-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 20px;
+}
+
+.budget-section {
+  background-color: #fff;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Budget Management */
+.budget-management {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 80%;
+  background-color: #fff;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: relative;
+  height: 80%;
+}
+
+.budget-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.settings-icon {
+  font-size: 24px;
+  color: #4CAF50;
+  cursor: pointer;
+}
+
+.divider {
+  width: 100%;
+  border: 0;
+  border-top: 1px solid #eee;
+  margin: 10px 0;
+}
+
+.budget-chart {
+  width: 150px;
+  height: 150px;
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.budget-legend {
+  list-style-type: none;
+  padding: 0;
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.budget-category{
+  width: 80%;
+  height: 250px;
+}
+
+.budget-legend li {
+  margin-bottom: 5px;
+  font-size: 14px;
+  color: #666;
+  display: flex;
+  align-items: center;
+}
+
+.legend-color {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 5px;
+}
+
+
+/* Daily Budget */
+.daily-budget {
+  flex-direction: column;
+  align-items: center;
+  grid-column: 2 / 3;
+  margin: 49px;
+}
+
+.budget-header{
+  margin: 10px;
+}
+
+.daily-budget-container {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  gap: 10px
+}
+
+.daily-budget-item {
+  text-align: center;
+}
+
+.daily-budget-circle {
   width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-color: #f0f0f0;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  position: relative;
 }
 
-.budget-input {
-  width: 100px;
+.daily-budget-circle canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
-.budget-container .MuiTypography-h4 {
-  font-family: 'Roboto', sans-serif;
-  font-weight: 700;
-  color: #2c3e50;
+.daily-budget-percentage {
+  position: absolute;
+  font-size: 18px;
+  font-weight: bold;
 }
 
-.budget-container .MuiTypography-h6 {
-  font-family: 'Roboto', sans-serif;
-  font-weight: 500;
-  color: #34495e;
+.daily-budget-day {
+  margin-top: 5px;
+  font-size: 16px;
 }
+
+/* Top Expensive Attractions */
+.top-expensive-attractions {
+  background-color: #fff;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  height: 70%;
+}
+
+.top-expensive-attractions h2 {
+  margin-top: 0;
+  font-size: 18px;
+  color: #333;
+}
+
+.top-expensive-list {
+  list-style-type: none;
+  padding: 0;
+  margin-top: 10px;
+}
+
+.top-expensive-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: #666;
+}
+
+.top-expensive-indicator {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: #4caf50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: #fff;
+  margin-left: 10px;
+}
+
+/* Budget Per Category */
+.budget-per-category {
+  grid-column: 1 / span 3;
+  background-color: #fff;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.budget-per-category h2 {
+  font-size: 18px;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.budget-chart {
+  height: 200px;
+  margin-bottom: 20px;
+  background-color: #f0f0f0; /* Placeholder for chart */
+}
+
+.budget-sliders {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.slider-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.slider {
+  width: 60%;
+  margin-left: 10px;
+}
+
+.slider.color-1::-webkit-slider-thumb {
+  background-color: #FF6584;
+}
+
+.slider.color-2::-webkit-slider-thumb {
+  background-color: #FF74B1;
+}
+
+.slider.color-3::-webkit-slider-thumb {
+  background-color: #FF88C2;
+}
+
+.slider.color-4::-webkit-slider-thumb {
+  background-color: #FFB3D6;
+}
+
