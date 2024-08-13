@@ -24,7 +24,6 @@ const BudgetPerCategory: React.FC<BudgetPerCategoryProps> = ({
               min="0"
               max="100"
               value={item.amount}
-              className={`slider color-${index + 1}`}
               readOnly
             />
           </div>
