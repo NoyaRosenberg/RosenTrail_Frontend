@@ -65,6 +65,10 @@ const TripDialog: React.FC<TripDialogProps> = ({
     navigate("/AddActivities", { state: { trip } });
   };
 
+  const showReviews = () => {
+    navigate("/reviews", { state: { trip } });
+  };
+
   const handleEdit = () => {
     setIsEditDialogOpen(true);
   };
@@ -185,6 +189,16 @@ const TripDialog: React.FC<TripDialogProps> = ({
                         >
                           Schedule
                         </Button>
+                        {!showActions && (
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={showReviews}
+                            sx={{ width: "150px", height: "50px" }}
+                          >
+                            Reviews
+                          </Button>
+                        )}
                         <Typography variant="h6" component="p" color="#666">
                           {price} €
                         </Typography>
