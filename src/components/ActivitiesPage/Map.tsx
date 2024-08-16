@@ -9,6 +9,8 @@ import LocationIQService, {
 } from "../../services/locationIQ.service";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import SearchBar from "../SearchBar";
+import { createRoot } from "react-dom/client";
 
 const Map: React.FC = () => {
   useEffect(() => {
@@ -30,35 +32,40 @@ const Map: React.FC = () => {
   }, []);
 
   const addSearchBar = () => {
-    const geocoderControl = L.Control.extend({
-      onAdd: function () {
-        const container = L.DomUtil.create("input", "leaflet-bar leaflet-control leaflet-control-custom");
-        container.type = "text";
-        container.placeholder = "Search for an activity...";
-        container.style.width = "200px";
-        container.style.margin = "10px";
+    const searchControl = L.Control.extend({
+      onAdd: function (): HTMLElement {
+        const container = L.DomUtil.create("div");
+        container.style.paddingTop = "7px";
+        container.style.paddingLeft = "7px";
 
-        container.onkeydown = async function (e) {
-          if (e.key === "Enter") {
-            try {
-              const response = await LocationIQService.searchLocations(container.value, [CountryCode.FRANCE]);
+        const root = document.createElement("div");
+        container.appendChild(root);
 
-              if (response && response.length > 0) {
-                const location = response[0];
-                MapService.setView([location.lat, location.lon]);
-                MapService.addMarker([location.lat, location.lon], location.display_name);
+        const handleSearch = async (searchValue: string) => {
+          try {
+            if (searchValue.length >= 2) {
+              const suggestions = await LocationIQService.searchLocations(searchValue, [CountryCode.FRANCE]);
+
+              if (suggestions && suggestions.length > 0) {
+                const suggestion = suggestions[0];
+                MapService.setView([suggestion.lat, suggestion.lon]);
+                MapService.addMarker([suggestion.lat, suggestion.lon], suggestion.display_name);
               }
-            } catch (error: unknown) {
-              toast.error((error as Error).message);
             }
+          } catch (error) {
+            toast.error((error as Error).message);
           }
         };
 
+        createRoot(root).render(
+            <SearchBar placeholder="Search for an activity..." onSearch={handleSearch} />
+        );
+
         return container;
-      },
+      }
     });
 
-    MapService.addControl(new geocoderControl({ position: "topleft" }));
+    MapService.addControl(new searchControl({ position: "topleft" }));
   };
 
   return (

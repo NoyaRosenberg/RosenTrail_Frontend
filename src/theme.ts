@@ -6,6 +6,12 @@ export const StyledTextField = styled(TextField)({
   "&.search .MuiOutlinedInput-root": {
     borderRadius: "20px",
     padding: "0 12px",
+    backgroundColor: "#fff",
+    boxShadow: "0 2px 6px rgba(0,0,0,0.25)",
+    border: "none"
+  },
+  "&.search .MuiOutlinedInput-notchedOutline": {
+    border: "none", // Remove the outline border
   },
   "&.search .MuiOutlinedInput-input": {
     padding: "12px 0",

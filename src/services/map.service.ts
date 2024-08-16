@@ -27,8 +27,6 @@ class MapService {
       })
       .addTo(this.map);
 
-    L.control.scale().addTo(this.map);
-
     L.control
       .locate({
         position: "bottomright",
