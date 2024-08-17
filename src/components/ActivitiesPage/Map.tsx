@@ -61,7 +61,7 @@ const Map: React.FC = () => {
                 display: "flex",
             }}>
                 <Box id="map" style={{flex: 1}}></Box>
-                <Box style={{position: "absolute", padding: "15px", width: "80%", zIndex: 1000}}>
+                <Box style={{position: "absolute", padding: "15px", width: "75%", zIndex: 1000}}>
                     <SearchBar
                         placeholder="Search for an activity..."
                         onSearch={handleSearch}
