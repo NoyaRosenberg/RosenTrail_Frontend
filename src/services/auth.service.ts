@@ -6,6 +6,7 @@ export interface AuthData {
   email: string;
   imageData: string; 
   token: string;
+  refreshToken: string;
   gender: string;
   age: number;
   phoneNumber: number;
@@ -16,10 +17,8 @@ class AuthService {
 
   async login(email: string, password: string): Promise<AuthData | void> {
     try {
-      const response = await axios.post<AuthData>(`${this.baseURL}/login`, {
-        email,
-        password,
-      });
+      const response = await axios.post<AuthData>(`${this.baseURL}/login`, { email, password });
+      this.storeTokens(response.data.token, response.data.refreshToken);
       return response.data;
     } catch (error) {
       this.handleError(error);
@@ -29,15 +28,7 @@ class AuthService {
   async googleLogin(token: string): Promise<AuthData | void> {
     try {
       const response = await axios.post(`${this.baseURL}/google-login`, { token });
-      return response.data;
-    } catch (error) {
-      this.handleError(error);
-    }
-  }
-
-  async googleSignUp(token: string): Promise<AuthData | void> {
-    try {
-      const response = await axios.post(`${this.baseURL}/google-signup`, { token });
+      this.storeTokens(response.data.token, response.data.refreshToken);
       return response.data;
     } catch (error) {
       this.handleError(error);
@@ -54,7 +45,27 @@ class AuthService {
         password,
         imageData
       });
+      this.storeTokens(response.data.token, response.data.refreshToken);
       return response.data;
+    } catch (error) {
+      this.handleError(error);
+    }
+  }
+
+  private storeTokens(token: string, refreshToken: string) {
+    localStorage.setItem("accessToken", token);
+    localStorage.setItem("refreshToken", refreshToken);
+  }
+
+  async refreshToken(): Promise<string | void> {
+    try {
+      const refreshToken = localStorage.getItem("refreshToken");
+      if (!refreshToken) throw new Error("No refresh token found");
+
+      const response = await axios.post<{ token: string }>(`${this.baseURL}/refresh-token`, { token: refreshToken });
+      const newaccessToken = response.data.token;
+      localStorage.setItem("accessToken", newaccessToken);
+      return newaccessToken;
     } catch (error) {
       this.handleError(error);
     }

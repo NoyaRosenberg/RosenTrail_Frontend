@@ -30,7 +30,7 @@ const ActivitiesPage: React.FC = () => {
     const getRecommendations = async () => {
       try {
         const recommendations = await activityService.getActivitiesFromAI(trip.destinations);
-          // await recommendationService.getRecommendations();
+        // await recommendationService.getRecommendations();
         setRecommendations(recommendations!);
         setFilteredRecommendations(recommendations!);
         setLoading(false);
@@ -81,7 +81,7 @@ const ActivitiesPage: React.FC = () => {
       <Stack spacing={8} sx={{ marginTop: 5 }}>
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Typography variant="h3" sx={{ fontSize: 20, color: "#333" }}>
-            Search For Attractions In New York
+            Search For Attractions In {trip.destinations}
           </Typography>
           <Button
             variant="contained"
