@@ -53,7 +53,7 @@ const Map: React.FC = () => {
     };
 
     return (
-        <Box style={{display: "flex", width: "100%", height: "100%"}}>
+        <Box style={{display: "flex", width: "100%", height: "100%", zIndex: 0}}>
             <Box style={{
                 width: "100%",
                 height: "100%",
