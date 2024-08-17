@@ -16,7 +16,6 @@ const Map: React.FC = () => {
 
     useEffect(() => {
         MapService.initMap([L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png")], [39.73, -104.99]);
-        MapService.addBuildInControls();
 
         return () => {
             MapService.removeMap();

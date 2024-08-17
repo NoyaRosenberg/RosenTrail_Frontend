@@ -1,4 +1,4 @@
-import {TextField} from "@mui/material";
+import {List, Popper, TextField} from "@mui/material";
 import {lightGreen} from "@mui/material/colors";
 import {createTheme, styled} from "@mui/material/styles";
 
@@ -16,6 +16,31 @@ export const StyledTextField = styled(TextField)({
     "&.search .MuiOutlinedInput-input": {
         padding: "12px 0",
     },
+});
+
+export const StyledPopper = styled(Popper)({
+    '& .MuiAutocomplete-listbox': {
+        maxHeight: '200px',
+        overflowY: 'auto',
+        '&::-webkit-scrollbar': {
+            width: '8px',
+        },
+        '&::-webkit-scrollbar-track': {
+            backgroundColor: '#f0f0f0',
+        },
+        '&::-webkit-scrollbar-thumb': {
+            backgroundColor: '#c1c1c1',
+            borderRadius: '4px',
+        },
+        '&::-webkit-scrollbar-thumb:hover': {
+            backgroundColor: '#a8a8a8',
+        },
+    },
+});
+
+export const StyledListbox = styled(List)({
+    maxHeight: '200px',
+    overflowY: 'auto',
 });
 
 const theme = createTheme({

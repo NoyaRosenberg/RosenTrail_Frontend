@@ -1,7 +1,7 @@
 import React, {ChangeEvent, SyntheticEvent} from "react";
 import {Stack, Autocomplete, InputAdornment} from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
-import {StyledTextField} from "../theme";
+import {StyledListbox, StyledPopper, StyledTextField} from "../theme";
 
 export interface AutoCompleteSearchBarProps {
     placeholder: string;
@@ -42,6 +42,8 @@ const SearchBar: React.FC<AutoCompleteSearchBarProps> = ({
                 onInputChange={(_, newInputValue) => setSearchValue(newInputValue)}
                 onChange={handleSuggestionSelect}
                 sx={{width: "100%"}}
+                PopperComponent={(props) => <StyledPopper {...props} />}
+                ListboxComponent={(props) => <StyledListbox {...props} />}
                 renderInput={(params) => (
                     <StyledTextField
                         {...params}

@@ -13,19 +13,12 @@ class MapService {
             scrollWheelZoom: true,
             layers: layers,
             zoomControl: false,
+            attributionControl: false,
         });
     }
 
     removeMap() {
         this.map.remove();
-    }
-
-    addBuildInControls() {
-        L.control
-            .zoom({
-                position: "topright",
-            })
-            .addTo(this.map);
     }
 
     setView(center: L.LatLngExpression) {
