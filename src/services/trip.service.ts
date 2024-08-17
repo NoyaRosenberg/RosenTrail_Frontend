@@ -1,5 +1,6 @@
 import axios from "axios";
 import { User } from "./user.service";
+import AuthService from "./auth.service";
 
 export interface Trip {
   _id?: string;
@@ -28,6 +29,30 @@ apiClient.interceptors.request.use(
     return config;
   },
   (error) => {
+    return Promise.reject(error);
+  }
+);
+
+apiClient.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
+    console.log("Interceptor error:", error);
+    if (error.response && error.response.status === 403 && !originalRequest._retry) {
+      originalRequest._retry = true;
+      try {
+        const refreshToken = localStorage.getItem("refreshToken");
+        console.log("Attempting to refresh token with:", refreshToken);
+        const response = await AuthService.refreshToken();
+        console.log("Received new token:", response);
+        localStorage.setItem("accessToken", response as string);
+        apiClient.defaults.headers.common["Authorization"] = `Bearer ${response}`;
+        return apiClient(originalRequest);
+      } catch (refreshError) {
+        console.error("Refresh token error:", refreshError);
+        // Handle refresh token error (e.g., log out user)
+      }
+    }
     return Promise.reject(error);
   }
 );
