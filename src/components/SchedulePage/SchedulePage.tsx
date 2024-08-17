@@ -1,13 +1,11 @@
-import React, { useState, useEffect, ChangeEvent } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Container,
-  Stack,
   Typography,
   Button,
   IconButton,
   Box,
   Card,
-  CardMedia,
   CardContent,
   Dialog,
   DialogTitle,
@@ -16,6 +14,7 @@ import {
   List,
   ListItem,
   ListItemText,
+  Pagination,
 } from '@mui/material';
 import { alpha } from '@mui/material/styles';
 import { Delete, Edit } from '@mui/icons-material';
@@ -40,6 +39,10 @@ const TripSchedulePage: React.FC = () => {
   const [open, setOpen] = useState(false);
   const [editingActivity, setEditingActivity] = useState<Activity | null>(null);
 
+  // New state for pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const datesPerPage = 7;
+
   useEffect(() => {
     fetchActivities(trip._id ?? "");
   }, [trip._id, fetchActivities]);
@@ -62,6 +65,12 @@ const TripSchedulePage: React.FC = () => {
     (1000 * 3600 * 24)
   ) + 1 : 0;
 
+  const totalPages = Math.ceil(tripDuration / datesPerPage);
+
+  const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
+    setCurrentPage(value);
+  };
+
   const addActivity = () => {
     navigate("/AddActivities", { state: { trip } });
   };
@@ -73,7 +82,6 @@ const TripSchedulePage: React.FC = () => {
   const handleEdit = (activity: Activity) => {
     setEditingActivity(activity);
     setOpen(true);
-    console.log("Edit activity with ID:", activity._id);
   };
 
   const handleClose = async () => {
@@ -90,7 +98,7 @@ const TripSchedulePage: React.FC = () => {
         }
       );
       if (response.ok) {
-        fetchActivities(trip._id ?? ""); // Refresh activities list
+        fetchActivities(trip._id ?? "");
       } else {
         console.error("Failed to delete activity");
       }
@@ -139,31 +147,46 @@ const TripSchedulePage: React.FC = () => {
         )}
       </Box>
       <Box display="flex">
-        <List sx={{ minWidth: 150, mr: 4 }}>
-          {Array.from({ length: tripDuration }).map((_, index) => (
-            <ListItem
-              key={index + 1}
-              button
-              selected={page === index + 1}
-              onClick={() => setPage(index + 1)}
-              sx={{
-                backgroundColor: page === index + 1 ? "primary" : 'transparent',
-                color: page === index + 1 ? 'white' : 'black',
-                mb: 1,
-                borderRadius: 1,
-                '&.Mui-selected': {
-                  fontWeight: 'bold',
-                  backgroundColor: (theme) => alpha(theme.palette.primary.main, 0.5),
-                }
-              }}
-            >
-              <ListItemText
-                primary={trip.startDate ? formatDate(trip.startDate.toString(), index + 1) : ''}
-                sx={{ textAlign: 'center' }}
-              />
-            </ListItem>
-          ))}
-        </List>
+        <Box sx={{ minWidth: 150, mr: 4 }}>
+          <List>
+            {Array.from({ length: datesPerPage }).map((_, index) => {
+              const currentIndex = (currentPage - 1) * datesPerPage + index + 1;
+              if (currentIndex <= tripDuration) {
+                return (
+                  <ListItem
+                    key={currentIndex}
+                    button
+                    selected={page === currentIndex}
+                    onClick={() => setPage(currentIndex)}
+                    sx={{
+                      backgroundColor: page === currentIndex ? "primary" : 'transparent',
+                      color: page === currentIndex ? 'white' : 'black',
+                      mb: 1,
+                      borderRadius: 1,
+                      '&.Mui-selected': {
+                        fontWeight: 'bold',
+                        backgroundColor: (theme) => alpha(theme.palette.primary.main, 0.5),
+                      }
+                    }}
+                  >
+                    <ListItemText
+                      primary={trip.startDate ? formatDate(trip.startDate.toString(), currentIndex) : ''}
+                      sx={{ textAlign: 'center' }}
+                    />
+                  </ListItem>
+                );
+              }
+              return null;
+            })}
+          </List>
+          <Pagination 
+            count={totalPages} 
+            page={currentPage} 
+            onChange={handlePageChange} 
+            color="primary" 
+            sx={{ mt: 2 }}
+          />
+        </Box>
         <Box sx={{ flex: 1 }}>
           {loading ? (
             <Typography>Loading...</Typography>
@@ -228,4 +251,3 @@ const TripSchedulePage: React.FC = () => {
 };
 
 export default TripSchedulePage;
-

@@ -29,10 +29,7 @@ const ActivitiesPage: React.FC = () => {
   useEffect(() => {
     const getRecommendations = async () => {
       try {
-        const recommendations = await activityService.getActivitiesFromAI(
-          ["fun"],
-          trip.destinations
-        );
+        const recommendations = await activityService.getActivitiesFromAI(trip.destinations);
         // await recommendationService.getRecommendations();
         setRecommendations(recommendations!);
         setFilteredRecommendations(recommendations!);
@@ -49,9 +46,9 @@ const ActivitiesPage: React.FC = () => {
     let newFilteredRecommendations = recommendations;
 
     if (filters.length > 0) {
-      const filtersId = filters.map((filter) => filter.id);
+      const filtersNames = filters.map((filter) => filter.name);
       newFilteredRecommendations = newFilteredRecommendations.filter((rec) =>
-        filtersId.every((id) => rec.categoriesId.includes(id))
+        filtersNames.every((name) => rec.category == (name))
       );
     }
 
@@ -84,7 +81,7 @@ const ActivitiesPage: React.FC = () => {
       <Stack spacing={8} sx={{ marginTop: 5 }}>
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Typography variant="h3" sx={{ fontSize: 20, color: "#333" }}>
-            Search For Attractions In New York
+            Search For Attractions In {trip.destinations}
           </Typography>
           <Button
             variant="contained"

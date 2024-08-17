@@ -72,11 +72,11 @@ class ActivityService {
     }
   }
 
-  async getActivitiesFromAI(recommendations: string[], activityLocation: string) {
+  async getActivitiesFromAI(activityLocation: string) {
     try {
       const response = await this.apiClient.post(
         "get-activities-from-ai",
-        { recommendations, activityLocation }
+        { activityLocation }
       );
       return response.data;
     } catch (error) {
