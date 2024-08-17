@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Box, Container, Stack, Typography } from "@mui/material";
 import SearchBar from "../SearchBar";
 import TripsGrid from "./TripsGrid";

@@ -26,12 +26,6 @@ class MapService {
                 position: "topright",
             })
             .addTo(this.map);
-
-        L.control
-            .locate({
-                position: "bottomright",
-            })
-            .addTo(this.map);
     }
 
     setView(center: L.LatLngExpression) {

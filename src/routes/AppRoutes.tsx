@@ -14,6 +14,7 @@ import BudgetPage from "../components/BudgetPage/BudgetPage";
 import TripsPage from "../components/TripsPage/TripsPage";
 import { useTrips } from "../contexts/TripProvider";
 import Map from "../components/ActivitiesPage/Map";
+import ReviewPage from "../components/ReviewPage/ReviewPage";
 
 const AppRoutes: React.FC = () => {
   const { isLoggedIn, loading } = useAuth();
@@ -79,6 +80,7 @@ const AppRoutes: React.FC = () => {
         }
       />
       <Route path="/schedule" element={<SchedulePage />} />
+      <Route path="/reviews" element={<ReviewPage />} />
       <Route
         path="/profile"
         element={

@@ -3,9 +3,8 @@ import { Box, Container, Stack, Typography, Button, Grid } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Schedule } from "@mui/icons-material";
 import RecommendationsGrid from "./RecommendationsGrid";
-// import SearchBar from "../SearchBar";
 import ActivityFilters from "./ActivityFilters";
-import recommendationService, {
+import {
   Category,
   Recommendation,
 } from "../../services/recommendation.service";
@@ -31,11 +30,7 @@ const ActivitiesPage: React.FC = () => {
   useEffect(() => {
     const getRecommendations = async () => {
       try {
-        const recommendations = await activityService.getActivitiesFromAI(
-          ["fun"],
-          trip.destinations
-        );
-        // await recommendationService.getRecommendations();
+        const recommendations = await activityService.getActivitiesFromAI(trip.destinations);
         setRecommendations(recommendations!);
         setFilteredRecommendations(recommendations!);
         setLoading(false);
@@ -47,34 +42,29 @@ const ActivitiesPage: React.FC = () => {
     getRecommendations();
   }, []);
 
-  // const applyFilters = (filters: Category[], search: string) => {
-  //   let newFilteredRecommendations = recommendations;
+  const applyFilters = (filters: Category[], search: string) => {
+    let newFilteredRecommendations = recommendations;
 
-  //   if (filters.length > 0) {
-  //     const filtersId = filters.map((filter) => filter.id);
-  //     newFilteredRecommendations = newFilteredRecommendations.filter((rec) =>
-  //       filtersId.every((id) => rec.categoriesId.includes(id))
-  //     );
-  //   }
+    if (filters.length > 0) {
+      const filtersNames = filters.map((filter) => filter.name);
+      newFilteredRecommendations = newFilteredRecommendations.filter((rec) =>
+        filtersNames.every((name) => rec.category == (name))
+      );
+    }
 
-  //   if (search) {
-  //     newFilteredRecommendations = newFilteredRecommendations.filter(
-  //       (recommendation) =>
-  //         recommendation.name.toLowerCase().includes(search.toLowerCase())
-  //     );
-  //   }
+    if (search) {
+      newFilteredRecommendations = newFilteredRecommendations.filter(
+        (recommendation) =>
+          recommendation.name.toLowerCase().includes(search.toLowerCase())
+      );
+    }
 
-  //   setFilteredRecommendations(newFilteredRecommendations);
-  // };
-
-  // const onActivitySearch = (search: string) => {
-  //   setSearchValue(search);
-  //   applyFilters(selectedFilters, search);
-  // };
+    setFilteredRecommendations(newFilteredRecommendations);
+  };
 
   const filterRecommendations = (filters: Category[]) => {
     setSelectedFilters(filters);
-    // applyFilters(filters, searchValue);
+    applyFilters(filters, searchValue);
   };
 
   const goBackToSchedule = () => {
@@ -105,10 +95,6 @@ const ActivitiesPage: React.FC = () => {
                 </Button>
               </Box>
               <Stack spacing={2}>
-                {/* <SearchBar
-                placeholder="Search for Attractions..."
-                onSearch={onActivitySearch}
-              /> */}
                 <ActivityFilters onFilterSelected={filterRecommendations} />
               </Stack>
             </Stack>
