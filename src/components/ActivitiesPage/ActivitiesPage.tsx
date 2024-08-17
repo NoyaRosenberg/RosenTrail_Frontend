@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Box, Container, Stack, Typography, Button, Grid} from "@mui/material";
+import {Box, Container, Stack, Typography, Button, Card, CardContent} from "@mui/material";
 import {useLocation, useNavigate} from "react-router-dom";
 import {Schedule} from "@mui/icons-material";
 import RecommendationsGrid from "./RecommendationsGrid";
@@ -58,8 +58,8 @@ const ActivitiesPage: React.FC = () => {
     };
 
     return (
-        <Grid container sx={{height: '100vh', overflow: 'hidden'}}>
-            <Grid item xs={7} sx={{height: '100%'}}>
+        <Box sx={{display: 'flex', height: '100vh', overflow: 'hidden'}}>
+            <Box sx={{width: '65%', height: '100%'}}>
                 <Container sx={{paddingTop: "20px", paddingBottom: "10px"}}>
                     <Stack spacing={4}>
                         <Stack spacing={3}>
@@ -91,28 +91,34 @@ const ActivitiesPage: React.FC = () => {
                                     Click an activity to add it to your trip!
                                 </Typography>
                             </Stack>
-                            {loading ? (
-                                <CardsSkeleton numInRow={4}/>
-                            ) : error ? (
-                                <Typography color="error">
-                                    Failed To Fetch recommendations
-                                </Typography>
-                            ) : (
-                                <Box className="scrollable" sx={{width: "100%", height: "43vh", overflowY: "auto"}}>
-                                    <RecommendationsGrid
-                                        recommendations={filteredRecommendations}
-                                        trip={trip}
-                                    />
-                                </Box>
-                            )}
+                            <Card sx={{width: '100%', height: "44vh", borderRadius: 2, backgroundColor: 'rgba(0, 0, 0, 0.05)'}}>
+                                <CardContent>
+                                    {loading ? (
+                                        <CardsSkeleton numInRow={4}/>
+                                    ) : error ? (
+                                        <Typography color="error">
+                                            Failed To Fetch recommendations
+                                        </Typography>
+                                    ) : (
+                                        <Box className="scrollable"
+                                             sx={{width: "100%", height: "40vh", overflowY: "auto"}}>
+                                            <RecommendationsGrid
+                                                recommendations={filteredRecommendations}
+                                                trip={trip}
+                                            />
+                                        </Box>
+                                    )}
+                                </CardContent>
+                            </Card>
+
                         </Stack>
                     </Stack>
                 </Container>
-            </Grid>
-            <Grid item xs={5}>
+            </Box>
+            <Box sx={{width: '35%'}}>
                 <Map/>
-            </Grid>
-        </Grid>
+            </Box>
+        </Box>
     );
 };
 

@@ -15,7 +15,10 @@ const Map: React.FC = () => {
     const [suggestions, setSuggestions] = useState<Set<string>>(new Set());
 
     useEffect(() => {
-        MapService.initMap([L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png")], [39.73, -104.99]);
+        MapService.initMap([L.tileLayer('https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=tu0LMTgmkVGftApMVIOA#0.9/-4.26133/-41.45004', {
+            maxZoom: 20,
+            attribution: '&copy; <a href="https://www.maptiler.com/copyright/">MapTiler</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
+        })], [40.7128, -74.0060]);
 
         return () => {
             MapService.removeMap();
