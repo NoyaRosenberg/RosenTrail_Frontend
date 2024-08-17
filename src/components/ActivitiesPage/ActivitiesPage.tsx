@@ -20,8 +20,6 @@ const ActivitiesPage: React.FC = () => {
 
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [searchValue, setSearchValue] = useState<string>("");
-  const [selectedFilters, setSelectedFilters] = useState<Category[]>([]);
   const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
   const [filteredRecommendations, setFilteredRecommendations] = useState<
     Recommendation[]
@@ -40,9 +38,9 @@ const ActivitiesPage: React.FC = () => {
     };
 
     getRecommendations();
-  }, []);
+  }, [trip.destinations]);
 
-  const applyFilters = (filters: Category[], search: string) => {
+  const applyFilters = (filters: Category[]) => {
     let newFilteredRecommendations = recommendations;
 
     if (filters.length > 0) {
@@ -52,19 +50,7 @@ const ActivitiesPage: React.FC = () => {
       );
     }
 
-    if (search) {
-      newFilteredRecommendations = newFilteredRecommendations.filter(
-        (recommendation) =>
-          recommendation.name.toLowerCase().includes(search.toLowerCase())
-      );
-    }
-
     setFilteredRecommendations(newFilteredRecommendations);
-  };
-
-  const filterRecommendations = (filters: Category[]) => {
-    setSelectedFilters(filters);
-    applyFilters(filters, searchValue);
   };
 
   const goBackToSchedule = () => {
@@ -95,7 +81,7 @@ const ActivitiesPage: React.FC = () => {
                 </Button>
               </Box>
               <Stack spacing={2}>
-                <ActivityFilters onFilterSelected={filterRecommendations} />
+                <ActivityFilters onFilterSelected={applyFilters} />
               </Stack>
             </Stack>
             <Stack spacing={2} sx={{ alignItems: "flex-start", width: "100%" }}>
