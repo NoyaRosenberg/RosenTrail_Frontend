@@ -1,13 +1,11 @@
-import { Box } from "@mui/material";
-import CreateActivityForm from "./CreateActivityForm";
-import "../../styles/CreateActivity.css";
-import "../../styles/Forms.css";
-import React from "react";
-import { Trip } from "../../services/trip.service";
-import { Activity } from "../../services/activity.service";
+import React from 'react';
+import { Box } from '@mui/material';
+import CreateActivityForm from './CreateActivityForm';
+import { Trip } from '../../services/trip.service';
+import { Activity } from '../../services/activity.service';
+import '../../styles/CreateActivityPage.css';
 
 interface CreateActivityPageProps {
-  // Other props...
   activityToEdit?: Activity | null;
   location?: string;
   description?: string;
@@ -25,22 +23,19 @@ const CreateActivityPage: React.FC<CreateActivityPageProps> = ({
   cost,
   trip,
   imageUrl,
-  categories: categories,
+  categories,
   onClose,
 }) => {
   return (
-    <Box className="form-page-main-container">
-      <Box className="form-page-left-container">
-        <Box
-          className="form-page-background-image"
-          style={{
-            backgroundImage: `url(${
-              imageUrl || "/public/createTripBackground.jpeg"
-            })`,
-          }}
+    <Box className="create-activity-container">
+      <Box className="image-container">
+        <img 
+          src={imageUrl || "/createTripBackground.jpeg"} 
+          alt="Activity" 
+          className="activity-image"
         />
       </Box>
-      <Box className="form-page-right-container">
+      <Box className="form-container">
         <CreateActivityForm
           location={location}
           description={description}
