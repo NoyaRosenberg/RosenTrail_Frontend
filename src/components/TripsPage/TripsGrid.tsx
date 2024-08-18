@@ -66,7 +66,10 @@ const TripsGrid = ({ trips, isCommunityTrips, fetchTrips }: TripsGridProps) => {
         <TripDialog
           open={isTripDialogOpen}
           trip={selectedTrip}
-          price={selectedTrip?.['activities'].reduce((total, activity) => total + (activity.cost || 0), 0)}
+          price={selectedTrip?.["activities"]?.reduce(
+            (total, activity) => total + (activity.cost || 0),
+            0
+          )}
           showActions={!isCommunityTrips}
           onClose={onDialogClose}
           onDelete={fetchTrips}

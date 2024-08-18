@@ -41,6 +41,7 @@ const LoginForm = () => {
   };
 
   const loginSuccess = (authData: AuthData) => {
+    localStorage.setItem('accessToken', authData.token);
     login(authData!);
     console.log("Login successful");
     navigate("/trips");
