@@ -1,30 +1,29 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Box, Container, Stack, Typography, Button } from "@mui/material";
-import { useLocation, useNavigate } from "react-router-dom";
 import { Schedule } from "@mui/icons-material";
+import {Box, Container, Stack, Typography, Button, Card, CardContent} from "@mui/material";
+import {useLocation, useNavigate} from "react-router-dom";
 import RecommendationsGrid from "./RecommendationsGrid";
-import SearchBar from "../SearchBar";
 import ActivityFilters from "./ActivityFilters";
-import recommendationService, {
-  Category,
-  Recommendation,
+import {
+    Category,
+    Recommendation,
 } from "../../services/recommendation.service";
 import CardsSkeleton from "../Skeletons/CardsSkeleton";
 import activityService from "../../services/activity.service";
+import Map from "./Map";
+import "../../styles/ActivitiesPage.css";
 
 const ActivitiesPage: React.FC = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const trip = location.state.trip;
+    const location = useLocation();
+    const navigate = useNavigate();
+    const trip = location.state.trip;
 
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-  const [searchValue, setSearchValue] = useState<string>("");
-  const [selectedFilters, setSelectedFilters] = useState<Category[]>([]);
-  const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
-  const [filteredRecommendations, setFilteredRecommendations] = useState<
-    Recommendation[]
-  >([]);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
+    const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
+    const [filteredRecommendations, setFilteredRecommendations] = useState<
+        Recommendation[]
+    >([]);
 
   const effectRan = useRef(false);
 
@@ -50,8 +49,8 @@ const ActivitiesPage: React.FC = () => {
     }
   }, [trip.destinations]);
 
-  const applyFilters = (filters: Category[], search: string) => {
-    let newFilteredRecommendations = recommendations;
+    const applyFilters = (filters: Category[]) => {
+        let newFilteredRecommendations = recommendations;
 
     if (filters.length > 0) {
       const filtersNames = filters.map((filter) => filter.name);
@@ -60,78 +59,76 @@ const ActivitiesPage: React.FC = () => {
       );
     }
 
-    if (search) {
-      newFilteredRecommendations = newFilteredRecommendations.filter(
-        (recommendation) =>
-          recommendation.name.toLowerCase().includes(search.toLowerCase())
-      );
-    }
+        setFilteredRecommendations(newFilteredRecommendations);
+    };
 
-    setFilteredRecommendations(newFilteredRecommendations);
-  };
+    const goBackToSchedule = () => {
+        navigate("/schedule", {state: {trip, showActions: true}});
+    };
 
-  const onActivitySearch = (search: string) => {
-    setSearchValue(search);
-    applyFilters(selectedFilters, search);
-  };
+    return (
+        <Box sx={{display: 'flex', height: '100vh', overflow: 'hidden'}}>
+            <Box sx={{width: '65%', height: '100%'}}>
+                <Container sx={{paddingTop: "20px", paddingBottom: "10px"}}>
+                    <Stack spacing={4}>
+                        <Stack spacing={3}>
+                            <Box
+                                display="flex"
+                                justifyContent="space-between"
+                                alignItems="center"
+                            >
+                                <Typography variant="h3" sx={{fontSize: 20, color: "#333"}}>
+                                    Search For Attractions In {trip.destinations}
+                                </Typography>
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    startIcon={<Schedule/>}
+                                    onClick={goBackToSchedule}
+                                >
+                                    Trip Schedule
+                                </Button>
+                            </Box>
+                            <ActivityFilters onFilterSelected={applyFilters}/>
+                        </Stack>
+                        <Stack spacing={2} sx={{alignItems: "flex-start", width: "100%"}}>
+                            <Stack>
+                                <Typography variant="h3" sx={{fontSize: 20, color: "#333"}}>
+                                    Recommendations For Attractions
+                                </Typography>
+                                <Typography variant="body1" sx={{color: "#666"}}>
+                                    Click an activity to add it to your trip!
+                                </Typography>
+                            </Stack>
+                            <Card sx={{width: '100%', height: "44vh", borderRadius: 2, backgroundColor: 'rgba(0, 0, 0, 0.05)'}}>
+                                <CardContent>
+                                    {loading ? (
+                                        <CardsSkeleton numInRow={4}/>
+                                    ) : error ? (
+                                        <Typography color="error">
+                                            Failed To Fetch recommendations
+                                        </Typography>
+                                    ) : (
+                                        <Box className="scrollable"
+                                             sx={{width: "100%", height: "40vh", overflowY: "auto"}}>
+                                            <RecommendationsGrid
+                                                recommendations={filteredRecommendations}
+                                                trip={trip}
+                                            />
+                                        </Box>
+                                    )}
+                                </CardContent>
+                            </Card>
 
-  const filterRecommendations = (filters: Category[]) => {
-    setSelectedFilters(filters);
-    applyFilters(filters, searchValue);
-  };
-
-  const goBackToSchedule = () => {
-    navigate("/schedule", { state: { trip, showActions: true } });
-  };
-
-  return (
-    <Container sx={{ paddingTop: "14px", paddingBottom: "14px" }}>
-      <Stack spacing={8} sx={{ marginTop: 5 }}>
-        <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Typography variant="h3" sx={{ fontSize: 20, color: "#333" }}>
-            Search For Attractions In {trip.destinations}
-          </Typography>
-          <Button
-            variant="contained"
-            color="primary"
-            startIcon={<Schedule />}
-            onClick={goBackToSchedule}
-          >
-            Trip Schedule
-          </Button>
-        </Box>
-        <Stack spacing={2}>
-          <SearchBar
-            placeholder="Search for Attractions..."
-            onSearch={onActivitySearch}
-          />
-          <ActivityFilters onFilterSelected={filterRecommendations} />
-        </Stack>
-        <Stack spacing={2} sx={{ alignItems: "flex-start", width: "100%" }}>
-          <Typography variant="h3" sx={{ fontSize: 20, color: "#333" }}>
-            Recommendations For Attractions
-          </Typography>
-          <Typography variant="body1" sx={{ color: "#666" }}>
-            Click an activity to add it to your trip!
-          </Typography>
-          {loading ? (
-            <CardsSkeleton numInRow={4} />
-          ) : error ? (
-            <Typography color="error">
-              Failed To Fetch recommendations
-            </Typography>
-          ) : (
-            <Box sx={{ width: "100%" }}>
-              <RecommendationsGrid
-                recommendations={filteredRecommendations}
-                trip={trip}
-              />
+                        </Stack>
+                    </Stack>
+                </Container>
             </Box>
-          )}
-        </Stack>
-      </Stack>
-    </Container>
-  );
+            <Box sx={{width: '35%'}}>
+                <Map/>
+            </Box>
+        </Box>
+    );
 };
 
 export default ActivitiesPage;

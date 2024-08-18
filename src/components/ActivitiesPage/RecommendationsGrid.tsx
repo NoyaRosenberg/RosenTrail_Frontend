@@ -8,7 +8,7 @@ import {
 import PlaceCard from "../PlaceCard";
 import { Trip } from "../../services/trip.service";
 import { Recommendation } from "../../services/recommendation.service";
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import CreateActivityPage from "../CreateActivityPage/CreateActivityPage";
 
 export interface RecommendationsGrisProps {
@@ -33,11 +33,10 @@ const RecommendationsGrid = ({
     setOpen(true);
   };
 
-
   return (
-    <Grid container spacing={2}>
+    <Grid container spacing={2} sx={{paddingLeft: "2px", paddingBottom: "5px", paddingRight: "10px"}}>
       {recommendations.map((rec, index) => (
-        <Grid item xs={12} sm={6} md={3} key={index} sx={{ display: "flex" }}>
+        <Grid item xs={12} sm={6} md={4} key={index} sx={{ display: "flex" }}>
           <PlaceCard
             name={rec.name}
             description={rec.description}

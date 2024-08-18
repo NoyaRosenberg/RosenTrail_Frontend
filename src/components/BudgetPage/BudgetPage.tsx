@@ -7,6 +7,7 @@ import TopExpensiveAttractions from "./TopExpensiveAttractions";
 import activityService, { Activity } from "../../services/activity.service";
 import { Trip } from "../../services/trip.service";
 import "../../styles/BudgetPage.css";
+import DailyBudgetGraph from "./DailyBudgetGraph";
 
 interface BudgetItem {
   category: string;
@@ -114,6 +115,7 @@ const BudgetPage = () => {
         />
         <TopExpensiveAttractions attractions={topExpensiveActivities} />
         <BudgetPerCategory categories={budgetPerCategory} />
+        <DailyBudgetGraph dailyBudget={dailyBudget} />
       </div>
     </div>
   );

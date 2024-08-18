@@ -1,5 +1,5 @@
 import React from "react";
-import { CircularProgress, Box, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import SettingsIcon from "@mui/icons-material/Settings";
 
 interface BudgetItem {

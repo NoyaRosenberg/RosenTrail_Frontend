@@ -1,59 +1,71 @@
-import {
-  Box,
-  InputAdornment,
-  Stack
-} from "@mui/material";
-import { useState, ChangeEvent } from "react";
+import React, {ChangeEvent, SyntheticEvent} from "react";
+import {Stack, Autocomplete, InputAdornment} from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
-import { StyledTextField } from "../theme";
-import React from "react";
+import {StyledListbox, StyledPopper, StyledTextField} from "../theme";
 
-export interface SearchBarProps {
-  placeholder: string;
-  onSearch: (searchValue: string) => void;
+export interface AutoCompleteSearchBarProps {
+    placeholder: string;
+    onSearch: (searchValue: string) => void;
+    suggestions?: string[];
+    onSuggestionClick?: (suggestion: string) => void;
 }
 
-const SearchBar = ({ placeholder, onSearch }: SearchBarProps) => {
-  const [searchValue, setSearchValue] = useState<string>("");
+const SearchBar: React.FC<AutoCompleteSearchBarProps> = ({
+                                                             placeholder,
+                                                             onSearch,
+                                                             suggestions = [],
+                                                             onSuggestionClick
+                                                         }) => {
+    const [searchValue, setSearchValue] = React.useState<string>("");
 
-  const handleSearchInput = (e: ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setSearchValue(value);
-    onSearch(value); 
+    const handleSearchInput = (e: ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setSearchValue(value);
+        onSearch(value);
     };
 
-  return (
-    <Stack spacing={2} sx={{ alignItems: "flex-start" }}>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-between",
-          justifyItems: "center",
-          alignItems: "center",
-          width: "100%",
-          gap: "10px",
-        }}
-      >
-        <StyledTextField
-          className="search"
-          fullWidth
-          variant="outlined"
-          placeholder={placeholder}
-          value={searchValue}
-          onChange={handleSearchInput}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon />
-              </InputAdornment>
-            ),
-          }}
-          sx={{ width: "100%" }}
-        />
-      </Box>
-    </Stack>
-  );
+    const handleSuggestionSelect = (
+        _event: SyntheticEvent,
+        newValue: string | null
+    ) => {
+        if (newValue && onSuggestionClick) {
+            onSuggestionClick(newValue);
+        }
+    };
+
+    return (
+        <Stack spacing={2} sx={{alignItems: "flex-start", position: "relative", width: "100%"}}>
+            <Autocomplete
+                freeSolo
+                options={suggestions || []}
+                inputValue={searchValue}
+                onInputChange={(_, newInputValue) => setSearchValue(newInputValue)}
+                onChange={handleSuggestionSelect}
+                sx={{width: "100%"}}
+                PopperComponent={(props) => <StyledPopper {...props} />}
+                ListboxComponent={(props) => <StyledListbox {...props} />}
+                renderInput={(params) => (
+                    <StyledTextField
+                        {...params}
+                        className="search"
+                        fullWidth
+                        variant="outlined"
+                        placeholder={placeholder}
+                        onChange={handleSearchInput}
+                        InputProps={{
+                            ...params.InputProps,
+                            startAdornment: (
+                                <InputAdornment position="start">
+                                    <SearchIcon/>
+                                </InputAdornment>
+                            ),
+                        }}
+                        sx={{width: "100%"}}
+                    />
+                )}
+            />
+        </Stack>
+    );
 };
 
 export default SearchBar;
