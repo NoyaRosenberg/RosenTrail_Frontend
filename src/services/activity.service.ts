@@ -13,7 +13,7 @@ export interface Activity {
   cost: number;
   participants?: number;
   unregisteredParticipants?: string[];
-  category?: string;
+  categories?: string[];
   imageUrl?: string;
 }
 

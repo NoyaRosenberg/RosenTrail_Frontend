@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Box, Container, Stack, Typography, Button } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Schedule } from "@mui/icons-material";
@@ -26,21 +26,29 @@ const ActivitiesPage: React.FC = () => {
     Recommendation[]
   >([]);
 
-  useEffect(() => {
-    const getRecommendations = async () => {
-      try {
-        const recommendations = await activityService.getActivitiesFromAI(trip.destinations);
-        // await recommendationService.getRecommendations();
-        setRecommendations(recommendations!);
-        setFilteredRecommendations(recommendations!);
-        setLoading(false);
-      } catch (error) {
-        setError((error as Error).message);
-      }
-    };
+  const effectRan = useRef(false);
 
-    getRecommendations();
-  }, []);
+  useEffect(() => {
+    if (effectRan.current === false) {
+      const getRecommendations = async () => {
+        try {
+          const recommendations = await activityService.getActivitiesFromAI(trip.destinations);
+          console.log(recommendations)
+          setRecommendations(recommendations!);
+          setFilteredRecommendations(recommendations!);
+          setLoading(false);
+        } catch (error) {
+          setError((error as Error).message);
+        }
+      };
+
+      getRecommendations();
+
+      return () => {
+        effectRan.current = true;
+      };
+    }
+  }, [trip.destinations]);
 
   const applyFilters = (filters: Category[], search: string) => {
     let newFilteredRecommendations = recommendations;
@@ -48,7 +56,7 @@ const ActivitiesPage: React.FC = () => {
     if (filters.length > 0) {
       const filtersNames = filters.map((filter) => filter.name);
       newFilteredRecommendations = newFilteredRecommendations.filter((rec) =>
-        filtersNames.every((name) => rec.category == (name))
+        filtersNames.some((name) => rec.categories?.includes(name))
       );
     }
 
