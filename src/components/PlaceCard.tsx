@@ -1,6 +1,5 @@
 import { Card, CardMedia, CardContent, Typography, Box } from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
-import React from "react";
 
 export interface PlaceCardProps {
   name: string;
