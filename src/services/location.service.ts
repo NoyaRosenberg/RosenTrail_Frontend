@@ -2,6 +2,7 @@ import axios from "axios";
 
 export enum CountryCode {
     FRANCE = "fr",
+    USA = "US"
 }
 
 export interface Location {
@@ -12,7 +13,7 @@ export interface Location {
     popularity: number;
 }
 
-class LocationIQService {
+class LocationService {
     private key = "pk.727039195b0ffb9e6bfbad01dcb1e090";
     private baseUrl = "https://us1.locationiq.com/v1/search.php";
 
@@ -53,4 +54,4 @@ class LocationIQService {
     }
 }
 
-export default new LocationIQService();
+export default new LocationService();

@@ -4,7 +4,7 @@ import "leaflet/dist/leaflet.css";
 import "leaflet.locatecontrol/dist/L.Control.Locate.min.css";
 import "leaflet.locatecontrol";
 import MapService from "../../services/map.service";
-import LocationIQService, {CountryCode, Location} from "../../services/locationIQ.service";
+import LocationService, {CountryCode, Location} from "../../services/location.service";
 import {toast} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import {Box, debounce} from "@mui/material";
@@ -28,7 +28,7 @@ const Map: React.FC = () => {
     const handleSearch = debounce(async (searchValue: string) => {
         try {
             if (searchValue.length >= 2) {
-                const results = await LocationIQService.searchLocations(searchValue, [CountryCode.FRANCE]);
+                const results = await LocationService.searchLocations(searchValue, [CountryCode.USA]);
 
                 if (results && results.length > 0) {
                     setPlaces(results);
@@ -44,7 +44,7 @@ const Map: React.FC = () => {
         } catch (error) {
             toast.error((error as Error).message);
         }
-    }, 500);
+    }, 300);
 
     const handleLocationPick = (name: string) => {
         const location = places.find(place => place.shortName === name);
