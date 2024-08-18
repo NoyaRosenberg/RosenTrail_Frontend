@@ -23,7 +23,7 @@ type CreateActivityFormProps = {
   description?: string;
   cost?: number;
   trip: Trip;
-  category?: string;
+  categories?: string[];
   onClose: () => void;
   activity?: Activity | null;
 };
@@ -33,7 +33,7 @@ const CreateActivityForm: React.FC<CreateActivityFormProps> = ({
   description,
   cost,
   trip,
-  category,
+  categories,
   onClose,
   activity = null,
 }) => {
@@ -42,7 +42,7 @@ const CreateActivityForm: React.FC<CreateActivityFormProps> = ({
     location: location ?? "",
     startTime: "",
     endTime: "",
-    category: category ?? "",
+    categories: categories ?? "",
     description: description ?? "",
     participants: activity?.participants ?? 1,
     cost: cost ?? 0,
@@ -60,7 +60,7 @@ const CreateActivityForm: React.FC<CreateActivityFormProps> = ({
         ...activity,
         activityId: activity?._id ?? "",
         participants: formData.participants,
-        category: activity?.category ?? "",
+        categories: activity?.categories ?? "",
       });
     }
   }, [activity, trip._id]);

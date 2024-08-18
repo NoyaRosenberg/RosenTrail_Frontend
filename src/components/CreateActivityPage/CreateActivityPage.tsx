@@ -14,7 +14,7 @@ interface CreateActivityPageProps {
   cost?: number;
   trip: Trip;
   imageUrl?: string;
-  category?: string;
+  categories?: string[];
   onClose: () => void;
 }
 
@@ -25,7 +25,7 @@ const CreateActivityPage: React.FC<CreateActivityPageProps> = ({
   cost,
   trip,
   imageUrl,
-  category,
+  categories: categories,
   onClose,
 }) => {
   return (
@@ -46,7 +46,7 @@ const CreateActivityPage: React.FC<CreateActivityPageProps> = ({
           description={description}
           cost={cost}
           trip={trip}
-          category={category}
+          categories={categories}
           onClose={onClose}
           activity={activityToEdit}
         />

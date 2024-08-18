@@ -6,7 +6,7 @@ export interface Recommendation {
   image: string;
   categoriesId: number[];
   location?: string;
-  category?: string;
+  categories?: string[];
   cost?: number;
 }
 
