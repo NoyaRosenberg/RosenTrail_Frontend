@@ -8,7 +8,7 @@ import {
 import PlaceCard from "../PlaceCard";
 import { Trip } from "../../services/trip.service";
 import { Recommendation } from "../../services/recommendation.service";
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import CreateActivityPage from "../CreateActivityPage/CreateActivityPage";
 
 export interface RecommendationsGrisProps {
@@ -32,6 +32,7 @@ const RecommendationsGrid = ({
     setSelectedRecommendation(rec);
     setOpen(true);
   };
+
 
   return (
     <Grid container spacing={2}>
