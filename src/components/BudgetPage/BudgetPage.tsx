@@ -67,10 +67,11 @@ const BudgetPage = () => {
 
       activities.forEach((activity) => {
         // Process budget per category
-        if (activity.category) {
-          categoryMap[activity.category] =
-            (categoryMap[activity.category] || 0) + activity.cost;
+        for (let category of activity.categories) {
+          categoryMap[category] =
+          (categoryMap[category] || 0) + activity.cost;
         }
+     
 
         // Process daily budget
         const activityDate = new Date(activity.date).toDateString();
