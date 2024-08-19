@@ -10,7 +10,7 @@ import {
 } from "../../services/recommendation.service";
 import CardsSkeleton from "../Skeletons/CardsSkeleton";
 import activityService from "../../services/activity.service";
-import Map from "./Map";
+import Map from "./Map/Map";
 import "../../styles/ActivitiesPage.css";
 
 const ActivitiesPage: React.FC = () => {
@@ -32,7 +32,6 @@ const ActivitiesPage: React.FC = () => {
       const getRecommendations = async () => {
         try {
           const recommendations = await activityService.getActivitiesFromAI(trip.destinations);
-          console.log(recommendations)
           setRecommendations(recommendations!);
           setFilteredRecommendations(recommendations!);
           setLoading(false);
@@ -125,7 +124,7 @@ const ActivitiesPage: React.FC = () => {
                 </Container>
             </Box>
             <Box sx={{width: '35%'}}>
-                <Map/>
+                <Map coordinates={{lon: 40.7128, lat: -74.0060}}/>
             </Box>
         </Box>
     );

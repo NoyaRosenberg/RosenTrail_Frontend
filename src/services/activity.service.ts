@@ -84,6 +84,8 @@ class ActivityService {
     }
   }
 
+
+
   async addActivity(activity: Activity): Promise<Activity | void> {
     try {
       const response = await this.apiClient.post<Activity>("", activity);

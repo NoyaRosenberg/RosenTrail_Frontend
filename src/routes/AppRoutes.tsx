@@ -13,7 +13,7 @@ import MainPage from "../components/MainPage/MainPage";
 import BudgetPage from "../components/BudgetPage/BudgetPage";
 import TripsPage from "../components/TripsPage/TripsPage";
 import { useTrips } from "../contexts/TripProvider";
-import Map from "../components/ActivitiesPage/Map";
+import Map from "../components/ActivitiesPage/Map/Map";
 import ReviewPage from "../components/ReviewPage/ReviewPage";
 
 const AppRoutes: React.FC = () => {
