@@ -96,7 +96,7 @@ const CreateActivityForm: React.FC<CreateActivityFormProps> = ({
         toast.success("Activity created successfully");
       }
       onClose();
-      navigate("/schedule", { state: { trip } }); // Pass state
+      navigate("/schedule", { state: { trip, showActions: true } }); // Pass state
     } catch (error) {
       toast.error("Failed to create activity");
       console.error("Failed to save trip:", error);
