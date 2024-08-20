@@ -68,7 +68,7 @@ const ActivitiesPage: React.FC = () => {
 
     return (
         <Box sx={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
-            <Box sx={{ width: '65%', height: '100%' }}>
+            <Box sx={{ width: '60%', height: '100%' }}>
                 <Container sx={{ paddingTop: "20px", paddingBottom: "10px" }}>
                     <Stack spacing={4}>
                         <Stack spacing={3}>
@@ -136,7 +136,7 @@ const ActivitiesPage: React.FC = () => {
                     </Stack>
                 </Container>
             </Box>
-            <Box sx={{ width: '35%' }}>
+            <Box sx={{ width: '40%', height: '100%', paddingTop: '20px', paddingRight: '20px', paddingBottom: '20px' }}>
                 <Map />
             </Box>
         </Box>
