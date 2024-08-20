@@ -1,12 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Schedule } from "@mui/icons-material";
-import {Box, Container, Stack, Typography, Button, Card, CardContent} from "@mui/material";
-import {useLocation, useNavigate} from "react-router-dom";
+import {
+    Box, Container, Stack, Typography, Button, Card, CardContent, CircularProgress
+} from "@mui/material";
+import { useLocation, useNavigate } from "react-router-dom";
 import RecommendationsGrid from "./RecommendationsGrid";
 import ActivityFilters from "./ActivityFilters";
 import {
-    Category,
-    Recommendation,
+    Category, Recommendation,
 } from "../../services/recommendation.service";
 import CardsSkeleton from "../Skeletons/CardsSkeleton";
 import activityService from "../../services/activity.service";
@@ -21,55 +22,54 @@ const ActivitiesPage: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
-    const [filteredRecommendations, setFilteredRecommendations] = useState<
-        Recommendation[]
-    >([]);
+    const [filteredRecommendations, setFilteredRecommendations] = useState<Recommendation[]>([]);
 
-  const effectRan = useRef(false);
+    const effectRan = useRef(false);
 
-  useEffect(() => {
-    if (effectRan.current === false) {
-      const getRecommendations = async () => {
-        try {
-          const recommendations = await activityService.getActivitiesFromAI(trip.destinations);
-          console.log(recommendations)
-          setRecommendations(recommendations!);
-          setFilteredRecommendations(recommendations!);
-          setLoading(false);
-        } catch (error) {
-          setError((error as Error).message);
+    useEffect(() => {
+        if (effectRan.current === false) {
+            const getRecommendations = async () => {
+                try {
+                    const recommendations = await activityService.getActivitiesFromAI(trip.destinations);
+                    console.log(recommendations);
+                    setRecommendations(recommendations!);
+                    setFilteredRecommendations(recommendations!);
+                    setLoading(false);
+                } catch (error) {
+                    setError((error as Error).message);
+                    setLoading(false);
+                }
+            };
+
+            getRecommendations();
+
+            return () => {
+                effectRan.current = true;
+            };
         }
-      };
-
-      getRecommendations();
-
-      return () => {
-        effectRan.current = true;
-      };
-    }
-  }, [trip.destinations]);
+    }, [trip.destinations]);
 
     const applyFilters = (filters: Category[]) => {
         let newFilteredRecommendations = recommendations;
 
-    if (filters.length > 0) {
-      const filtersNames = filters.map((filter) => filter.name);
-      newFilteredRecommendations = newFilteredRecommendations.filter((rec) =>
-        filtersNames.some((name) => rec.categories?.includes(name))
-      );
-    }
+        if (filters.length > 0) {
+            const filtersNames = filters.map((filter) => filter.name);
+            newFilteredRecommendations = newFilteredRecommendations.filter((rec) =>
+                filtersNames.some((name) => rec.categories?.includes(name))
+            );
+        }
 
         setFilteredRecommendations(newFilteredRecommendations);
     };
 
     const goBackToSchedule = () => {
-        navigate("/schedule", {state: {trip, showActions: true}});
+        navigate("/schedule", { state: { trip, showActions: true } });
     };
 
     return (
-        <Box sx={{display: 'flex', height: '100vh', overflow: 'hidden'}}>
-            <Box sx={{width: '65%', height: '100%'}}>
-                <Container sx={{paddingTop: "20px", paddingBottom: "10px"}}>
+        <Box sx={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
+            <Box sx={{ width: '60%', height: '100%' }}>
+                <Container sx={{ paddingTop: "20px", paddingBottom: "10px" }}>
                     <Stack spacing={4}>
                         <Stack spacing={3}>
                             <Box
@@ -77,40 +77,53 @@ const ActivitiesPage: React.FC = () => {
                                 justifyContent="space-between"
                                 alignItems="center"
                             >
-                                <Typography variant="h3" sx={{fontSize: 20, color: "#333"}}>
+                                <Typography variant="h3" sx={{ fontSize: 20, color: "#333" }}>
                                     Search For Attractions In {trip.destinations}
                                 </Typography>
                                 <Button
                                     variant="contained"
                                     color="primary"
-                                    startIcon={<Schedule/>}
+                                    startIcon={<Schedule />}
                                     onClick={goBackToSchedule}
                                 >
                                     Trip Schedule
                                 </Button>
                             </Box>
-                            <ActivityFilters onFilterSelected={applyFilters}/>
+                            <ActivityFilters onFilterSelected={applyFilters} />
                         </Stack>
-                        <Stack spacing={2} sx={{alignItems: "flex-start", width: "100%"}}>
+                        <Stack spacing={2} sx={{ alignItems: "flex-start", width: "100%" }}>
                             <Stack>
-                                <Typography variant="h3" sx={{fontSize: 20, color: "#333"}}>
+                                <Typography variant="h3" sx={{ fontSize: 20, color: "#333" }}>
                                     Recommendations For Attractions
                                 </Typography>
-                                <Typography variant="body1" sx={{color: "#666"}}>
+                                <Typography variant="body1" sx={{ color: "#666" }}>
                                     Click an activity to add it to your trip!
                                 </Typography>
                             </Stack>
-                            <Card sx={{width: '100%', height: "44vh", borderRadius: 2, backgroundColor: 'rgba(0, 0, 0, 0.05)'}}>
+                            <Card sx={{ width: '100%', height: "44vh", borderRadius: 2, backgroundColor: 'rgba(0, 0, 0, 0.05)' }}>
                                 <CardContent>
                                     {loading ? (
-                                        <CardsSkeleton numInRow={4}/>
+                                        <Box
+                                            sx={{
+                                                display: "flex",
+                                                justifyContent: "center",
+                                                alignItems: "center",
+                                                height: "100%",
+                                                flexDirection: "column",
+                                            }}
+                                        >
+                                            <CircularProgress />
+                                            <Typography sx={{ marginTop: 2 }}>
+                                                Getting recommendations, it might take a minute...
+                                            </Typography>
+                                        </Box>
                                     ) : error ? (
                                         <Typography color="error">
                                             Failed To Fetch recommendations
                                         </Typography>
                                     ) : (
                                         <Box className="scrollable"
-                                             sx={{width: "100%", height: "40vh", overflowY: "auto"}}>
+                                            sx={{ width: "100%", height: "40vh", overflowY: "auto" }}>
                                             <RecommendationsGrid
                                                 recommendations={filteredRecommendations}
                                                 trip={trip}
@@ -119,13 +132,12 @@ const ActivitiesPage: React.FC = () => {
                                     )}
                                 </CardContent>
                             </Card>
-
                         </Stack>
                     </Stack>
                 </Container>
             </Box>
-            <Box sx={{width: '35%'}}>
-                <Map/>
+            <Box sx={{ width: '40%', height: '100%', paddingTop: '20px', paddingRight: '20px', paddingBottom: '20px' }}>
+                <Map />
             </Box>
         </Box>
     );

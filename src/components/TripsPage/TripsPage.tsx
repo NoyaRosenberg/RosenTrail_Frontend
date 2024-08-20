@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
-import { Box, Container, Stack, Typography } from "@mui/material";
+import { Box, CircularProgress, Container, Stack, Typography } from "@mui/material";
 import SearchBar from "../SearchBar";
 import TripsGrid from "./TripsGrid";
 import { useTrips } from "../../contexts/TripProvider";
 import { Trip } from "../../services/trip.service";
 import CardsSkeleton from "../Skeletons/CardsSkeleton";
+import React from "react";
 
 export interface TripsPageProps {
   trips: Trip[];
@@ -26,7 +27,6 @@ const TripsPage = ({
 
   useEffect(() => {
     fetchTrips();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -69,7 +69,21 @@ const TripsPage = ({
       </Stack>
       <Box width="100%">
         {loading ? (
-          <CardsSkeleton numInRow={3} />
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              height: "100%",
+              flexDirection: "column",
+            }}
+          >
+            <CircularProgress />
+            <Typography sx={{ marginTop: 2, marginBottom: 2 }}>
+              Loading trips...
+            </Typography>
+            <CardsSkeleton numInRow={3} />
+          </Box>
         ) : error ? (
           <Typography color="error">{error}</Typography>
         ) : (
