@@ -21,7 +21,7 @@ const ActivityDetails = ({place, onAdd, onClose}: ActivityDetailsProps) => {
                         {place.name}
                     </Typography>
                     <Typography variant="body1" sx={{color: "#666"}}>
-                        A wonderful spot to see and admire the view
+                        {place.description ?? "No Description"}
                     </Typography>
                 </Stack>
             </CardContent>
