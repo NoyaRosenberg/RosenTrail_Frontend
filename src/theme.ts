@@ -63,6 +63,9 @@ const theme = createTheme({
         MuiButton: {
             styleOverrides: {
                 root: {
+                    color: lightGreen[500],
+                },
+                contained: {
                     color: "white",
                 },
                 outlined: {
@@ -82,10 +85,10 @@ const theme = createTheme({
                 root: {
                     width: "100%",
                     "& .MuiAutocomplete-inputRoot": {
-                        padding: "0 12px !important", // Match the padding from StyledTextField
+                        padding: "0 12px !important",
                     },
                     "& .MuiAutocomplete-input": {
-                        padding: "12px 0 !important", // Match the input padding from StyledTextField
+                        padding: "12px 0 !important",
                     },
                 },
             },

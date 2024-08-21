@@ -13,7 +13,6 @@ import MainPage from "../components/MainPage/MainPage";
 import BudgetPage from "../components/BudgetPage/BudgetPage";
 import TripsPage from "../components/TripsPage/TripsPage";
 import { useTrips } from "../contexts/TripProvider";
-import Map from "../components/ActivitiesPage/Map";
 import ReviewPage from "../components/ReviewPage/ReviewPage";
 
 const AppRoutes: React.FC = () => {
@@ -35,7 +34,6 @@ const AppRoutes: React.FC = () => {
       <Route path="/" element={<MainPage />} />
       <Route path="/signin" element={<SignInPage />} />
       <Route path="/register" element={<SignUpPage />} />
-      <Route path="/map" element={<Map />} />
       <Route
         path="/communityTrips"
         element={

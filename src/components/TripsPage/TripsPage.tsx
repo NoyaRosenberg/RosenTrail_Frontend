@@ -5,7 +5,6 @@ import TripsGrid from "./TripsGrid";
 import { useTrips } from "../../contexts/TripProvider";
 import { Trip } from "../../services/trip.service";
 import CardsSkeleton from "../Skeletons/CardsSkeleton";
-import React from "react";
 
 export interface TripsPageProps {
   trips: Trip[];
@@ -50,7 +49,7 @@ const TripsPage = ({
         flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
-        gap: 6,
+        gap: 4,
         paddingTop: "50px",
         paddingBottom: "20px",
         width: "68%",
