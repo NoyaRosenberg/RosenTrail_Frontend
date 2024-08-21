@@ -15,6 +15,7 @@ import {
   ListItem,
   ListItemText,
   Pagination,
+  CircularProgress,
 } from '@mui/material';
 import { alpha } from '@mui/material/styles';
 import { Delete, Edit } from '@mui/icons-material';
@@ -179,17 +180,30 @@ const TripSchedulePage: React.FC = () => {
               return null;
             })}
           </List>
-          <Pagination 
-            count={totalPages} 
-            page={currentPage} 
-            onChange={handlePageChange} 
-            color="primary" 
+          <Pagination
+            count={totalPages}
+            page={currentPage}
+            onChange={handlePageChange}
+            color="primary"
             sx={{ mt: 2 }}
           />
         </Box>
         <Box sx={{ flex: 1 }}>
           {loading ? (
-            <Typography>Loading...</Typography>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                height: "100%"
+              }}
+            >
+              <CircularProgress />
+              <Typography sx={{ marginTop: 2 }}>
+                Loading activities...
+              </Typography>
+            </Box>
           ) : error ? (
             <Typography>Error: {error}</Typography>
           ) : (
