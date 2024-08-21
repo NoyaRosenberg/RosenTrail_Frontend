@@ -9,7 +9,6 @@ import ActivityFilters from "./ActivityFilters";
 import {
     Category, Recommendation,
 } from "../../services/recommendation.service";
-import CardsSkeleton from "../Skeletons/CardsSkeleton";
 import activityService from "../../services/activity.service";
 import Map from "./Map/Map";
 import "../../styles/ActivitiesPage.css";
