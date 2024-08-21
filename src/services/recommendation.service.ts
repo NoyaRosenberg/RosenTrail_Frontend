@@ -35,15 +35,15 @@ class RecommendationService {
     },
     {
       id: 5,
-      name: "Museums & Theatres"
+      name: "View Buildings"
     },
     {
       id: 6,
-      name: "Fancy Restaurants"
+      name: "Museums & Theatres"
     },
     {
       id: 7,
-      name: "View Buildings"
+      name: "Fancy Restaurants"
     },
     {
       id: 8,
@@ -60,20 +60,8 @@ class RecommendationService {
   ];
 
   // Simulating categories request
-  async getCategories(): Promise<Category[] | void> {
-    try {
-      const response = await new Promise<{ data: Category[] }>(
-        (resolve) => {
-          setTimeout(() => {
-            resolve({ data: this.categories });
-          }, 1000);
-        }
-      );
-
-      return response.data;
-    } catch (error) {
-      this.handleError(error);
-    }
+  getCategories(): Category[] {
+    return this.categories;
   }
 
   handleError(error: unknown): void {
