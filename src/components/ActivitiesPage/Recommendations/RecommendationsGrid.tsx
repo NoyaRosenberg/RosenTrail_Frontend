@@ -5,12 +5,11 @@ import {
   DialogTitle,
   Grid,
 } from "@mui/material";
-import PlaceCard from "../PlaceCard";
-import { Trip } from "../../services/trip.service";
-import { Recommendation } from "../../services/recommendation.service";
-import { useEffect, useMemo, useState } from "react";
-import CreateActivityPage from "../CreateActivityPage/CreateActivityPage";
-import React from "react";
+import PlaceCard from "../../PlaceCard";
+import { Trip } from "../../../services/trip.service";
+import { Recommendation } from "../../../services/recommendation.service";
+import { useState } from "react";
+import CreateActivityPage from "../../CreateActivityPage/CreateActivityPage";
 
 export interface RecommendationsGrisProps {
   recommendations: Recommendation[];

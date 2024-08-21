@@ -1,5 +1,3 @@
-import axios from "axios";
-
 export interface Recommendation {
   name: string;
   description: string;
@@ -39,11 +37,11 @@ class RecommendationService {
     },
     {
       id: 6,
-      name: "Fancy Restaurants"
+      name: "View Buildings"
     },
     {
       id: 7,
-      name: "View Buildings"
+      name: "Fancy Restaurants"
     },
     {
       id: 8,
@@ -59,30 +57,8 @@ class RecommendationService {
     }
   ];
 
-  // Simulating categories request
-  async getCategories(): Promise<Category[] | void> {
-    try {
-      const response = await new Promise<{ data: Category[] }>(
-        (resolve) => {
-          setTimeout(() => {
-            resolve({ data: this.categories });
-          }, 1000);
-        }
-      );
-
-      return response.data;
-    } catch (error) {
-      this.handleError(error);
-    }
-  }
-
-  handleError(error: unknown): void {
-    if (axios.isAxiosError(error) && error.response) {
-      const errorMessage = error.response.data.message || "An error occurred";
-      throw new Error(errorMessage);
-    } else {
-      throw new Error("An unexpected error occurred");
-    }
+  getCategories(): Category[] {
+    return this.categories;
   }
 }
 
