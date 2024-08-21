@@ -36,7 +36,7 @@ const RecommendationsGrid = ({
     return (
         <Grid container spacing={2} sx={{paddingLeft: "2px", paddingBottom: "5px", paddingRight: "10px"}}>
             {recommendations.map((rec, index) => (
-                <Grid item xs={12} sm={6} md={4} key={index} sx={{display: "flex"}}>
+                <Grid item xs={12} sm={6} md={6} key={index} sx={{display: "flex"}}>
                     <PlaceCard
                         name={rec.name}
                         description={rec.description}

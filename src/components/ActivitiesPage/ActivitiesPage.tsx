@@ -7,6 +7,8 @@ import {Category, Recommendation} from "../../services/recommendation.service";
 import activityService from "../../services/activity.service";
 import RecommendationsGrid from "./Recommendations/RecommendationsGrid";
 import Map from "./Map/Map";
+import {PlaceDetails} from "../../services/place.service";
+import ActivityDetails from "./ActivityDetails";
 
 const ActivitiesPage = () => {
     const navigate = useNavigate();
@@ -18,6 +20,8 @@ const ActivitiesPage = () => {
 
     const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
     const [filteredRecommendations, setFilteredRecommendations] = useState<Recommendation[]>([]);
+    const [selectedPlace, setSelectedPlace] = useState<PlaceDetails | null>(null)
+
     const stableCoordinates = useMemo(() => ({lon: 40.7128, lat: -74.0060}), []);
 
     useEffect(() => {
@@ -59,83 +63,91 @@ const ActivitiesPage = () => {
         setFilteredRecommendations(newFilteredRecommendations);
     };
 
+    const onPlaceSelection = (place: PlaceDetails) => {
+        setSelectedPlace(place);
+    }
+
     return (
         <Box height='100vh' overflow='hidden' display='flex' gap={3} padding={3}>
-            <Box width="60%" height="100%" display="flex">
+            <Box width="50%" height="100%" display="flex" justifyContent="center">
                 <Box width="100%" height="100%">
-                    <Box height="100%" display="flex" flexDirection="column" justifyContent="space-between">
-                        <RecommendationFilters onFilterSelected={applyFilters}/>
-                        <Stack spacing={2} sx={{alignItems: "flex-start", width: "100%", height: "75%"}}>
-                            <Box
-                                display="flex"
-                                justifyContent="space-between"
-                                alignItems="center"
-                                width="100%"
-                            >
-                                <Stack>
-                                    <Typography variant="h3" sx={{fontSize: 20, color: "#333"}}>
-                                        Recommendations For Attractions
-                                    </Typography>
-                                    <Typography variant="body1" sx={{color: "#666"}}>
-                                        Click an activity to add it to your trip!
-                                    </Typography>
-                                </Stack>
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    startIcon={<Schedule/>}
-                                    onClick={goBackToSchedule}
+                    {selectedPlace ? (
+                        <ActivityDetails place={selectedPlace} onClose={() => setSelectedPlace(null)}/>
+                    ) : (
+                        <Box height="100%" display="flex" flexDirection="column" justifyContent="space-between">
+                            <RecommendationFilters onFilterSelected={applyFilters}/>
+                            <Stack spacing={2} sx={{alignItems: "flex-start", width: "100%", height: "75%"}}>
+                                <Box
+                                    display="flex"
+                                    justifyContent="space-between"
+                                    alignItems="center"
+                                    width="100%"
                                 >
-                                    Trip Schedule
-                                </Button>
-                            </Box>
-                            <Card sx={{
-                                width: "100%",
-                                height: '100%',
-                                borderRadius: 2,
-                                backgroundColor: 'rgba(0, 0, 0, 0.05)',
-                            }}>
-                                <CardContent sx={{height: "100%"}}>
-                                    {loading ? (
-                                        <Box
-                                            sx={{
-                                                display: "flex",
-                                                justifyContent: "center",
-                                                alignItems: "center",
-                                                height: "100%",
-                                                flexDirection: "column",
-                                            }}
-                                        >
-                                            <CircularProgress/>
-                                            <Typography sx={{marginTop: 2}}>
-                                                Getting recommendations, it might take a minute...
-                                            </Typography>
-                                        </Box>
-                                    ) : error ? (
-                                        <Typography color="error">
-                                            Failed To Fetch recommendations
+                                    <Stack>
+                                        <Typography variant="h3" sx={{fontSize: 20, color: "#333"}}>
+                                            Recommendations For Attractions
                                         </Typography>
-                                    ) : (
-                                        <Box
-                                            className="scrollable"
-                                            width="100%"
-                                            height="100%"
-                                            sx={{overflowY: "auto"}}
-                                        >
-                                            <RecommendationsGrid
-                                                recommendations={filteredRecommendations}
-                                                trip={trip}
-                                            />
-                                        </Box>
-                                    )}
-                                </CardContent>
-                            </Card>
-                        </Stack>
-                    </Box>
+                                        <Typography variant="body1" sx={{color: "#666"}}>
+                                            Click an activity to add it to your trip!
+                                        </Typography>
+                                    </Stack>
+                                    <Button
+                                        variant="contained"
+                                        color="primary"
+                                        startIcon={<Schedule/>}
+                                        onClick={goBackToSchedule}
+                                    >
+                                        Trip Schedule
+                                    </Button>
+                                </Box>
+                                <Card sx={{
+                                    width: "100%",
+                                    height: '100%',
+                                    borderRadius: 2,
+                                    backgroundColor: 'rgba(0, 0, 0, 0.05)',
+                                }}>
+                                    <CardContent sx={{height: "100%"}}>
+                                        {loading ? (
+                                            <Box
+                                                sx={{
+                                                    display: "flex",
+                                                    justifyContent: "center",
+                                                    alignItems: "center",
+                                                    height: "100%",
+                                                    flexDirection: "column",
+                                                }}
+                                            >
+                                                <CircularProgress/>
+                                                <Typography sx={{marginTop: 2}}>
+                                                    Getting recommendations, it might take a minute...
+                                                </Typography>
+                                            </Box>
+                                        ) : error ? (
+                                            <Typography color="error">
+                                                Failed To Fetch recommendations
+                                            </Typography>
+                                        ) : (
+                                            <Box
+                                                className="scrollable"
+                                                width="100%"
+                                                height="100%"
+                                                sx={{overflowY: "auto"}}
+                                            >
+                                                <RecommendationsGrid
+                                                    recommendations={filteredRecommendations}
+                                                    trip={trip}
+                                                />
+                                            </Box>
+                                        )}
+                                    </CardContent>
+                                </Card>
+                            </Stack>
+                        </Box>
+                    )}
                 </Box>
             </Box>
-            <Box width="40%" height="100%" borderRadius={2} overflow='hidden' display="flex" flexDirection="column">
-                <Map coordinates={stableCoordinates}/>
+            <Box width="50%" height="100%" borderRadius={2} overflow='hidden' display="flex" flexDirection="column">
+                <Map coordinates={stableCoordinates} onPlaceSelection={onPlaceSelection}/>
             </Box>
         </Box>
     );

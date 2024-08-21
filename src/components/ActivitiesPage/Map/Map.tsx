@@ -11,10 +11,11 @@ import {PlaceDetails} from "../../../services/place.service";
 
 interface MapProps {
     coordinates: { lon: number, lat: number };
+    onPlaceSelection: (place: PlaceDetails) => void;
 }
 
 // TODO: Replace with actual trip destination coordinates
-const Map = ({coordinates}: MapProps) => {
+const Map = ({coordinates, onPlaceSelection}: MapProps) => {
     useEffect(() => {
         MapService.initMap([L.tileLayer('https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=tu0LMTgmkVGftApMVIOA#0.9/-4.26133/-41.45004', {
             maxZoom: 20,
@@ -30,6 +31,7 @@ const Map = ({coordinates}: MapProps) => {
         if (place.coordinates) {
             MapService.setView([place.coordinates.lat, place.coordinates.lon]);
             MapService.addMarker([place.coordinates.lat, place.coordinates.lon], place.name);
+            onPlaceSelection(place);
         }
     };
 
