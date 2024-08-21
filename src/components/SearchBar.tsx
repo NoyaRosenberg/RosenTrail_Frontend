@@ -3,16 +3,11 @@ import {Stack, Autocomplete, InputAdornment} from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import {StyledListbox, StyledPopper, StyledTextField} from "../theme";
 
-export interface Suggestion {
-    id: string;
-    name: string;
-}
-
 export interface AutoCompleteSearchBarProps {
     placeholder: string;
     onSearch: (searchValue: string) => void;
-    suggestions?: Suggestion[];
-    onSuggestionClick?: (suggestion: Suggestion) => void;
+    suggestions?: string[];
+    onSuggestionClick?: (suggestion: string) => void;
 }
 
 const SearchBar: React.FC<AutoCompleteSearchBarProps> = ({
@@ -31,10 +26,10 @@ const SearchBar: React.FC<AutoCompleteSearchBarProps> = ({
 
     const handleSuggestionSelect = (
         _event: SyntheticEvent,
-        newValue: Suggestion | string | null
+        newValue: string | null
     ) => {
         if (newValue && onSuggestionClick) {
-            onSuggestionClick(newValue as Suggestion);
+            onSuggestionClick(newValue);
         }
     };
 
@@ -68,12 +63,6 @@ const SearchBar: React.FC<AutoCompleteSearchBarProps> = ({
                         sx={{width: "100%"}}
                     />
                 )}
-                renderOption={(props, option) => (
-                    <li {...props} key={option.id}>
-                        {option.name}
-                    </li>
-                )}
-                getOptionLabel={(option) => (option as Suggestion).name}
             />
         </Stack>
     );

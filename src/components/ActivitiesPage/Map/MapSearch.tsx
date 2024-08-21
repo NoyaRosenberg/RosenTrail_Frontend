@@ -1,6 +1,6 @@
 import {useState} from 'react';
 import PlaceService, {PlaceDetails} from '../../../services/place.service';
-import SearchBar, {Suggestion} from "../../SearchBar";
+import SearchBar from "../../SearchBar";
 import {debounce} from "@mui/material";
 
 interface MapSearchProps {
@@ -10,24 +10,20 @@ interface MapSearchProps {
 
 const MapSearch = ({coordinates, onPlacePick}: MapSearchProps) => {
     const [places, setPlaces] = useState<PlaceDetails[]>([]);
-    const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
+    const [suggestions, setSuggestions] = useState<string[]>([]);
 
     const fetchPlaces = debounce(async (searchValue: string) => {
         if (searchValue.length >= 2) {
             const results = await PlaceService.fetchPlaces(searchValue, `${coordinates.lon},${coordinates.lat}`);
             setPlaces(results);
-            setSuggestions(results.map(result => {
-                return {
-                    id: result.id,
-                    name: result.name
-                }
-            }).filter((suggestion, index, self) =>
-                index === self.findIndex(t => t.name === suggestion.name)));
+            setSuggestions(results.map(result => result.name)
+                .filter((suggestion, index, self) =>
+                    index === self.findIndex(t => t === suggestion)));
         }
     }, 100);
 
-    const onPlaceSelection = (suggestion: Suggestion) => {
-        const place = places.find(place => place.id === suggestion.id);
+    const onPlaceSelection = (suggestion: string) => {
+        const place = places.find(place => place.name === suggestion);
 
         if (place) {
             onPlacePick(place);
