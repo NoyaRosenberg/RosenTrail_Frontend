@@ -65,9 +65,9 @@ const ActivitiesPage: React.FC = () => {
     };
 
     return (
-        <Box sx={{display: 'flex', height: '100vh', overflow: 'hidden'}}>
+        <Box sx={{display: 'flex', height: '100vh', overflow: 'hidden', paddingTop: "20px", paddingBottom: "10px"}}>
             <Box sx={{width: '65%', height: '100%'}}>
-                <Container sx={{paddingTop: "20px", paddingBottom: "10px"}}>
+                <Container>
                     <Stack spacing={4}>
                         <Stack spacing={3}>
                             <Box
@@ -140,7 +140,7 @@ const ActivitiesPage: React.FC = () => {
                     </Stack>
                 </Container>
             </Box>
-            <Box sx={{width: '35%', height: '100%', paddingTop: '20px', paddingRight: '20px', paddingBottom: '20px'}}>
+            <Box sx={{width: '35%', height: '100%', paddingRight: '20px'}}>
                 <Map coordinates={{lon: 40.7128, lat: -74.0060}}/>
             </Box>
         </Box>
