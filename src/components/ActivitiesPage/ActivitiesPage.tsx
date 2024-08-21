@@ -1,9 +1,9 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Schedule } from "@mui/icons-material";
+import React, {useEffect, useRef, useState} from "react";
+import {Schedule} from "@mui/icons-material";
 import {
     Box, Container, Stack, Typography, Button, Card, CardContent, CircularProgress
 } from "@mui/material";
-import { useLocation, useNavigate } from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import RecommendationsGrid from "./RecommendationsGrid";
 import ActivityFilters from "./ActivityFilters";
 import {
@@ -39,18 +39,6 @@ const ActivitiesPage: React.FC = () => {
                     setLoading(false);
                 }
             };
-  useEffect(() => {
-    if (effectRan.current === false) {
-      const getRecommendations = async () => {
-        try {
-          const recommendations = await activityService.getActivitiesFromAI(trip.destinations);
-          setRecommendations(recommendations!);
-          setFilteredRecommendations(recommendations!);
-          setLoading(false);
-        } catch (error) {
-          setError((error as Error).message);
-        }
-      };
 
             getRecommendations();
 
@@ -74,7 +62,7 @@ const ActivitiesPage: React.FC = () => {
     };
 
     const goBackToSchedule = () => {
-        navigate("/schedule", { state: { trip, showActions: true } });
+        navigate("/schedule", {state: {trip, showActions: true}});
     };
 
     return (
@@ -88,30 +76,35 @@ const ActivitiesPage: React.FC = () => {
                                 justifyContent="space-between"
                                 alignItems="center"
                             >
-                                <Typography variant="h3" sx={{ fontSize: 20, color: "#333" }}>
+                                <Typography variant="h3" sx={{fontSize: 20, color: "#333"}}>
                                     Search For Attractions In {trip.destinations}
                                 </Typography>
                                 <Button
                                     variant="contained"
                                     color="primary"
-                                    startIcon={<Schedule />}
+                                    startIcon={<Schedule/>}
                                     onClick={goBackToSchedule}
                                 >
                                     Trip Schedule
                                 </Button>
                             </Box>
-                            <ActivityFilters onFilterSelected={applyFilters} />
+                            <ActivityFilters onFilterSelected={applyFilters}/>
                         </Stack>
-                        <Stack spacing={2} sx={{ alignItems: "flex-start", width: "100%" }}>
+                        <Stack spacing={2} sx={{alignItems: "flex-start", width: "100%"}}>
                             <Stack>
-                                <Typography variant="h3" sx={{ fontSize: 20, color: "#333" }}>
+                                <Typography variant="h3" sx={{fontSize: 20, color: "#333"}}>
                                     Recommendations For Attractions
                                 </Typography>
-                                <Typography variant="body1" sx={{ color: "#666" }}>
+                                <Typography variant="body1" sx={{color: "#666"}}>
                                     Click an activity to add it to your trip!
                                 </Typography>
                             </Stack>
-                            <Card sx={{ width: '100%', height: "44vh", borderRadius: 2, backgroundColor: 'rgba(0, 0, 0, 0.05)' }}>
+                            <Card sx={{
+                                width: '100%',
+                                height: "44vh",
+                                borderRadius: 2,
+                                backgroundColor: 'rgba(0, 0, 0, 0.05)'
+                            }}>
                                 <CardContent>
                                     {loading ? (
                                         <Box
@@ -123,8 +116,8 @@ const ActivitiesPage: React.FC = () => {
                                                 flexDirection: "column",
                                             }}
                                         >
-                                            <CircularProgress />
-                                            <Typography sx={{ marginTop: 2 }}>
+                                            <CircularProgress/>
+                                            <Typography sx={{marginTop: 2}}>
                                                 Getting recommendations, it might take a minute...
                                             </Typography>
                                         </Box>
@@ -134,7 +127,7 @@ const ActivitiesPage: React.FC = () => {
                                         </Typography>
                                     ) : (
                                         <Box className="scrollable"
-                                            sx={{ width: "100%", height: "40vh", overflowY: "auto" }}>
+                                             sx={{width: "100%", height: "40vh", overflowY: "auto"}}>
                                             <RecommendationsGrid
                                                 recommendations={filteredRecommendations}
                                                 trip={trip}
@@ -148,7 +141,7 @@ const ActivitiesPage: React.FC = () => {
                     </Stack>
                 </Container>
             </Box>
-            <Box sx={{ width: '35%', height: '100%', paddingTop: '20px', paddingRight: '20px', paddingBottom: '20px'}}>
+            <Box sx={{width: '35%', height: '100%', paddingTop: '20px', paddingRight: '20px', paddingBottom: '20px'}}>
                 <Map coordinates={{lon: 40.7128, lat: -74.0060}}/>
             </Box>
         </Box>
