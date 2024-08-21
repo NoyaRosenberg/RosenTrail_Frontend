@@ -3,10 +3,11 @@ import {Button, Card, CardActions, CardContent, CardMedia, Stack, Typography} fr
 
 interface ActivityDetailsProps {
     place: PlaceDetails;
+    onAdd: () => void;
     onClose: () => void;
 }
 
-const ActivityDetails = ({place, onClose}: ActivityDetailsProps) => {
+const ActivityDetails = ({place, onAdd, onClose}: ActivityDetailsProps) => {
     return (
         <Card sx={{display: 'grid', gridTemplateRows: '1fr auto', height: '100%',}}>
             <CardMedia
@@ -25,7 +26,7 @@ const ActivityDetails = ({place, onClose}: ActivityDetailsProps) => {
                 </Stack>
             </CardContent>
             <CardActions>
-                <Button>Add To Schedule</Button>
+                <Button onClick={onAdd}>Add To Schedule</Button>
                 <Button onClick={onClose}>Close</Button>
             </CardActions>
         </Card>

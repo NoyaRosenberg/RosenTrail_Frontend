@@ -81,30 +81,47 @@ const ActivitiesPage = () => {
         setSelectedPlace(place);
     }
 
+    const addRecommendationToTrip = (recommendation: Recommendation) => {
+        setIsActivityDialogOpen(true);
+        setActivityDialogProps({
+            location: recommendation.name ?? "",
+            description: recommendation.description ?? "",
+            cost: recommendation.cost ?? 0,
+            trip: trip,
+            imageUrl: recommendation.image ?? "",
+            categories: recommendation.categories ?? [],
+            onClose: handleActivityDialogClose
+        });
+    };
+
+    const addSelectedPlaceToTrip = () => {
+        setIsActivityDialogOpen(true);
+        setActivityDialogProps({
+            location: selectedPlace?.name ?? "",
+            description: selectedPlace?.description ?? "",
+            cost: 0,
+            trip: trip,
+            imageUrl: "",
+            categories: [],
+            onClose: handleActivityDialogClose
+        });
+    };
+
     const handleActivityDialogClose = () => {
         setIsActivityDialogOpen(false);
         setActivityDialogProps(null);
     };
-
-    const addRecommendationToTrip = (recommendation: Recommendation) => {
-        setIsActivityDialogOpen(true);
-        setActivityDialogProps({
-            location: recommendation.name ?? '',
-            description: recommendation.description ?? "",
-            cost: recommendation.cost ?? 0,
-            trip: trip,
-            imageUrl: recommendation.image,
-            categories: recommendation.categories ?? [],
-            onClose: handleActivityDialogClose
-        });
-    }
 
     return (
         <Box height='100vh' overflow='hidden' display='flex' gap={3} padding={3}>
             <Box width="50%" height="100%" display="flex" justifyContent="center">
                 <Box width="100%" height="100%">
                     {selectedPlace ? (
-                        <ActivityDetails place={selectedPlace} onClose={() => setSelectedPlace(null)}/>
+                        <ActivityDetails
+                            place={selectedPlace}
+                            onAdd={addSelectedPlaceToTrip}
+                            onClose={() => setSelectedPlace(null)}
+                        />
                     ) : (
                         <Box height="100%" display="flex" flexDirection="column" justifyContent="space-between">
                             <RecommendationFilters onFilterSelected={applyFilters}/>
