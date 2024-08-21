@@ -1,4 +1,14 @@
-import {Box, Button, Card, CardContent, CircularProgress, Stack, Typography} from "@mui/material";
+import {
+    Box,
+    Button,
+    Card,
+    CardContent,
+    CircularProgress, Dialog, DialogActions,
+    DialogContent,
+    DialogTitle,
+    Stack,
+    Typography
+} from "@mui/material";
 import {Schedule} from "@mui/icons-material";
 import {useLocation, useNavigate} from "react-router-dom";
 import RecommendationFilters from "./Recommendations/RecommendationFilters";
@@ -9,6 +19,7 @@ import RecommendationsGrid from "./Recommendations/RecommendationsGrid";
 import Map from "./Map/Map";
 import {PlaceDetails} from "../../services/place.service";
 import ActivityDetails from "./ActivityDetails";
+import CreateActivityPage, {CreateActivityPageProps} from "../CreateActivityPage/CreateActivityPage";
 
 const ActivitiesPage = () => {
     const navigate = useNavigate();
@@ -20,7 +31,10 @@ const ActivitiesPage = () => {
 
     const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
     const [filteredRecommendations, setFilteredRecommendations] = useState<Recommendation[]>([]);
-    const [selectedPlace, setSelectedPlace] = useState<PlaceDetails | null>(null)
+
+    const [selectedPlace, setSelectedPlace] = useState<PlaceDetails | null>(null);
+    const [activityDialogProps, setActivityDialogProps] = useState<CreateActivityPageProps | null>(null);
+    const [isActivityDialogOpen, setIsActivityDialogOpen] = useState(false);
 
     const stableCoordinates = useMemo(() => ({lon: 40.7128, lat: -74.0060}), []);
 
@@ -65,6 +79,24 @@ const ActivitiesPage = () => {
 
     const onPlaceSelection = (place: PlaceDetails) => {
         setSelectedPlace(place);
+    }
+
+    const handleActivityDialogClose = () => {
+        setIsActivityDialogOpen(false);
+        setActivityDialogProps(null);
+    };
+
+    const addRecommendationToTrip = (recommendation: Recommendation) => {
+        setIsActivityDialogOpen(true);
+        setActivityDialogProps({
+            location: recommendation.name ?? '',
+            description: recommendation.description ?? "",
+            cost: recommendation.cost ?? 0,
+            trip: trip,
+            imageUrl: recommendation.image,
+            categories: recommendation.categories ?? [],
+            onClose: handleActivityDialogClose
+        });
     }
 
     return (
@@ -135,7 +167,7 @@ const ActivitiesPage = () => {
                                             >
                                                 <RecommendationsGrid
                                                     recommendations={filteredRecommendations}
-                                                    trip={trip}
+                                                    onRecommendationClick={addRecommendationToTrip}
                                                 />
                                             </Box>
                                         )}
@@ -149,6 +181,21 @@ const ActivitiesPage = () => {
             <Box width="50%" height="100%" borderRadius={2} overflow='hidden' display="flex" flexDirection="column">
                 <Map coordinates={stableCoordinates} onPlaceSelection={onPlaceSelection}/>
             </Box>
+            <Dialog open={isActivityDialogOpen} onClose={handleActivityDialogClose} maxWidth="lg" fullWidth>
+                <DialogTitle>Edit Your Activity</DialogTitle>
+                <DialogContent>
+                    <CreateActivityPage
+                        location={activityDialogProps?.location}
+                        description={activityDialogProps?.description}
+                        cost={activityDialogProps?.cost}
+                        trip={trip}
+                        imageUrl={activityDialogProps?.imageUrl}
+                        categories={activityDialogProps?.categories}
+                        onClose={handleActivityDialogClose}
+                    />
+                </DialogContent>
+                <DialogActions></DialogActions>
+            </Dialog>
         </Box>
     );
 }

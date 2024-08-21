@@ -5,7 +5,7 @@ import { Trip } from '../../services/trip.service';
 import { Activity } from '../../services/activity.service';
 import '../../styles/CreateActivityPage.css';
 
-interface CreateActivityPageProps {
+export interface CreateActivityPageProps {
   activityToEdit?: Activity | null;
   location?: string;
   description?: string;
