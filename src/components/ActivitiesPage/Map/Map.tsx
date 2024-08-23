@@ -30,6 +30,9 @@ const mapOptions = {
     mapTypeControl: false,
 };
 
+const libraries = ['places'] as Libraries;
+const apiKey = "AIzaSyDC7J-IsGSicrRECRUn5H2pYhRm-DpATNo";
+
 const Map = ({ location }: MapProps) => {
     const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
     const [isInfoWindowOpen, setIsInfoWindowOpen] = useState(false);
@@ -77,8 +80,8 @@ const Map = ({ location }: MapProps) => {
 
     return (
         <LoadScript
-            googleMapsApiKey="AIzaSyDC7J-IsGSicrRECRUn5H2pYhRm-DpATNo"
-            libraries={['places'] as Libraries}
+            googleMapsApiKey={apiKey}
+            libraries={libraries}
             language="en"
             region={location.region}
         >

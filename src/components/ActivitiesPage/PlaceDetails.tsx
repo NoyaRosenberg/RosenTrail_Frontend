@@ -1,4 +1,5 @@
 import {Location} from "../../services/geocoding.service";
+import {Card, CardContent, CardMedia, Typography} from "@mui/material";
 
 export interface Place {
     name: string;
@@ -10,23 +11,26 @@ interface PlaceDetailsProps {
     place: Place
 }
 
-const PlaceDetails = ({ place }: PlaceDetailsProps) => {
+const PlaceDetails = ({place}: PlaceDetailsProps) => {
     return (
-        <div>
-            <h2>{place.name}</h2>
+        <Card>
             {place.photoUrl && (
-                <img
-                    src={place.photoUrl}
+                <CardMedia
+                    component="img"
+                    image={place.photoUrl}
                     alt={place.name}
-                    style={{
-                        width: '100%',
-                        maxHeight: '200px',
-                        objectFit: 'cover',
-                    }}
+                    style={{ height: 100 }}
                 />
             )}
-            <p>Details about the activity can be shown here.</p>
-        </div>
+            <CardContent>
+                <Typography gutterBottom sx={{fontSize: '18px'}}>
+                    {place.name}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                    place details goes here
+                </Typography>
+            </CardContent>
+        </Card>
     )
 };
 
