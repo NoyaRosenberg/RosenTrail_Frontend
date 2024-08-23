@@ -11,7 +11,7 @@ import { StyledTextField } from '../../../theme';
 import { InputAdornment } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import { Location } from '../../../services/geocoding.service';
-import PlaceDetails, {Place} from "../PlaceDetails";
+import PlaceDetails, { Place } from '../PlaceDetails';
 
 interface MapProps {
     location: Location;
@@ -59,11 +59,12 @@ const Map = ({ location }: MapProps) => {
                 location: {
                     position: {
                         lat: location.lat(),
-                        lng: location.lng()
+                        lng: location.lng(),
                     },
-                    region: place.address_components?.find(component =>
-                        component.types.includes('country')
-                    )?.short_name ?? ''
+                    region:
+                        place.address_components?.find((component) =>
+                            component.types.includes('country')
+                        )?.short_name ?? '',
                 },
                 photoUrl,
             });
@@ -75,7 +76,13 @@ const Map = ({ location }: MapProps) => {
     };
 
     const handleMarkerClick = () => {
-        setIsInfoWindowOpen(true);
+        if (selectedPlace) {
+            setIsInfoWindowOpen(true);
+        }
+    };
+
+    const handleMapClick = () => {
+        setIsInfoWindowOpen(false);
     };
 
     return (
@@ -91,6 +98,7 @@ const Map = ({ location }: MapProps) => {
                 zoom={8}
                 onLoad={onLoad}
                 options={mapOptions}
+                onClick={handleMapClick}
             >
                 <Autocomplete onLoad={onLoadAutocomplete} onPlaceChanged={onPlaceChanged}>
                     <StyledTextField
