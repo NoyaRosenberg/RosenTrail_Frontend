@@ -11,12 +11,7 @@ import { StyledTextField } from '../../../theme';
 import { InputAdornment } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import { Location } from '../../../services/geocoding.service';
-
-interface Place {
-    name: string;
-    location: Location;
-    photoUrl?: string;
-}
+import PlaceDetails, {Place} from "../PlaceDetails";
 
 interface MapProps {
     location: Location;
@@ -124,21 +119,7 @@ const Map = ({ location }: MapProps) => {
                                 position={selectedPlace.location.position}
                                 onCloseClick={() => setIsInfoWindowOpen(false)}
                             >
-                                <div>
-                                    <h2>{selectedPlace.name}</h2>
-                                    {selectedPlace.photoUrl && (
-                                        <img
-                                            src={selectedPlace.photoUrl}
-                                            alt={selectedPlace.name}
-                                            style={{
-                                                width: '100%',
-                                                maxHeight: '200px',
-                                                objectFit: 'cover',
-                                            }}
-                                        />
-                                    )}
-                                    <p>Details about the activity can be shown here.</p>
-                                </div>
+                                <PlaceDetails place={selectedPlace}/>
                             </InfoWindow>
                         )}
                     </>
