@@ -1,8 +1,13 @@
 import axios from "axios";
 
-export interface Location {
+export interface Position {
     lng: number;
     lat: number;
+}
+
+export interface Location {
+    position: Position;
+    region: string;
 }
 
 class GeocodingService {
@@ -14,7 +19,16 @@ class GeocodingService {
 
         try {
             const response = await axios.get(url);
-            return response.data.results[0].geometry.location;
+
+            return {
+                position: {
+                    lng: response.data.results[0].geometry.location.lng,
+                    lat: response.data.results[0].geometry.location.lat
+                },
+                region: response.data.results[0].address_components.find((component: any) =>
+                    component.types.includes('country')
+                )?.short_name
+            }
         } catch (error) {
             if (axios.isAxiosError(error) && error.response) {
                 const errorMessage = error.response.data.message || "An error occurred";

@@ -34,7 +34,7 @@ const ActivitiesPage = () => {
     const [activityDialogProps, setActivityDialogProps] = useState<CreateActivityPageProps | null>(null);
     const [isActivityDialogOpen, setIsActivityDialogOpen] = useState(false);
 
-    const [center, setCenter] = useState<Location>({lat: 48.8584, lng: 2.2945});
+    const [location, setLocation] = useState<Location>({position: {lat: 48.8584, lng: 2.2945}, region: 'FR'});
 
     useEffect(() => {
         if (effectRan.current === false) {
@@ -62,7 +62,7 @@ const ActivitiesPage = () => {
         const getCoordinatesByCityOrCountry = async () => {
             try {
                 const response = await GeocodingService.getCoordinatesByCityOrCountry(trip.destinations[0]);
-                setCenter(response)
+                setLocation(response)
             } catch (error) {
                 console.error('Error fetching geocoding data:', error);
             }
@@ -182,7 +182,7 @@ const ActivitiesPage = () => {
                 </Box>
             </Box>
             <Box width="50%" height="100%" borderRadius={2} overflow='hidden' display="flex" flexDirection="column">
-                <Map center={center}/>
+                <Map location={location}/>
             </Box>
             <Dialog open={isActivityDialogOpen} onClose={handleActivityDialogClose} maxWidth="lg" fullWidth>
                 <DialogTitle>Edit Your Activity</DialogTitle>
