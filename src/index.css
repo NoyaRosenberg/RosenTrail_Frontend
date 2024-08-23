@@ -11,19 +11,23 @@ html, body, #root {
   background-color: #FEFEFE;
 }
 
-/* Scrollbar css */
-.scrollable::-webkit-scrollbar {
-  width: 8px;
+
+/* Custom Scrollbar Styles */
+::-webkit-scrollbar {
+  width: 14px;  /* Wider to accommodate roundness */
 }
 
-.scrollable::-webkit-scrollbar-track {
-  background-color: #f0f0f0;
+::-webkit-scrollbar-track {
+  background: #f0f0f0;
+  border-radius: 10px;
 }
 
-.scrollable::-webkit-scrollbar-thumb {
-  background-color: #c1c1c1;
-  border-radius: 4px;
-  &:hover {
-    background-color: #a8a8a8;
-  }
+::-webkit-scrollbar-thumb {
+  background-color: #8cd43f;
+  border-radius: 10px;
+  border: 3px solid #f0f0f0;  /* Creates padding effect */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #7bc22f;
 }

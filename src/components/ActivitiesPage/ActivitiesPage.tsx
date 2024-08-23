@@ -20,6 +20,7 @@ import Map from "./Map/Map";
 import {PlaceDetails} from "../../services/place.service";
 import ActivityDetails from "./ActivityDetails";
 import CreateActivityPage, {CreateActivityPageProps} from "../CreateActivityPage/CreateActivityPage";
+import React from "react";
 
 const ActivitiesPage = () => {
     const navigate = useNavigate();
