@@ -11,13 +11,13 @@ html, body, #root {
   background-color: #FEFEFE;
 }
 
-/* Scrollbar css */
-.scrollable::-webkit-scrollbar {
+/* Custom Scrollbar Styles */
+::-webkit-scrollbar {
   width: 8px;
 }
 
-.scrollable::-webkit-scrollbar-track {
-  background-color: #f0f0f0;
+::-webkit-scrollbar-track {
+  background: #f0f0f0;
 }
 
 .scrollable::-webkit-scrollbar-thumb {
@@ -26,4 +26,17 @@ html, body, #root {
   &:hover {
     background-color: #a8a8a8;
   }
+}
+
+.pac-container {
+  margin-top: 10px;
+  border-radius: 20px !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25) !important;
+  box-sizing: border-box !important;
+}
+
+.pac-item {
+  text-align: left !important;
+  font-size: 14px !important;
+  padding: 8px 12px !important;
 }

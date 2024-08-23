@@ -6,7 +6,7 @@ import {
   Box, 
   Typography 
 } from '@mui/material';
-import ReviewService, { Review } from '../../services/review.service';
+import { Review } from '../../services/review.service';
 
 interface ReviewCardProps {
   review: Review;
