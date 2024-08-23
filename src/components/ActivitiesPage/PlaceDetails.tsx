@@ -17,7 +17,8 @@ interface PlaceDetailsProps {
     onAddClick: () => void,
 }
 
-type ChipColor = "primary" | "default" | "info" | "warning" | "error" | "secondary" | "success" | undefined;
+type ChipColor = "primary" | "default" | "info" | "warning" | "error"
+    | "secondary" | "success" | undefined;
 
 const PriceLevel = ['Free', 'Inexpensive', 'Moderate Price', 'Expensive', 'Very Expensive'];
 const PriceLevelColor = ['primary', 'default', 'info', 'warning', 'error'];
