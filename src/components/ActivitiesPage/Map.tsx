@@ -7,11 +7,11 @@ import {
     InfoWindow,
     Libraries,
 } from '@react-google-maps/api';
-import {StyledTextField} from '../../../theme';
+import {StyledTextField} from '../../theme';
 import {InputAdornment} from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-import {Location} from '../../../services/geocoding.service';
-import PlaceDetails, {Place} from '../PlaceDetails';
+import {Location} from '../../services/geocoding.service';
+import PlaceDetails, {Place} from './PlaceDetails';
 
 interface MapProps {
     location: Location;

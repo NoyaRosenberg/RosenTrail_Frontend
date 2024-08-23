@@ -17,7 +17,7 @@ import {Category, Recommendation} from "../../services/recommendation.service";
 import activityService from "../../services/activity.service";
 import RecommendationsGrid from "./Recommendations/RecommendationsGrid";
 import CreateActivityPage, {CreateActivityPageProps} from "../CreateActivityPage/CreateActivityPage";
-import Map from './Map/Map';
+import Map from './Map';
 import GeocodingService, {Location} from "../../services/geocoding.service";
 import {Place} from "./PlaceDetails";
 
