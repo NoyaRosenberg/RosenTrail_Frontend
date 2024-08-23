@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react';
+import {useCallback, useRef, useState} from 'react';
 import {
     GoogleMap,
     LoadScript,
@@ -7,11 +7,11 @@ import {
     InfoWindow,
     Libraries,
 } from '@react-google-maps/api';
-import { StyledTextField } from '../../../theme';
-import { InputAdornment } from '@mui/material';
+import {StyledTextField} from '../../../theme';
+import {InputAdornment} from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-import { Location } from '../../../services/geocoding.service';
-import PlaceDetails, { Place } from '../PlaceDetails';
+import {Location} from '../../../services/geocoding.service';
+import PlaceDetails, {Place} from '../PlaceDetails';
 
 interface MapProps {
     location: Location;
@@ -33,7 +33,7 @@ const mapOptions = {
 const libraries = ['places'] as Libraries;
 const apiKey = "AIzaSyDC7J-IsGSicrRECRUn5H2pYhRm-DpATNo";
 
-const Map = ({ location }: MapProps) => {
+const Map = ({location}: MapProps) => {
     const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
     const [isInfoWindowOpen, setIsInfoWindowOpen] = useState(false);
     const mapRef = useRef<google.maps.Map | null>(null);
@@ -52,7 +52,11 @@ const Map = ({ location }: MapProps) => {
 
         if (place && place.geometry && place.geometry.location) {
             const location = place.geometry.location;
-            const photoUrl = place.photos?.[0]?.getUrl({ maxWidth: 300, maxHeight: 200 });
+            const photoUrl = place.photos?.[0]?.getUrl({maxWidth: 300, maxHeight: 200});
+            const address = place.formatted_address || '';
+            const rating = place.rating || 0;
+            const priceLevel = place.price_level || 0;
+            const openHours = place.opening_hours?.weekday_text || [];
 
             setSelectedPlace({
                 name: place.name || 'Unknown Place',
@@ -67,9 +71,14 @@ const Map = ({ location }: MapProps) => {
                         )?.short_name ?? '',
                 },
                 photoUrl,
+                address,
+                rating,
+                priceLevel,
+                openHours,
+                description: place.types ? place.types[0] : undefined
             });
 
-            mapRef.current?.panTo({ lat: location.lat(), lng: location.lng() });
+            mapRef.current?.panTo({lat: location.lat(), lng: location.lng()});
             mapRef.current?.setZoom(15);
             setIsInfoWindowOpen(true);
         }
@@ -109,11 +118,11 @@ const Map = ({ location }: MapProps) => {
                         InputProps={{
                             startAdornment: (
                                 <InputAdornment position="start">
-                                    <SearchIcon />
+                                    <SearchIcon/>
                                 </InputAdornment>
                             ),
                         }}
-                        sx={{ width: '70%' }}
+                        sx={{width: '70%'}}
                     />
                 </Autocomplete>
 
