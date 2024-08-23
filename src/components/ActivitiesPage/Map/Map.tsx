@@ -26,6 +26,13 @@ const mapContainerStyle = {
     padding: 8
 };
 
+const mapOptions = {
+    disableDefaultUI: true,
+    zoomControl: true,
+    fullscreenControl: true,
+    mapTypeControl: false,
+};
+
 interface MapProps {
     center: { lat: number, lng: number };
 }
@@ -33,7 +40,6 @@ interface MapProps {
 const Map = ({center}: MapProps) => {
     const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
     const mapRef = useRef<google.maps.Map | null>(null);
-
     const onLoad = useCallback((map: google.maps.Map) => {
         mapRef.current = map;
     }, []);
@@ -46,6 +52,7 @@ const Map = ({center}: MapProps) => {
 
     const onPlaceChanged = () => {
         const place = autocompleteRef.current?.getPlace();
+
         if (place && place.geometry && place.geometry.location) {
             const location = place.geometry.location;
 
@@ -69,8 +76,9 @@ const Map = ({center}: MapProps) => {
             <GoogleMap
                 mapContainerStyle={mapContainerStyle}
                 center={center}
-                zoom={8}
+                zoom={10}
                 onLoad={onLoad}
+                options={mapOptions}
             >
                 <Autocomplete onLoad={onLoadAutocomplete} onPlaceChanged={onPlaceChanged}>
                     <StyledTextField
@@ -83,19 +91,19 @@ const Map = ({center}: MapProps) => {
                                 <InputAdornment position="start">
                                     <SearchIcon/>
                                 </InputAdornment>
-                            ),
+                            )
                         }}
                         sx={{width: "70%"}}
                     />
                 </Autocomplete>
+
 
                 {selectedPlace && (
                     <Marker position={selectedPlace.position} title={selectedPlace.name}/>
                 )}
             </GoogleMap>
         </LoadScript>
-    )
-        ;
+    );
 };
 
 export default Map;
