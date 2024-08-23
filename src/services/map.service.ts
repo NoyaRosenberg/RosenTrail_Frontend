@@ -5,6 +5,7 @@ import "leaflet.locatecontrol";
 
 class MapService {
     private map!: L.Map;
+    // API KEY: 'AIzaSyDC7J-IsGSicrRECRUn5H2pYhRm-DpATNo';
 
     initMap(layers: L.Layer[], center: L.LatLngExpression) {
         this.map = L.map("map", {

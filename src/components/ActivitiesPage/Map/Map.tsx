@@ -1,55 +1,101 @@
-import {useEffect} from "react";
-import L from "leaflet";
-import "leaflet/dist/leaflet.css";
-import "leaflet.locatecontrol/dist/L.Control.Locate.min.css";
-import "leaflet.locatecontrol";
-import MapService from "../../../services/map.service";
-import "react-toastify/dist/ReactToastify.css";
-import {Box} from "@mui/material";
-import MapSearch from './MapSearch';
-import {PlaceDetails} from "../../../services/place.service";
+import {useCallback, useRef, useState} from 'react';
+import {
+    GoogleMap,
+    LoadScript,
+    Autocomplete,
+    Marker,
+    Libraries
+} from '@react-google-maps/api';
+import {StyledTextField} from "../../../theme";
+import {InputAdornment} from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
 
-interface MapProps {
-    coordinates: { lon: number, lat: number };
-    onPlaceSelection: (place: PlaceDetails) => void;
+interface Place {
+    name: string;
+    position: {
+        lat: number;
+        lng: number;
+    };
 }
 
-// TODO: Replace with actual trip destination coordinates
-const Map = ({coordinates, onPlaceSelection}: MapProps) => {
-    useEffect(() => {
-        MapService.initMap([L.tileLayer('https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=tu0LMTgmkVGftApMVIOA#0.9/-4.26133/-41.45004', {
-            maxZoom: 20,
-            attribution: '&copy; <a href="https://www.maptiler.com/copyright/">MapTiler</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
-        })], [coordinates.lon, coordinates.lat]);
+const libraries = ['places'] as Libraries;
 
-        return () => {
-            MapService.removeMap();
-        };
-    }, [coordinates]);
+const mapContainerStyle = {
+    height: '100vh',
+    width: '100%',
+    padding: 8
+};
 
-    const displayPlaceOnMap = (place: PlaceDetails) => {
-        if (place.coordinates) {
-            MapService.setView([place.coordinates.lat, place.coordinates.lon]);
-            MapService.addMarker([place.coordinates.lat, place.coordinates.lon], place.name);
-            onPlaceSelection(place);
+interface MapProps {
+    center: { lat: number, lng: number };
+}
+
+const Map = ({center}: MapProps) => {
+    const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
+    const mapRef = useRef<google.maps.Map | null>(null);
+
+    const onLoad = useCallback((map: google.maps.Map) => {
+        mapRef.current = map;
+    }, []);
+
+    const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
+
+    const onLoadAutocomplete = (autocomplete: google.maps.places.Autocomplete) => {
+        autocompleteRef.current = autocomplete;
+    };
+
+    const onPlaceChanged = () => {
+        const place = autocompleteRef.current?.getPlace();
+        if (place && place.geometry && place.geometry.location) {
+            const location = place.geometry.location;
+
+            setSelectedPlace({
+                name: place.name || 'Unknown Place',
+                position: {
+                    lat: location.lat(),
+                    lng: location.lng(),
+                },
+            });
+
+            mapRef.current?.panTo({lat: location.lat(), lng: location.lng()});
         }
     };
 
     return (
-        <Box style={{display: "flex", width: "100%", height: "100%", zIndex: 0}}>
-            <Box style={{
-                width: "100%",
-                height: "100%",
-                position: "relative",
-                display: "flex",
-            }}>
-                <Box id="map" style={{flex: 1}}></Box>
-                <Box style={{position: "absolute", padding: "15px", width: "75%", zIndex: 1000}}>
-                    <MapSearch coordinates={coordinates} onPlacePick={displayPlaceOnMap}/>
-                </Box>
-            </Box>
-        </Box>
-    );
+        <LoadScript
+            googleMapsApiKey="AIzaSyDC7J-IsGSicrRECRUn5H2pYhRm-DpATNo"
+            libraries={libraries}
+        >
+            <GoogleMap
+                mapContainerStyle={mapContainerStyle}
+                center={center}
+                zoom={8}
+                onLoad={onLoad}
+            >
+                <Autocomplete onLoad={onLoadAutocomplete} onPlaceChanged={onPlaceChanged}>
+                    <StyledTextField
+                        className="search"
+                        fullWidth
+                        variant="outlined"
+                        placeholder="Search an activity..."
+                        InputProps={{
+                            startAdornment: (
+                                <InputAdornment position="start">
+                                    <SearchIcon/>
+                                </InputAdornment>
+                            ),
+                        }}
+                        sx={{width: "70%"}}
+                    />
+                </Autocomplete>
+
+                {selectedPlace && (
+                    <Marker position={selectedPlace.position} title={selectedPlace.name}/>
+                )}
+            </GoogleMap>
+        </LoadScript>
+    )
+        ;
 };
 
 export default Map;
