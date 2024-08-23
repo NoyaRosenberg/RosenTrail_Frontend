@@ -56,7 +56,7 @@ const Map = ({location, onPlaceSelection}: MapProps) => {
             const photoUrl = place.photos?.[0]?.getUrl({maxWidth: 300, maxHeight: 200});
             const address = place.formatted_address || '';
             const rating = place.rating || 0;
-            const priceLevel = place.price_level || 0;
+            const priceLevel = place.price_level;
             const openHours = place.opening_hours?.weekday_text || [];
 
             setSelectedPlace({
