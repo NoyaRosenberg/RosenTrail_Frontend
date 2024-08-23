@@ -5,7 +5,7 @@ export interface Place {
     name: string;
     location: Location;
     photoUrl?: string;
-    description?: string;
+    type?: string;
     address?: string;
     openHours?: string[];
     rating?: number;
@@ -13,7 +13,8 @@ export interface Place {
 }
 
 interface PlaceDetailsProps {
-    place: Place
+    place: Place,
+    onAddClick: () => void,
 }
 
 type ChipColor = "primary" | "default" | "info" | "warning" | "error" | "secondary" | "success" | undefined;
@@ -21,7 +22,7 @@ type ChipColor = "primary" | "default" | "info" | "warning" | "error" | "seconda
 const PriceLevel = ['Free', 'Inexpensive', 'Moderate Price', 'Expensive', 'Very Expensive'];
 const PriceLevelColor = ['primary', 'default', 'info', 'warning', 'error'];
 
-const PlaceDetails = ({place}: PlaceDetailsProps) => {
+const PlaceDetails = ({place, onAddClick}: PlaceDetailsProps) => {
     return (
         <Card sx={{boxShadow: 'none'}}>
             {place.photoUrl && (
@@ -56,7 +57,7 @@ const PlaceDetails = ({place}: PlaceDetailsProps) => {
                             <Rating value={place.rating / 5} readOnly size="small"/>
                         )}
                     </Box>
-                    <Button variant="outlined" sx={{width: '70%'}}>Add To Schedule</Button>
+                    <Button variant="outlined" sx={{width: '70%'}} onClick={onAddClick}>Add To Schedule</Button>
                 </Box>
             </CardContent>
         </Card>

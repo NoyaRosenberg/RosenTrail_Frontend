@@ -15,6 +15,7 @@ import PlaceDetails, {Place} from '../PlaceDetails';
 
 interface MapProps {
     location: Location;
+    onPlaceSelection: (place: Place) => void;
 }
 
 const mapContainerStyle = {
@@ -33,7 +34,7 @@ const mapOptions = {
 const libraries = ['places'] as Libraries;
 const apiKey = "AIzaSyDC7J-IsGSicrRECRUn5H2pYhRm-DpATNo";
 
-const Map = ({location}: MapProps) => {
+const Map = ({location, onPlaceSelection}: MapProps) => {
     const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
     const [isInfoWindowOpen, setIsInfoWindowOpen] = useState(false);
     const mapRef = useRef<google.maps.Map | null>(null);
@@ -75,7 +76,7 @@ const Map = ({location}: MapProps) => {
                 rating,
                 priceLevel,
                 openHours,
-                description: place.types ? place.types[0] : undefined
+                type: place.types ? place.types[0] : undefined
             });
 
             mapRef.current?.panTo({lat: location.lat(), lng: location.lng()});
@@ -139,7 +140,7 @@ const Map = ({location}: MapProps) => {
                                 position={selectedPlace.location.position}
                                 onCloseClick={() => setIsInfoWindowOpen(false)}
                             >
-                                <PlaceDetails place={selectedPlace}/>
+                                <PlaceDetails place={selectedPlace} onAddClick={() => onPlaceSelection(selectedPlace)}/>
                             </InfoWindow>
                         )}
                     </>

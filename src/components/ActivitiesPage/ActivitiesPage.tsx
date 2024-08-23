@@ -19,6 +19,7 @@ import RecommendationsGrid from "./Recommendations/RecommendationsGrid";
 import CreateActivityPage, {CreateActivityPageProps} from "../CreateActivityPage/CreateActivityPage";
 import Map from './Map/Map';
 import GeocodingService, {Location} from "../../services/geocoding.service";
+import {Place} from "./PlaceDetails";
 
 const ActivitiesPage = () => {
     const navigate = useNavigate();
@@ -59,7 +60,7 @@ const ActivitiesPage = () => {
     }, [trip.destinations]);
 
     useEffect(() => {
-        const getCoordinatesByCityOrCountry = async () => {
+        const getDestinationCoordinates = async () => {
             try {
                 const response = await GeocodingService.getCoordinatesByCityOrCountry(trip.destinations[0]);
                 setLocation(response)
@@ -68,7 +69,7 @@ const ActivitiesPage = () => {
             }
         };
 
-        getCoordinatesByCityOrCountry();
+        getDestinationCoordinates();
     }, [trip.destinations]);
 
     const goBackToSchedule = () => {
@@ -100,6 +101,19 @@ const ActivitiesPage = () => {
             onClose: handleActivityDialogClose
         });
     };
+
+    const addPlaceToTrip = (place: Place) => {
+        setIsActivityDialogOpen(true);
+        setActivityDialogProps({
+            location: place.name ?? "",
+            description: "",
+            cost: 0,
+            trip: trip,
+            imageUrl: place.photoUrl ?? "",
+            categories: place.type ? [place.type] : [],
+            onClose: handleActivityDialogClose
+        });
+    }
 
     const handleActivityDialogClose = () => {
         setIsActivityDialogOpen(false);
@@ -182,7 +196,7 @@ const ActivitiesPage = () => {
                 </Box>
             </Box>
             <Box width="50%" height="100%" borderRadius={2} overflow='hidden' display="flex" flexDirection="column">
-                <Map location={location}/>
+                <Map location={location} onPlaceSelection={addPlaceToTrip}/>
             </Box>
             <Dialog open={isActivityDialogOpen} onClose={handleActivityDialogClose} maxWidth="lg" fullWidth>
                 <DialogTitle>Edit Your Activity</DialogTitle>
