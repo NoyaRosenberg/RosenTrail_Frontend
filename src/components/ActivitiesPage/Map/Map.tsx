@@ -9,16 +9,12 @@ import {
 import {StyledTextField} from "../../../theme";
 import {InputAdornment} from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
+import { Location } from "../../../services/geocoding.service";
 
 interface Place {
     name: string;
-    position: {
-        lat: number;
-        lng: number;
-    };
+    position: Location;
 }
-
-const libraries = ['places'] as Libraries;
 
 const mapContainerStyle = {
     height: '100vh',
@@ -34,17 +30,16 @@ const mapOptions = {
 };
 
 interface MapProps {
-    center: { lat: number, lng: number };
+    center: Location
 }
 
 const Map = ({center}: MapProps) => {
     const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
     const mapRef = useRef<google.maps.Map | null>(null);
-    const onLoad = useCallback((map: google.maps.Map) => {
-        mapRef.current = map;
-    }, []);
-
     const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
+    const onLoad = useCallback((map: google.maps.Map) => {
+        mapRef.current = map
+    }, []);
 
     const onLoadAutocomplete = (autocomplete: google.maps.places.Autocomplete) => {
         autocompleteRef.current = autocomplete;
@@ -71,12 +66,12 @@ const Map = ({center}: MapProps) => {
     return (
         <LoadScript
             googleMapsApiKey="AIzaSyDC7J-IsGSicrRECRUn5H2pYhRm-DpATNo"
-            libraries={libraries}
+            libraries={['places'] as Libraries}
         >
             <GoogleMap
                 mapContainerStyle={mapContainerStyle}
                 center={center}
-                zoom={10}
+                zoom={8}
                 onLoad={onLoad}
                 options={mapOptions}
             >

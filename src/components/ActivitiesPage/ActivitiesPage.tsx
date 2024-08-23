@@ -12,12 +12,13 @@ import {
 import {Schedule} from "@mui/icons-material";
 import {useLocation, useNavigate} from "react-router-dom";
 import RecommendationFilters from "./Recommendations/RecommendationFilters";
-import {useEffect, useMemo, useRef, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {Category, Recommendation} from "../../services/recommendation.service";
 import activityService from "../../services/activity.service";
 import RecommendationsGrid from "./Recommendations/RecommendationsGrid";
 import CreateActivityPage, {CreateActivityPageProps} from "../CreateActivityPage/CreateActivityPage";
 import Map from './Map/Map';
+import GeocodingService, {Location} from "../../services/geocoding.service";
 
 const ActivitiesPage = () => {
     const navigate = useNavigate();
@@ -33,10 +34,7 @@ const ActivitiesPage = () => {
     const [activityDialogProps, setActivityDialogProps] = useState<CreateActivityPageProps | null>(null);
     const [isActivityDialogOpen, setIsActivityDialogOpen] = useState(false);
 
-    const stableMapCenter = useMemo(() => ({
-        lat: 48.8584, // Latitude for Eiffel Tower, for example
-        lng: 2.2945,  // Longitude for Eiffel Tower
-    }), []);
+    const [center, setCenter] = useState<Location>({lat: 48.8584, lng: 2.2945});
 
     useEffect(() => {
         if (effectRan.current === false) {
@@ -58,6 +56,19 @@ const ActivitiesPage = () => {
                 effectRan.current = true;
             };
         }
+    }, [trip.destinations]);
+
+    useEffect(() => {
+        const getCoordinatesByCityOrCountry = async () => {
+            try {
+                const response = await GeocodingService.getCoordinatesByCityOrCountry(trip.destinations[0]);
+                setCenter(response)
+            } catch (error) {
+                console.error('Error fetching geocoding data:', error);
+            }
+        };
+
+        getCoordinatesByCityOrCountry();
     }, [trip.destinations]);
 
     const goBackToSchedule = () => {
@@ -171,7 +182,7 @@ const ActivitiesPage = () => {
                 </Box>
             </Box>
             <Box width="50%" height="100%" borderRadius={2} overflow='hidden' display="flex" flexDirection="column">
-                <Map center={stableMapCenter}/>
+                <Map center={center}/>
             </Box>
             <Dialog open={isActivityDialogOpen} onClose={handleActivityDialogClose} maxWidth="lg" fullWidth>
                 <DialogTitle>Edit Your Activity</DialogTitle>
