@@ -1,4 +1,4 @@
-import {useCallback, useRef, useState} from 'react';
+import {useCallback, useEffect, useRef, useState} from 'react';
 import {
     GoogleMap,
     LoadScript,
@@ -10,12 +10,13 @@ import {
 import {StyledTextField} from '../../theme';
 import {InputAdornment} from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-import {Location} from '../../services/geocoding.service';
+import {Location} from '../../services/google-maps.service';
 import PlaceDetails, {Place} from './PlaceDetails';
 
 interface MapProps {
     location: Location;
-    onPlaceSelection: (place: Place) => void;
+    placeToDisplay: Place | null;
+    onAddPlace: (place: Place) => void;
 }
 
 const mapContainerStyle = {
@@ -34,54 +35,51 @@ const mapOptions = {
 const libraries = ['places'] as Libraries;
 const apiKey = "AIzaSyDC7J-IsGSicrRECRUn5H2pYhRm-DpATNo";
 
-const Map = ({location, onPlaceSelection}: MapProps) => {
+const Map = ({location, placeToDisplay, onAddPlace}: MapProps) => {
     const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
     const [isInfoWindowOpen, setIsInfoWindowOpen] = useState(false);
     const mapRef = useRef<google.maps.Map | null>(null);
     const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
+    const geocoderRef = useRef<google.maps.Geocoder | null>(null);
+    const placesServiceRef = useRef<google.maps.places.PlacesService | null>(null);
 
     const onLoad = useCallback((map: google.maps.Map) => {
         mapRef.current = map;
+        geocoderRef.current = new google.maps.Geocoder();
+        placesServiceRef.current = new google.maps.places.PlacesService(map);
     }, []);
+
+    useEffect(() => {
+        if (placeToDisplay) {
+            setSelectedPlace(placeToDisplay);
+            mapRef.current?.panTo({
+                lat: placeToDisplay.location.position.lat,
+                lng: placeToDisplay.location.position.lng
+            });
+            mapRef.current?.setZoom(15);
+            setIsInfoWindowOpen(true);
+        }
+    }, [placeToDisplay]);
 
     const onLoadAutocomplete = (autocomplete: google.maps.places.Autocomplete) => {
         autocompleteRef.current = autocomplete;
     };
 
-    const onPlaceChanged = () => {
+    const handlePlaceSearch = () => {
         const place = autocompleteRef.current?.getPlace();
 
-        if (place && place.geometry && place.geometry.location) {
-            const location = place.geometry.location;
-            const photoUrl = place.photos?.[0]?.getUrl({maxWidth: 300, maxHeight: 200});
-            const address = place.formatted_address || '';
-            const rating = place.rating || 0;
-            const priceLevel = place.price_level;
-            const openHours = place.opening_hours?.weekday_text || [];
+        if (place) {
+            const newPlace = createPlace(place);
 
-            setSelectedPlace({
-                name: place.name || 'Unknown Place',
-                location: {
-                    position: {
-                        lat: location.lat(),
-                        lng: location.lng(),
-                    },
-                    region:
-                        place.address_components?.find((component) =>
-                            component.types.includes('country')
-                        )?.short_name ?? '',
-                },
-                photoUrl,
-                address,
-                rating,
-                priceLevel,
-                openHours,
-                type: place.types ? place.types[0] : undefined
-            });
-
-            mapRef.current?.panTo({lat: location.lat(), lng: location.lng()});
-            mapRef.current?.setZoom(15);
-            setIsInfoWindowOpen(true);
+            if (newPlace) {
+                setSelectedPlace(newPlace);
+                mapRef.current?.panTo({
+                    lat: newPlace.location.position.lat,
+                    lng: newPlace.location.position.lng
+                });
+                mapRef.current?.setZoom(15);
+                setIsInfoWindowOpen(true);
+            }
         }
     };
 
@@ -91,9 +89,83 @@ const Map = ({location, onPlaceSelection}: MapProps) => {
         }
     };
 
-    const handleMapClick = () => {
-        setIsInfoWindowOpen(false);
+    const handleMapClick = async (event: google.maps.MapMouseEvent) => {
+        event.stop();
+
+        if (event.latLng && placesServiceRef.current) {
+            const request = {
+                location: event.latLng,
+                radius: 20
+            };
+
+            placesServiceRef.current.nearbySearch(request, (results, status) => {
+                if (status === google.maps.places.PlacesServiceStatus.OK && results && results.length > 0) {
+                    const bestResult = results.find(
+                        (place) => place.rating && place.rating >= 1
+                    );
+
+                    if (bestResult && bestResult.place_id) {
+                        getPlaceDetails(bestResult.place_id);
+                    } else {
+                        console.log('No suitable POI found at this location.');
+                    }
+                } else {
+                    console.log('No POI at this location.');
+                }
+            });
+        } else {
+            setIsInfoWindowOpen(false);
+        }
     };
+
+    const getPlaceDetails = (placeId: string) => {
+        if (placesServiceRef.current) {
+            placesServiceRef.current.getDetails({placeId}, (placeDetails, status) => {
+                if (status === google.maps.places.PlacesServiceStatus.OK && placeDetails) {
+                    const newPlace = createPlace(placeDetails);
+
+                    if (newPlace) {
+                        setSelectedPlace(newPlace);
+                        setIsInfoWindowOpen(true);
+                    }
+                } else {
+                    console.error('Place details not found.');
+                }
+            });
+        }
+    }
+
+    const createPlace = (placeDetails: google.maps.places.PlaceResult) => {
+        if (placeDetails && placeDetails.geometry && placeDetails.geometry.location) {
+            const location = placeDetails.geometry?.location;
+            const photoUrl = placeDetails.photos?.[0]?.getUrl({maxWidth: 300, maxHeight: 200});
+            const address = placeDetails.formatted_address || '';
+            const rating = placeDetails.rating;
+            const priceLevel = placeDetails.price_level;
+            const openHours = placeDetails.opening_hours?.weekday_text || [];
+            const type = placeDetails.types ? placeDetails.types[0] : undefined;
+
+            return {
+                name: placeDetails.name || 'Unknown Place',
+                location: {
+                    position: {
+                        lat: location.lat(),
+                        lng: location.lng(),
+                    },
+                    region:
+                        placeDetails.address_components?.find((component) =>
+                            component.types.includes('country')
+                        )?.short_name ?? '',
+                },
+                photoUrl,
+                address,
+                rating,
+                priceLevel,
+                openHours,
+                type
+            };
+        }
+    }
 
     return (
         <LoadScript
@@ -110,7 +182,7 @@ const Map = ({location, onPlaceSelection}: MapProps) => {
                 options={mapOptions}
                 onClick={handleMapClick}
             >
-                <Autocomplete onLoad={onLoadAutocomplete} onPlaceChanged={onPlaceChanged}>
+                <Autocomplete onLoad={onLoadAutocomplete} onPlaceChanged={handlePlaceSearch}>
                     <StyledTextField
                         className="search"
                         fullWidth
@@ -140,7 +212,7 @@ const Map = ({location, onPlaceSelection}: MapProps) => {
                                 position={selectedPlace.location.position}
                                 onCloseClick={() => setIsInfoWindowOpen(false)}
                             >
-                                <PlaceDetails place={selectedPlace} onAddClick={() => onPlaceSelection(selectedPlace)}/>
+                                <PlaceDetails place={selectedPlace} onAddClick={() => onAddPlace(selectedPlace)}/>
                             </InfoWindow>
                         )}
                     </>
