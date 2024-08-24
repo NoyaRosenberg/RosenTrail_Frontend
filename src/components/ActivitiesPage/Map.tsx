@@ -52,42 +52,21 @@ const Map = ({location, onPlaceSelection}: MapProps) => {
         autocompleteRef.current = autocomplete;
     };
 
-    const onPlaceChanged = () => {
+    const handlePlaceSearch = () => {
         const place = autocompleteRef.current?.getPlace();
 
-        if (place && place.geometry && place.geometry.location) {
-            const location = place.geometry.location;
-            const photoUrl = place.photos?.[0]?.getUrl({maxWidth: 300, maxHeight: 200});
-            const address = place.formatted_address || '';
-            const rating = place.rating || 0;
-            const priceLevel = place.price_level;
-            const openHours = place.opening_hours?.weekday_text || [];
+        if (place) {
+            const newPlace = createPlace(place);
 
-            const newPlace = {
-                name: place.name || 'Unknown Place',
-                location: {
-                    position: {
-                        lat: location.lat(),
-                        lng: location.lng(),
-                    },
-                    region:
-                        place.address_components?.find((component) =>
-                            component.types.includes('country')
-                        )?.short_name ?? '',
-                },
-                photoUrl,
-                address,
-                rating,
-                priceLevel,
-                openHours,
-                type: place.types ? place.types[0] : undefined,
-            };
-
-            setSelectedPlace(newPlace);
-
-            mapRef.current?.panTo({lat: location.lat(), lng: location.lng()});
-            mapRef.current?.setZoom(15);
-            setIsInfoWindowOpen(true);
+            if (newPlace) {
+                setSelectedPlace(newPlace);
+                mapRef.current?.panTo({
+                    lat: newPlace.location.position.lat,
+                    lng: newPlace.location.position.lng
+                });
+                mapRef.current?.setZoom(15);
+                setIsInfoWindowOpen(true);
+            }
         }
     };
 
@@ -113,7 +92,7 @@ const Map = ({location, onPlaceSelection}: MapProps) => {
                     );
 
                     if (bestResult && bestResult.place_id) {
-                        handlePlaceClick(bestResult.place_id);
+                        getPlaceDetails(bestResult.place_id);
                     } else {
                         console.log('No suitable POI found at this location.');
                     }
@@ -126,9 +105,9 @@ const Map = ({location, onPlaceSelection}: MapProps) => {
         }
     };
 
-    const handlePlaceClick = (placeId: string) => {
+    const getPlaceDetails = (placeId: string) => {
         if (placesServiceRef.current) {
-            placesServiceRef.current.getDetails({ placeId }, (placeDetails, status) => {
+            placesServiceRef.current.getDetails({placeId}, (placeDetails, status) => {
                 if (status === google.maps.places.PlacesServiceStatus.OK && placeDetails) {
                     const newPlace = createPlace(placeDetails);
 
@@ -145,7 +124,7 @@ const Map = ({location, onPlaceSelection}: MapProps) => {
 
     const createPlace = (placeDetails: google.maps.places.PlaceResult) => {
         if (placeDetails && placeDetails.geometry && placeDetails.geometry.location) {
-            const location = placeDetails.geometry?.location ;
+            const location = placeDetails.geometry?.location;
             const photoUrl = placeDetails.photos?.[0]?.getUrl({maxWidth: 300, maxHeight: 200});
             const address = placeDetails.formatted_address || '';
             const rating = placeDetails.rating;
@@ -173,7 +152,6 @@ const Map = ({location, onPlaceSelection}: MapProps) => {
                 type
             };
         }
-
     }
 
     return (
@@ -191,7 +169,7 @@ const Map = ({location, onPlaceSelection}: MapProps) => {
                 options={mapOptions}
                 onClick={handleMapClick}
             >
-                <Autocomplete onLoad={onLoadAutocomplete} onPlaceChanged={onPlaceChanged}>
+                <Autocomplete onLoad={onLoadAutocomplete} onPlaceChanged={handlePlaceSearch}>
                     <StyledTextField
                         className="search"
                         fullWidth
