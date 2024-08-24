@@ -7,7 +7,7 @@ export interface Position {
 
 export interface Location {
     position: Position;
-    region: string;
+    region?: string;
 }
 
 class GoogleMapsService {

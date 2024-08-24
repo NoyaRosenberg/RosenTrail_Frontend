@@ -30,17 +30,19 @@ const ActivitiesPage = () => {
     const [error, setError] = useState<string | null>(null);
     const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
     const [filteredRecommendations, setFilteredRecommendations] = useState<Recommendation[]>([]);
+    const [selectedRecommendation, setSelectedRecommendation] = useState<Place | null>(null);
     const [activityDialogProps, setActivityDialogProps] = useState<CreateActivityPageProps | null>(null);
     const [isActivityDialogOpen, setIsActivityDialogOpen] = useState(false);
     const [location, setLocation] = useState<Location>({position: {lat: 48.8584, lng: 2.2945}, region: 'FR'});
 
     useEffect(() => {
         if (effectRan.current === false) {
+            setLoading(true);
+            setError(null);
+            setSelectedRecommendation(null);
+
             const getRecommendations = async () => {
                 try {
-                    setLoading(true);
-                    setError(null);
-
                     const recommendations = await activityService.getActivitiesFromAI(trip.destinations);
                     setRecommendations(recommendations!);
                     setFilteredRecommendations(recommendations!);
@@ -89,18 +91,17 @@ const ActivitiesPage = () => {
         setFilteredRecommendations(newFilteredRecommendations);
     };
 
-    const addRecommendationToTrip = (recommendation: Recommendation) => {
-        setIsActivityDialogOpen(true);
-        setActivityDialogProps({
-            location: recommendation.name ?? "",
-            description: recommendation.description ?? "",
-            cost: recommendation.cost ?? 0,
-            trip: trip,
-            imageUrl: recommendation.image ?? "",
-            categories: recommendation.categories ?? [],
-            onClose: handleActivityDialogClose
-        });
-    };
+    const displayRecommendationOnMap = (recommendation: Recommendation) => {
+        if (recommendation.coordinates) {
+            setSelectedRecommendation({
+                name: recommendation.name,
+                location: {position: recommendation.coordinates},
+                photoUrl: recommendation.image,
+                address: recommendation.address,
+                description: recommendation.description
+            });
+        }
+    }
 
     const addPlaceToTrip = (place: Place) => {
         setIsActivityDialogOpen(true);
@@ -198,7 +199,7 @@ const ActivitiesPage = () => {
                                         >
                                             <RecommendationsGrid
                                                 recommendations={filteredRecommendations}
-                                                onRecommendationClick={addRecommendationToTrip}
+                                                onRecommendationClick={displayRecommendationOnMap}
                                             />
                                         </Box>
                                     )}
@@ -209,7 +210,7 @@ const ActivitiesPage = () => {
                 </Box>
             </Box>
             <Box width="50%" height="100%" borderRadius={2} overflow='hidden' display="flex" flexDirection="column">
-                <Map location={location} onPlaceSelection={addPlaceToTrip}/>
+                <Map location={location} onAddPlace={addPlaceToTrip} placeToDisplay={selectedRecommendation}/>
             </Box>
             <Dialog open={isActivityDialogOpen} onClose={handleActivityDialogClose} maxWidth="lg" fullWidth>
                 <DialogTitle>Edit Your Activity</DialogTitle>

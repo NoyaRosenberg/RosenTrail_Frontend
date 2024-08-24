@@ -1,4 +1,4 @@
-import {useCallback, useRef, useState} from 'react';
+import {useCallback, useEffect, useRef, useState} from 'react';
 import {
     GoogleMap,
     LoadScript,
@@ -15,7 +15,8 @@ import PlaceDetails, {Place} from './PlaceDetails';
 
 interface MapProps {
     location: Location;
-    onPlaceSelection: (place: Place) => void;
+    placeToDisplay: Place | null;
+    onAddPlace: (place: Place) => void;
 }
 
 const mapContainerStyle = {
@@ -34,7 +35,7 @@ const mapOptions = {
 const libraries = ['places'] as Libraries;
 const apiKey = "AIzaSyDC7J-IsGSicrRECRUn5H2pYhRm-DpATNo";
 
-const Map = ({location, onPlaceSelection}: MapProps) => {
+const Map = ({location, placeToDisplay, onAddPlace}: MapProps) => {
     const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
     const [isInfoWindowOpen, setIsInfoWindowOpen] = useState(false);
     const mapRef = useRef<google.maps.Map | null>(null);
@@ -47,6 +48,18 @@ const Map = ({location, onPlaceSelection}: MapProps) => {
         geocoderRef.current = new google.maps.Geocoder();
         placesServiceRef.current = new google.maps.places.PlacesService(map);
     }, []);
+
+    useEffect(() => {
+        if (placeToDisplay) {
+            setSelectedPlace(placeToDisplay);
+            mapRef.current?.panTo({
+                lat: placeToDisplay.location.position.lat,
+                lng: placeToDisplay.location.position.lng
+            });
+            mapRef.current?.setZoom(15);
+            setIsInfoWindowOpen(true);
+        }
+    }, [placeToDisplay]);
 
     const onLoadAutocomplete = (autocomplete: google.maps.places.Autocomplete) => {
         autocompleteRef.current = autocomplete;
@@ -199,7 +212,7 @@ const Map = ({location, onPlaceSelection}: MapProps) => {
                                 position={selectedPlace.location.position}
                                 onCloseClick={() => setIsInfoWindowOpen(false)}
                             >
-                                <PlaceDetails place={selectedPlace} onAddClick={() => onPlaceSelection(selectedPlace)}/>
+                                <PlaceDetails place={selectedPlace} onAddClick={() => onAddPlace(selectedPlace)}/>
                             </InfoWindow>
                         )}
                     </>

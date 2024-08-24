@@ -4,7 +4,7 @@ export interface Recommendation {
   image: string;
   categoriesId: number[];
   address?: string;
-  coordinates?: {alt: number, lng: number};
+  coordinates?: {lat: number, lng: number};
   categories?: string[];
   cost?: number;
 }
