@@ -13,10 +13,9 @@ import {Schedule} from "@mui/icons-material";
 import {useLocation, useNavigate} from "react-router-dom";
 import RecommendationFilters from "./Recommendations/RecommendationFilters";
 import {useEffect, useRef, useState} from "react";
-import {Category, Recommendation} from "../../services/recommendation.service";
-import activityService from "../../services/activity.service";
+import RecommendationService, {Category} from "../../services/recommendation.service";
 import RecommendationsGrid from "./Recommendations/RecommendationsGrid";
-import CreateActivityPage, {CreateActivityPageProps} from "../CreateActivityPage/CreateActivityPage";
+import CreateActivityPage from "../CreateActivityPage/CreateActivityPage";
 import Map from './Map';
 import GoogleMapsService, {Location} from "../../services/google-maps.service";
 import {Place} from "./PlaceDetails";
@@ -28,12 +27,12 @@ const ActivitiesPage = () => {
     const effectRan = useRef(false);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
-    const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
-    const [filteredRecommendations, setFilteredRecommendations] = useState<Recommendation[]>([]);
+    const [recommendations, setRecommendations] = useState<Place[]>([]);
+    const [filteredRecommendations, setFilteredRecommendations] = useState<Place[]>([]);
     const [selectedRecommendation, setSelectedRecommendation] = useState<Place | null>(null);
-    const [activityDialogProps, setActivityDialogProps] = useState<CreateActivityPageProps | null>(null);
+    const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
     const [isActivityDialogOpen, setIsActivityDialogOpen] = useState(false);
-    const [location, setLocation] = useState<Location>({position: {lat: 48.8584, lng: 2.2945}, region: 'FR'});
+    const [destinationLocation, setDestinationLocation] = useState<Location>({position: {lat: 48.8584, lng: 2.2945}, region: 'FR'});
 
     useEffect(() => {
         if (effectRan.current === false) {
@@ -43,7 +42,7 @@ const ActivitiesPage = () => {
 
             const getRecommendations = async () => {
                 try {
-                    const recommendations = await activityService.getActivitiesFromAI(trip.destinations);
+                    const recommendations = await RecommendationService.getRecommendationsFromAI(trip.destinations);
                     setRecommendations(recommendations!);
                     setFilteredRecommendations(recommendations!);
                 } catch (error) {
@@ -65,7 +64,7 @@ const ActivitiesPage = () => {
         const getDestinationCoordinates = async () => {
             try {
                 const response = await GoogleMapsService.getCoordinatesByAddress(trip.destinations[0]);
-                setLocation(response!);
+                setDestinationLocation(response!);
             } catch (error) {
                 setError((error as Error).message);
             }
@@ -91,36 +90,28 @@ const ActivitiesPage = () => {
         setFilteredRecommendations(newFilteredRecommendations);
     };
 
-    const displayRecommendationOnMap = (recommendation: Recommendation) => {
-        if (recommendation.coordinates) {
+    const displayRecommendationOnMap = (place: Place) => {
+        if (place.coordinates) {
             setSelectedRecommendation({
-                name: recommendation.name,
-                location: {position: recommendation.coordinates},
-                photoUrl: recommendation.image,
-                address: recommendation.address,
-                description: recommendation.description,
-                rating: recommendation.rating,
-                priceLevel: recommendation.priceLevel
+                name: place.name,
+                coordinates: place.coordinates,
+                photoUrl: place.photoUrl,
+                address: place.address,
+                description: place.description,
+                rating: place.rating,
+                priceLevel: place.priceLevel
             });
         }
     }
 
     const addPlaceToTrip = (place: Place) => {
         setIsActivityDialogOpen(true);
-        setActivityDialogProps({
-            location: place.name ?? "",
-            description: "",
-            cost: 0,
-            trip: trip,
-            imageUrl: place.photoUrl ?? "",
-            categories: place.type ? [place.type] : [],
-            onClose: handleActivityDialogClose
-        });
+        setSelectedPlace(place);
     }
 
     const handleActivityDialogClose = () => {
         setIsActivityDialogOpen(false);
-        setActivityDialogProps(null);
+        setSelectedPlace(null);
     };
 
     return (
@@ -212,18 +203,18 @@ const ActivitiesPage = () => {
                 </Box>
             </Box>
             <Box width="50%" height="100%" borderRadius={2} overflow='hidden' display="flex" flexDirection="column">
-                <Map location={location} onAddPlace={addPlaceToTrip} placeToDisplay={selectedRecommendation}/>
+                <Map location={destinationLocation} onAddPlace={addPlaceToTrip} placeToDisplay={selectedRecommendation}/>
             </Box>
             <Dialog open={isActivityDialogOpen} onClose={handleActivityDialogClose} maxWidth="lg" fullWidth>
                 <DialogTitle>Edit Your Activity</DialogTitle>
                 <DialogContent>
                     <CreateActivityPage
-                        location={activityDialogProps?.location}
-                        description={activityDialogProps?.description}
-                        cost={activityDialogProps?.cost}
+                        location={selectedPlace?.name}
+                        description={selectedPlace?.description}
+                        cost={selectedPlace?.cost}
                         trip={trip}
-                        imageUrl={activityDialogProps?.imageUrl}
-                        categories={activityDialogProps?.categories}
+                        imageUrl={selectedPlace?.photoUrl}
+                        categories={selectedPlace?.categories}
                         onClose={handleActivityDialogClose}
                     />
                 </DialogContent>

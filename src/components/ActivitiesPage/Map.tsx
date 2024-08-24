@@ -50,11 +50,11 @@ const Map = ({location, placeToDisplay, onAddPlace}: MapProps) => {
     }, []);
 
     useEffect(() => {
-        if (placeToDisplay) {
+        if (placeToDisplay && placeToDisplay.coordinates) {
             setSelectedPlace(placeToDisplay);
             mapRef.current?.panTo({
-                lat: placeToDisplay.location.position.lat,
-                lng: placeToDisplay.location.position.lng
+                lat: placeToDisplay.coordinates.lat,
+                lng: placeToDisplay.coordinates.lng
             });
             mapRef.current?.setZoom(15);
             setIsInfoWindowOpen(true);
@@ -71,11 +71,11 @@ const Map = ({location, placeToDisplay, onAddPlace}: MapProps) => {
         if (place) {
             const newPlace = createPlace(place);
 
-            if (newPlace) {
+            if (newPlace && newPlace.coordinates) {
                 setSelectedPlace(newPlace);
                 mapRef.current?.panTo({
-                    lat: newPlace.location.position.lat,
-                    lng: newPlace.location.position.lng
+                    lat: newPlace.coordinates.lat,
+                    lng: newPlace.coordinates.lng
                 });
                 mapRef.current?.setZoom(15);
                 setIsInfoWindowOpen(true);
@@ -135,34 +135,17 @@ const Map = ({location, placeToDisplay, onAddPlace}: MapProps) => {
         }
     }
 
-    const createPlace = (placeDetails: google.maps.places.PlaceResult) => {
+    const createPlace = (placeDetails: google.maps.places.PlaceResult): Place | undefined => {
         if (placeDetails && placeDetails.geometry && placeDetails.geometry.location) {
             const location = placeDetails.geometry?.location;
-            const photoUrl = placeDetails.photos?.[0]?.getUrl({maxWidth: 300, maxHeight: 200});
-            const address = placeDetails.formatted_address || '';
-            const rating = placeDetails.rating;
-            const priceLevel = placeDetails.price_level;
-            const openHours = placeDetails.opening_hours?.weekday_text || [];
-            const type = placeDetails.types ? placeDetails.types[0] : undefined;
 
             return {
                 name: placeDetails.name || 'Unknown Place',
-                location: {
-                    position: {
-                        lat: location.lat(),
-                        lng: location.lng(),
-                    },
-                    region:
-                        placeDetails.address_components?.find((component) =>
-                            component.types.includes('country')
-                        )?.short_name ?? '',
-                },
-                photoUrl,
-                address,
-                rating,
-                priceLevel,
-                openHours,
-                type
+                coordinates: {lat: location.lat(), lng: location.lng()},
+                photoUrl: placeDetails.photos?.[0]?.getUrl({maxWidth: 300, maxHeight: 200}),
+                address: placeDetails.formatted_address || '',
+                rating: placeDetails.rating,
+                priceLevel: placeDetails.price_level
             };
         }
     }
@@ -202,14 +185,14 @@ const Map = ({location, placeToDisplay, onAddPlace}: MapProps) => {
                 {selectedPlace && (
                     <>
                         <Marker
-                            position={selectedPlace.location.position}
+                            position={selectedPlace.coordinates!}
                             title={selectedPlace.name}
                             onClick={handleMarkerClick}
                         />
 
                         {isInfoWindowOpen && (
                             <InfoWindow
-                                position={selectedPlace.location.position}
+                                position={selectedPlace.coordinates}
                                 onCloseClick={() => setIsInfoWindowOpen(false)}
                             >
                                 <PlaceDetails place={selectedPlace} onAddClick={() => onAddPlace(selectedPlace)}/>

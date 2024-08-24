@@ -1,10 +1,10 @@
 import {Grid} from "@mui/material";
 import PlaceCard from "../../PlaceCard";
-import {Recommendation} from "../../../services/recommendation.service";
+import {Place} from "../PlaceDetails";
 
 export interface RecommendationsGrisProps {
-    recommendations: Recommendation[];
-    onRecommendationClick: (recommendation: Recommendation) => void;
+    recommendations: Place[];
+    onRecommendationClick: (recommendation: Place) => void;
 }
 
 const RecommendationsGrid = ({recommendations, onRecommendationClick}: RecommendationsGrisProps) => {
@@ -15,7 +15,7 @@ const RecommendationsGrid = ({recommendations, onRecommendationClick}: Recommend
                     <PlaceCard
                         name={rec.name}
                         description={rec.description}
-                        image={rec.image}
+                        image={rec.photoUrl}
                         onCardClick={() => onRecommendationClick(rec)}
                     />
                 </Grid>
