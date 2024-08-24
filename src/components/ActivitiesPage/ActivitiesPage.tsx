@@ -98,7 +98,9 @@ const ActivitiesPage = () => {
                 location: {position: recommendation.coordinates},
                 photoUrl: recommendation.image,
                 address: recommendation.address,
-                description: recommendation.description
+                description: recommendation.description,
+                rating: recommendation.rating,
+                priceLevel: recommendation.priceLevel
             });
         }
     }
