@@ -1,16 +1,16 @@
-import {Location} from "../../services/google-maps.service";
+import {Coordinates} from "../../services/google-maps.service";
 import {Box, Button, Card, CardContent, CardMedia, Chip, Rating, Typography} from "@mui/material";
 
 export interface Place {
     name: string;
-    location: Location;
-    photoUrl?: string;
-    type?: string;
+    description?: string;
+    categories?: string[];
     address?: string;
-    openHours?: string[];
+    coordinates?: Coordinates;
+    cost?: number;
     rating?: number;
     priceLevel?: number;
-    description?: string;
+    photoUrl?: string
 }
 
 interface PlaceDetailsProps {

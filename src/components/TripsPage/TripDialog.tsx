@@ -93,7 +93,7 @@ const TripDialog: React.FC<TripDialogProps> = ({
     }
   };
 
-  const formatDate = (date) => {
+  const formatDate = (date: string | number | Date | dayjs.Dayjs | null | undefined) => {
     return dayjs(date).format("DD/MM/YYYY");
   };
 

@@ -1,12 +1,12 @@
 import axios from "axios";
 
-export interface Position {
+export interface Coordinates {
     lng: number;
     lat: number;
 }
 
 export interface Location {
-    position: Position;
+    position: Coordinates;
     region?: string;
 }
 
