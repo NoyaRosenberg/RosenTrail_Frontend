@@ -33,7 +33,6 @@ const PlaceCard = ({ name, description, image, isNew, onCardClick }: PlaceCardPr
           component="img"
           height="150"
           image={image}
-          src={image}
           alt={name}
           sx={{
             filter: isNew ? "blur(1.5px)" : "none",

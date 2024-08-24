@@ -1,11 +1,14 @@
 export interface Recommendation {
   name: string;
   description: string;
-  image: string;
-  categoriesId: number[];
-  location?: string;
+  categoriesId?: number[];
+  address?: string;
+  coordinates?: {lat: number, lng: number};
   categories?: string[];
   cost?: number;
+  image?: string;
+  rating?: number;
+  priceLevel?: number;
 }
 
 export interface Category {

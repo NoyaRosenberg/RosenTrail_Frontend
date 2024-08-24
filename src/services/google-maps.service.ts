@@ -7,15 +7,15 @@ export interface Position {
 
 export interface Location {
     position: Position;
-    region: string;
+    region?: string;
 }
 
-class GeocodingService {
+class GoogleMapsService {
+    private readonly baseUrl: string = `https://maps.googleapis.com/maps/api`;
     private readonly apiKey = 'AIzaSyDC7J-IsGSicrRECRUn5H2pYhRm-DpATNo';
-    private readonly baseUrl: string = `https://maps.googleapis.com/maps/api/geocode/json?key=${this.apiKey}`;
 
-    getCoordinatesByCityOrCountry = async (address: string): Promise<Location> => {
-        const url = `${this.baseUrl}&address=${encodeURIComponent(address)}`;
+    getCoordinatesByAddress = async (address: string): Promise<Location | undefined> => {
+        const url = `${this.baseUrl}/geocode/json?key=${this.apiKey}&address=${encodeURIComponent(address)}`;
 
         try {
             const response = await axios.get(url);
@@ -40,4 +40,4 @@ class GeocodingService {
     };
 }
 
-export default new GeocodingService();
+export default new GoogleMapsService();

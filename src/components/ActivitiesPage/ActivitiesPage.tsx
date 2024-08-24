@@ -18,35 +18,37 @@ import activityService from "../../services/activity.service";
 import RecommendationsGrid from "./Recommendations/RecommendationsGrid";
 import CreateActivityPage, {CreateActivityPageProps} from "../CreateActivityPage/CreateActivityPage";
 import Map from './Map';
-import GeocodingService, {Location} from "../../services/geocoding.service";
+import GoogleMapsService, {Location} from "../../services/google-maps.service";
 import {Place} from "./PlaceDetails";
 
 const ActivitiesPage = () => {
     const navigate = useNavigate();
     const trip = useLocation().state.trip;
-    const effectRan = useRef(false);
 
+    const effectRan = useRef(false);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
-
     const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
     const [filteredRecommendations, setFilteredRecommendations] = useState<Recommendation[]>([]);
-
+    const [selectedRecommendation, setSelectedRecommendation] = useState<Place | null>(null);
     const [activityDialogProps, setActivityDialogProps] = useState<CreateActivityPageProps | null>(null);
     const [isActivityDialogOpen, setIsActivityDialogOpen] = useState(false);
-
     const [location, setLocation] = useState<Location>({position: {lat: 48.8584, lng: 2.2945}, region: 'FR'});
 
     useEffect(() => {
         if (effectRan.current === false) {
+            setLoading(true);
+            setError(null);
+            setSelectedRecommendation(null);
+
             const getRecommendations = async () => {
                 try {
                     const recommendations = await activityService.getActivitiesFromAI(trip.destinations);
                     setRecommendations(recommendations!);
                     setFilteredRecommendations(recommendations!);
-                    setLoading(false);
                 } catch (error) {
                     setError((error as Error).message);
+                } finally {
                     setLoading(false);
                 }
             };
@@ -62,10 +64,10 @@ const ActivitiesPage = () => {
     useEffect(() => {
         const getDestinationCoordinates = async () => {
             try {
-                const response = await GeocodingService.getCoordinatesByCityOrCountry(trip.destinations[0]);
-                setLocation(response)
+                const response = await GoogleMapsService.getCoordinatesByAddress(trip.destinations[0]);
+                setLocation(response!);
             } catch (error) {
-                console.error('Error fetching geocoding data:', error);
+                setError((error as Error).message);
             }
         };
 
@@ -89,18 +91,19 @@ const ActivitiesPage = () => {
         setFilteredRecommendations(newFilteredRecommendations);
     };
 
-    const addRecommendationToTrip = (recommendation: Recommendation) => {
-        setIsActivityDialogOpen(true);
-        setActivityDialogProps({
-            location: recommendation.name ?? "",
-            description: recommendation.description ?? "",
-            cost: recommendation.cost ?? 0,
-            trip: trip,
-            imageUrl: recommendation.image ?? "",
-            categories: recommendation.categories ?? [],
-            onClose: handleActivityDialogClose
-        });
-    };
+    const displayRecommendationOnMap = (recommendation: Recommendation) => {
+        if (recommendation.coordinates) {
+            setSelectedRecommendation({
+                name: recommendation.name,
+                location: {position: recommendation.coordinates},
+                photoUrl: recommendation.image,
+                address: recommendation.address,
+                description: recommendation.description,
+                rating: recommendation.rating,
+                priceLevel: recommendation.priceLevel
+            });
+        }
+    }
 
     const addPlaceToTrip = (place: Place) => {
         setIsActivityDialogOpen(true);
@@ -172,10 +175,23 @@ const ActivitiesPage = () => {
                                                 Getting recommendations, it might take a minute...
                                             </Typography>
                                         </Box>
-                                    ) : error ? (
-                                        <Typography color="error">
-                                            Failed To Fetch recommendations
-                                        </Typography>
+                                    ) : error && recommendations.length === 0 ? (
+                                        <Box
+                                            sx={{
+                                                display: "flex",
+                                                justifyContent: "center",
+                                                alignItems: "center",
+                                                height: "100%",
+                                                flexDirection: "column",
+                                            }}
+                                        >
+                                            <Typography variant="h6" color="error">
+                                                Opps!
+                                            </Typography>
+                                            <Typography color="error">
+                                                We encountered a problem while finding you the best recommendations!
+                                            </Typography>
+                                        </Box>
                                     ) : (
                                         <Box
                                             className="scrollable"
@@ -185,7 +201,7 @@ const ActivitiesPage = () => {
                                         >
                                             <RecommendationsGrid
                                                 recommendations={filteredRecommendations}
-                                                onRecommendationClick={addRecommendationToTrip}
+                                                onRecommendationClick={displayRecommendationOnMap}
                                             />
                                         </Box>
                                     )}
@@ -196,7 +212,7 @@ const ActivitiesPage = () => {
                 </Box>
             </Box>
             <Box width="50%" height="100%" borderRadius={2} overflow='hidden' display="flex" flexDirection="column">
-                <Map location={location} onPlaceSelection={addPlaceToTrip}/>
+                <Map location={location} onAddPlace={addPlaceToTrip} placeToDisplay={selectedRecommendation}/>
             </Box>
             <Dialog open={isActivityDialogOpen} onClose={handleActivityDialogClose} maxWidth="lg" fullWidth>
                 <DialogTitle>Edit Your Activity</DialogTitle>
