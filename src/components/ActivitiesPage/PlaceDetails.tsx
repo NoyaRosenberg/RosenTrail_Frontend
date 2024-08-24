@@ -1,4 +1,4 @@
-import {Location} from "../../services/geocoding.service";
+import {Location} from "../../services/google-maps.service";
 import {Box, Button, Card, CardContent, CardMedia, Chip, Rating, Typography} from "@mui/material";
 
 export interface Place {

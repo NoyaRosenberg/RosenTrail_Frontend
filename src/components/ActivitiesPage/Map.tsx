@@ -10,7 +10,7 @@ import {
 import {StyledTextField} from '../../theme';
 import {InputAdornment} from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-import {Location} from '../../services/geocoding.service';
+import {Location} from '../../services/google-maps.service';
 import PlaceDetails, {Place} from './PlaceDetails';
 
 interface MapProps {

@@ -3,7 +3,8 @@ export interface Recommendation {
   description: string;
   image: string;
   categoriesId: number[];
-  location?: string;
+  address?: string;
+  coordinates?: {alt: number, lng: number};
   categories?: string[];
   cost?: number;
 }

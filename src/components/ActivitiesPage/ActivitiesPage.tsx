@@ -18,35 +18,35 @@ import activityService from "../../services/activity.service";
 import RecommendationsGrid from "./Recommendations/RecommendationsGrid";
 import CreateActivityPage, {CreateActivityPageProps} from "../CreateActivityPage/CreateActivityPage";
 import Map from './Map';
-import GeocodingService, {Location} from "../../services/geocoding.service";
+import GoogleMapsService, {Location} from "../../services/google-maps.service";
 import {Place} from "./PlaceDetails";
 
 const ActivitiesPage = () => {
     const navigate = useNavigate();
     const trip = useLocation().state.trip;
-    const effectRan = useRef(false);
 
+    const effectRan = useRef(false);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
-
     const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
     const [filteredRecommendations, setFilteredRecommendations] = useState<Recommendation[]>([]);
-
     const [activityDialogProps, setActivityDialogProps] = useState<CreateActivityPageProps | null>(null);
     const [isActivityDialogOpen, setIsActivityDialogOpen] = useState(false);
-
     const [location, setLocation] = useState<Location>({position: {lat: 48.8584, lng: 2.2945}, region: 'FR'});
 
     useEffect(() => {
         if (effectRan.current === false) {
             const getRecommendations = async () => {
                 try {
+                    setLoading(true);
+                    setError(null);
+
                     const recommendations = await activityService.getActivitiesFromAI(trip.destinations);
                     setRecommendations(recommendations!);
                     setFilteredRecommendations(recommendations!);
-                    setLoading(false);
                 } catch (error) {
                     setError((error as Error).message);
+                } finally {
                     setLoading(false);
                 }
             };
@@ -62,10 +62,10 @@ const ActivitiesPage = () => {
     useEffect(() => {
         const getDestinationCoordinates = async () => {
             try {
-                const response = await GeocodingService.getCoordinatesByCityOrCountry(trip.destinations[0]);
-                setLocation(response)
+                const response = await GoogleMapsService.getCoordinatesByAddress(trip.destinations[0]);
+                setLocation(response!);
             } catch (error) {
-                console.error('Error fetching geocoding data:', error);
+                setError((error as Error).message);
             }
         };
 
@@ -172,10 +172,23 @@ const ActivitiesPage = () => {
                                                 Getting recommendations, it might take a minute...
                                             </Typography>
                                         </Box>
-                                    ) : error ? (
-                                        <Typography color="error">
-                                            Failed To Fetch recommendations
-                                        </Typography>
+                                    ) : error && recommendations.length === 0 ? (
+                                        <Box
+                                            sx={{
+                                                display: "flex",
+                                                justifyContent: "center",
+                                                alignItems: "center",
+                                                height: "100%",
+                                                flexDirection: "column",
+                                            }}
+                                        >
+                                            <Typography variant="h6" color="error">
+                                                Opps!
+                                            </Typography>
+                                            <Typography color="error">
+                                                We encountered a problem while finding you the best recommendations!
+                                            </Typography>
+                                        </Box>
                                     ) : (
                                         <Box
                                             className="scrollable"
