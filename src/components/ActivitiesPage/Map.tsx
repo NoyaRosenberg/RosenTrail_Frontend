@@ -39,9 +39,13 @@ const Map = ({location, onPlaceSelection}: MapProps) => {
     const [isInfoWindowOpen, setIsInfoWindowOpen] = useState(false);
     const mapRef = useRef<google.maps.Map | null>(null);
     const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
+    const geocoderRef = useRef<google.maps.Geocoder | null>(null);
+    const placesServiceRef = useRef<google.maps.places.PlacesService | null>(null);
 
     const onLoad = useCallback((map: google.maps.Map) => {
         mapRef.current = map;
+        geocoderRef.current = new google.maps.Geocoder();
+        placesServiceRef.current = new google.maps.places.PlacesService(map);
     }, []);
 
     const onLoadAutocomplete = (autocomplete: google.maps.places.Autocomplete) => {
@@ -59,7 +63,7 @@ const Map = ({location, onPlaceSelection}: MapProps) => {
             const priceLevel = place.price_level;
             const openHours = place.opening_hours?.weekday_text || [];
 
-            setSelectedPlace({
+            const newPlace = {
                 name: place.name || 'Unknown Place',
                 location: {
                     position: {
@@ -76,8 +80,10 @@ const Map = ({location, onPlaceSelection}: MapProps) => {
                 rating,
                 priceLevel,
                 openHours,
-                type: place.types ? place.types[0] : undefined
-            });
+                type: place.types ? place.types[0] : undefined,
+            };
+
+            setSelectedPlace(newPlace);
 
             mapRef.current?.panTo({lat: location.lat(), lng: location.lng()});
             mapRef.current?.setZoom(15);
@@ -91,9 +97,84 @@ const Map = ({location, onPlaceSelection}: MapProps) => {
         }
     };
 
-    const handleMapClick = () => {
-        setIsInfoWindowOpen(false);
+    const handleMapClick = async (event: google.maps.MapMouseEvent) => {
+        event.stop();
+
+        if (event.latLng && placesServiceRef.current) {
+            const request = {
+                location: event.latLng,
+                radius: 20
+            };
+
+            placesServiceRef.current.nearbySearch(request, (results, status) => {
+                if (status === google.maps.places.PlacesServiceStatus.OK && results && results.length > 0) {
+                    const bestResult = results.find(
+                        (place) => place.rating && place.rating >= 1
+                    );
+
+                    if (bestResult && bestResult.place_id) {
+                        handlePlaceClick(bestResult.place_id);
+                    } else {
+                        console.log('No suitable POI found at this location.');
+                    }
+                } else {
+                    console.log('No POI at this location.');
+                }
+            });
+        } else {
+            setIsInfoWindowOpen(false);
+        }
     };
+
+    const handlePlaceClick = (placeId: string) => {
+        if (placesServiceRef.current) {
+            placesServiceRef.current.getDetails({ placeId }, (placeDetails, status) => {
+                if (status === google.maps.places.PlacesServiceStatus.OK && placeDetails) {
+                    const newPlace = createPlace(placeDetails);
+
+                    if (newPlace) {
+                        setSelectedPlace(newPlace);
+                        setIsInfoWindowOpen(true);
+                    }
+                } else {
+                    console.error('Place details not found.');
+                }
+            });
+        }
+    }
+
+    const createPlace = (placeDetails: google.maps.places.PlaceResult) => {
+        if (placeDetails && placeDetails.geometry && placeDetails.geometry.location) {
+            const location = placeDetails.geometry?.location ;
+            const photoUrl = placeDetails.photos?.[0]?.getUrl({maxWidth: 300, maxHeight: 200});
+            const address = placeDetails.formatted_address || '';
+            const rating = placeDetails.rating;
+            const priceLevel = placeDetails.price_level;
+            const openHours = placeDetails.opening_hours?.weekday_text || [];
+            const type = placeDetails.types ? placeDetails.types[0] : undefined;
+
+            return {
+                name: placeDetails.name || 'Unknown Place',
+                location: {
+                    position: {
+                        lat: location.lat(),
+                        lng: location.lng(),
+                    },
+                    region:
+                        placeDetails.address_components?.find((component) =>
+                            component.types.includes('country')
+                        )?.short_name ?? '',
+                },
+                photoUrl,
+                address,
+                rating,
+                priceLevel,
+                openHours,
+                type
+            };
+        }
+
+    }
 
     return (
         <LoadScript

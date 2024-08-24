@@ -10,6 +10,7 @@ export interface Place {
     openHours?: string[];
     rating?: number;
     priceLevel?: number;
+    description?: string;
 }
 
 interface PlaceDetailsProps {
@@ -54,7 +55,7 @@ const PlaceDetails = ({place, onAddClick}: PlaceDetailsProps) => {
                         <Typography variant="body2" color="text.secondary">
                             {place.address}
                         </Typography>
-                        {place.rating && (
+                        {place.rating && place.rating != 0 && (
                             <Rating value={place.rating / 5} readOnly size="small"/>
                         )}
                     </Box>
