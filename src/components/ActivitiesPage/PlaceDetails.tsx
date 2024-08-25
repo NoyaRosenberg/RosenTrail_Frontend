@@ -26,7 +26,7 @@ const PriceLevelColor = ['primary', 'default', 'info', 'warning', 'error'];
 
 const PlaceDetails = ({place, onAddClick}: PlaceDetailsProps) => {
     return (
-        <Card sx={{boxShadow: 'none', minWidth: '250px'}}>
+        <Card sx={{boxShadow: 'none', minWidth: '250px', maxWidth: '280px'}}>
             {place.photoUrl && (
                 <CardMedia
                     component="img"
