@@ -10,6 +10,7 @@ import {
   Stack,
   Divider,
   Chip,
+  Rating,
 } from "@mui/material";
 import { Delete, Edit, AddCircle } from "@mui/icons-material";
 import CloseIcon from "@mui/icons-material/Close";
@@ -21,6 +22,7 @@ import TripParticipants from "./TripParticipants";
 import EditTripDialog from "./EditTripDialog";
 import { User } from "../../services/user.service";
 import dayjs from "dayjs";
+import reviewService, { Review } from "../../services/review.service";
 
 type TripDialogProps = {
   trip: Trip;
@@ -43,18 +45,29 @@ const TripDialog: React.FC<TripDialogProps> = ({
   const [isEditDialogOpen, setIsEditDialogOpen] = React.useState(false);
   const [participants, setParticipants] = useState<User[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [averageRating, setAverageRating] = useState<number | null>(null);
 
   useEffect(() => {
-    const getUserParticipants = async () => {
+    const fetchData = async () => {
       try {
-        const participants = await tripService.getTripParticipants(trip._id!);
-        setParticipants(participants!);
+        const [participantsData, reviewsData] = await Promise.all([
+          tripService.getTripParticipants(trip._id!),
+          reviewService.getTripReviews(trip._id!),
+        ]);
+        setParticipants(participantsData!);
+        setReviews(reviewsData);
+        
+        if (reviewsData.length > 0) {
+          const avgRating = reviewsData.reduce((sum, review) => sum + review.rating, 0) / reviewsData.length;
+          setAverageRating(Number(avgRating.toFixed(1)));
+        }
       } catch (err) {
         setError((err as Error).message);
       }
     };
 
-    getUserParticipants();
+    fetchData();
   }, [trip]);
 
   const showSchedule = () => {
@@ -203,6 +216,14 @@ const TripDialog: React.FC<TripDialogProps> = ({
                           {price} €
                         </Typography>
                       </Box>
+                      { (
+                        <Box display="flex" alignItems="center" gap={1}>
+                          <Rating value={averageRating ?? 0} readOnly size="small" precision={0.1} />
+                          <Typography variant="body2" color="text.secondary">
+                            ({averageRating ? averageRating.toFixed(1) : 0})
+                          </Typography>
+                        </Box>
+                      )}
                       {showActions && (
                         <Stack>
                           <Divider />

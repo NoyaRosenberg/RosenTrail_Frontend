@@ -1,10 +1,10 @@
+import React, { useState } from "react";
 import { Grid } from "@mui/material";
 import PlaceCard from "../PlaceCard";
 import { Trip } from "../../services/trip.service";
 import { useNavigate } from "react-router-dom";
 import TripDialog from "./TripDialog";
-import { useState } from "react";
-import React from "react";
+import reviewService from "../../services/review.service";
 
 export interface TripsGridProps {
   trips: Trip[];
@@ -31,13 +31,27 @@ const TripsGrid = ({ trips, isCommunityTrips, fetchTrips }: TripsGridProps) => {
     setSelectedTrip(null);
   };
 
+  const getAverageRating = async (tripId: string) => {
+    try {
+      const reviews = await reviewService.getTripReviews(tripId);
+      if (reviews.length > 0) {
+        const avgRating = reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length;
+        return Number(avgRating.toFixed(1));
+      }
+      return null;
+    } catch (error) {
+      console.error("Failed to fetch reviews:", error);
+      return null;
+    }
+  };
+
   return (
     <>
       <Grid
         container
         spacing={2}
         display="flex"
-        justifyContent={trips.length == 0 ? "center" : ""}
+        justifyContent={trips.length === 0 ? "center" : ""}
       >
         {!isCommunityTrips && (
           <Grid item xs={12} sm={6} md={4} sx={{ display: "flex" }}>
@@ -58,6 +72,7 @@ const TripsGrid = ({ trips, isCommunityTrips, fetchTrips }: TripsGridProps) => {
               description={trip.description}
               image={trip.imgUrl}
               onCardClick={() => showTripDetails(trip)}
+              rating={getAverageRating(trip._id!)}
             />
           </Grid>
         ))}
