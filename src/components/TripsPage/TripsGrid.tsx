@@ -61,6 +61,7 @@ const TripsGrid = ({ trips, isCommunityTrips, fetchTrips }: TripsGridProps) => {
               image="/public/createTripBackground.jpeg"
               isNew={true}
               onCardClick={createNewTripClick}
+              isCommunityTrips = {isCommunityTrips}
             />
           </Grid>
         )}
@@ -73,6 +74,7 @@ const TripsGrid = ({ trips, isCommunityTrips, fetchTrips }: TripsGridProps) => {
               image={trip.imgUrl}
               onCardClick={() => showTripDetails(trip)}
               rating={getAverageRating(trip._id!)}
+              isCommunityTrips = {isCommunityTrips}
             />
           </Grid>
         ))}
