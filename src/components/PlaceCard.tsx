@@ -9,9 +9,10 @@ export interface PlaceCardProps {
   isNew?: boolean;
   onCardClick: () => void;
   rating?: Promise<number | null>;
+  isCommunityTrips: boolean
 }
 
-const PlaceCard = ({ name, description, image, isNew, onCardClick, rating }: PlaceCardProps) => {
+const PlaceCard = ({ name, description, image, isNew, onCardClick, rating, isCommunityTrips }: PlaceCardProps) => {
   const [averageRating, setAverageRating] = useState<number | null>(null);
 
   useEffect(() => {
@@ -95,12 +96,12 @@ const PlaceCard = ({ name, description, image, isNew, onCardClick, rating }: Pla
         >
           {description}
         </Typography>
-        <Box display="flex" alignItems="center" justifyContent="center" mt={1}>
+        {isCommunityTrips && (<Box display="flex" alignItems="center" justifyContent="center" mt={1}>
           <Rating value={averageRating ?? 0} readOnly size="small" precision={0.1} />
           <Typography variant="body2" color="text.secondary" ml={1}>
             ({averageRating ? averageRating.toFixed(1) : 0})
           </Typography>
-        </Box>
+        </Box>)}
       </CardContent>
     </Card>
   );
