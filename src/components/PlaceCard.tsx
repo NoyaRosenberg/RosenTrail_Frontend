@@ -1,4 +1,5 @@
-import { Card, CardMedia, CardContent, Typography, Box } from "@mui/material";
+import React, { useState, useEffect } from 'react';
+import { Card, CardMedia, CardContent, Typography, Box, Rating } from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 
 export interface PlaceCardProps {
@@ -7,9 +8,22 @@ export interface PlaceCardProps {
   image?: string;
   isNew?: boolean;
   onCardClick: () => void;
+  rating?: Promise<number | null>;
 }
 
-const PlaceCard = ({ name, description, image, isNew, onCardClick }: PlaceCardProps) => {
+const PlaceCard = ({ name, description, image, isNew, onCardClick, rating }: PlaceCardProps) => {
+  const [averageRating, setAverageRating] = useState<number | null>(null);
+
+  useEffect(() => {
+    const fetchRating = async () => {
+      if (rating) {
+        const fetchedRating = await rating;
+        setAverageRating(fetchedRating);
+      }
+    };
+    fetchRating();
+  }, [rating]);
+
   return (
     <Card
       onClick={onCardClick}
@@ -62,7 +76,16 @@ const PlaceCard = ({ name, description, image, isNew, onCardClick }: PlaceCardPr
           </Box>
         )}
       </Box>
-      <CardContent sx={{ flexGrow: 1, textAlign: "center" }}>
+      <CardContent 
+        sx={{ 
+          flexGrow: 1, 
+          textAlign: "center", 
+          display: 'flex', 
+          flexDirection: 'column', 
+          justifyContent: 'space-between', 
+          minHeight: '120px' // Adjust this value to control the height of the content area
+        }}
+      >
         <Typography variant="h4" sx={{ fontSize: 18, margin: 1 }}>
           {name}
         </Typography>
@@ -72,6 +95,12 @@ const PlaceCard = ({ name, description, image, isNew, onCardClick }: PlaceCardPr
         >
           {description}
         </Typography>
+        <Box display="flex" alignItems="center" justifyContent="center" mt={1}>
+          <Rating value={averageRating ?? 0} readOnly size="small" precision={0.1} />
+          <Typography variant="body2" color="text.secondary" ml={1}>
+            ({averageRating ? averageRating.toFixed(1) : 0})
+          </Typography>
+        </Box>
       </CardContent>
     </Card>
   );

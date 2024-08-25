@@ -12,12 +12,13 @@ export interface Review {
 class ReviewService {
   private baseURL: string = "http://localhost:3000/reviews/";
 
-  async getTripReviews(tripId: string): Promise<Review[] | void> {
+  async getTripReviews(tripId: string): Promise<Review[]> {
     try {
       const response = await axios.get<Review[]>(`${this.baseURL}?tripId=${tripId}`);
       return response.data;
     } catch (error) {
       this.handleError(error);
+      return []
     }
   }
 
