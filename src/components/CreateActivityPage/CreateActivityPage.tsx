@@ -42,6 +42,7 @@ const CreateActivityPage: React.FC<CreateActivityPageProps> = ({
           cost={cost}
           trip={trip}
           categories={categories}
+          imageUrl={imageUrl}
           onClose={onClose}
           activity={activityToEdit}
         />
