@@ -41,6 +41,11 @@ const DailyBudget: React.FC<DailyBudgetProps> = ({
           InputProps={{
             startAdornment: <InputAdornment position="start">$</InputAdornment>,
           }}
+          sx={{
+            '& .MuiOutlinedInput-root': {
+              backgroundColor: 'white',
+            },
+          }}
         />
       </Box>
       <Box className="daily-budget-container">
