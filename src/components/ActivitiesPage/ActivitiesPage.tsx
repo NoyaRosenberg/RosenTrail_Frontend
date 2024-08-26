@@ -99,7 +99,8 @@ const ActivitiesPage = () => {
                 address: place.address,
                 description: place.description,
                 rating: place.rating,
-                priceLevel: place.priceLevel
+                priceLevel: place.priceLevel,
+                categories: place.categories
             });
         }
     }
