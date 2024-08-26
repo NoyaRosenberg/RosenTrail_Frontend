@@ -55,8 +55,10 @@ const PlaceDetails = ({place, onAddClick}: PlaceDetailsProps) => {
                         <Typography variant="body2" color="text.secondary">
                             {place.address}
                         </Typography>
-                        {place.rating && place.rating != 0 && (
+                        {place.rating ? (
                             <Rating value={Math.floor(place.rating)} readOnly size="small"/>
+                        ) : (
+                            <Rating value={0} readOnly size="small"/>
                         )}
                     </Box>
                     <Button variant="outlined" sx={{width: '70%'}} onClick={onAddClick}>Add To Schedule</Button>

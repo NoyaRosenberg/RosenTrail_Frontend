@@ -144,7 +144,7 @@ const Map = ({location, placeToDisplay, onAddPlace}: MapProps) => {
                 coordinates: {lat: location.lat(), lng: location.lng()},
                 photoUrl: placeDetails.photos?.[0]?.getUrl({maxWidth: 300, maxHeight: 200}),
                 address: placeDetails.formatted_address || '',
-                rating: placeDetails.rating,
+                rating: placeDetails.rating ?? 0,
                 priceLevel: placeDetails.price_level
             };
         }
