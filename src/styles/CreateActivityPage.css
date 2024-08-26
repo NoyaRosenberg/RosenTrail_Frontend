@@ -22,7 +22,7 @@
   padding-left: 20px;
   box-sizing: border-box;
   margin-left: auto; /* This will push the FormContainer to the right */
-  max-width: 500px; /* Optional: To limit the form width */
+  max-width: 37.3%; /* Optional: To limit the form width */
 }
 
 @media (max-width: 768px) {
