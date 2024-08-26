@@ -165,8 +165,8 @@ const TripDialog: React.FC<TripDialogProps> = ({
                         <Chip
                           key="accessMode"
                           label={trip.isPublic ? "public" : "private"}
-                          color="default"
-                          sx={{ marginBottom: "0.35em" }}
+                          color="default" 
+                          sx={{ marginBottom: "0.15em" }}
                         />
                       </Box>
                       <Typography
