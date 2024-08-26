@@ -100,7 +100,8 @@ const ActivitiesPage = () => {
                 description: place.description,
                 rating: place.rating,
                 priceLevel: place.priceLevel,
-                categories: place.categories
+                categories: place.categories,
+                cost: place.cost
             });
         }
     }
