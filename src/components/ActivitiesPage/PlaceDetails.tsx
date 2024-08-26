@@ -55,11 +55,12 @@ const PlaceDetails = ({place, onAddClick}: PlaceDetailsProps) => {
                         <Typography variant="body2" color="text.secondary">
                             {place.address}
                         </Typography>
-                        {place.rating ? (
-                            <Rating value={Math.floor(place.rating)} readOnly size="small"/>
-                        ) : (
-                            <Rating value={0} readOnly size="small"/>
-                        )}
+                        <Box display="flex" alignItems="center">
+                            <Rating value={place.rating ? Math.floor(place.rating) : 0} readOnly size="small" precision={0.1} />
+                            <Typography variant="body2" color="text.secondary" ml={1}>
+                                ({place.rating ? place.rating.toFixed(1) : 0})
+                            </Typography>
+                        </Box>
                     </Box>
                     <Button variant="outlined" sx={{width: '70%'}} onClick={onAddClick}>Add To Schedule</Button>
                 </Box>
