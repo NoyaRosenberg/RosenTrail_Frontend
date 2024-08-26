@@ -67,7 +67,7 @@ const BudgetPage = () => {
 
       activities.forEach((activity) => {
         // Process budget per category
-        for (let category of activity.categories) {
+        for (let category of activity.categories.filter(category => category)) {
           categoryMap[category] =
           (categoryMap[category] || 0) + activity.cost;
         }
