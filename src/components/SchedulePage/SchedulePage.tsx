@@ -16,9 +16,9 @@ import {
   ListItemText,
   Pagination,
   CircularProgress,
-} from '@mui/material';
-import { alpha } from '@mui/material/styles';
-import { Delete, Edit } from '@mui/icons-material';
+} from "@mui/material";
+import { alpha } from "@mui/material/styles";
+import { Delete, Edit } from "@mui/icons-material";
 import "../../styles/Forms.css";
 import "../../styles/TripDialog.css";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -43,6 +43,9 @@ const TripSchedulePage: React.FC = () => {
   // New state for pagination
   const [currentPage, setCurrentPage] = useState(1);
   const datesPerPage = 7;
+  const [currentActivityPage, setCurrentActivityPage] = useState(1);
+  const activitiesPerPage = 2; // Adjust this number as needed
+  const [totalActivityPages, setTotalActivityPages] = useState(1); // Added state for totalActivityPages
 
   useEffect(() => {
     fetchActivities(trip._id ?? "");
@@ -52,23 +55,54 @@ const TripSchedulePage: React.FC = () => {
     if (activities.length && trip.startDate && trip.endDate) {
       const currentDate = new Date(trip.startDate);
       currentDate.setDate(currentDate.getDate() + page - 1);
-      const activitiesForCurrentDate = activities.filter(
-        (activity) =>
-          new Date(activity.date).toDateString() === currentDate.toDateString()
-      ).sort((a, b) => a.startTime.localeCompare(b.startTime));
 
-      setCurrentActivities(activitiesForCurrentDate);
+      const activitiesForCurrentDate = activities
+        .filter(
+          (activity) =>
+            new Date(activity.date).toDateString() ===
+            currentDate.toDateString()
+        )
+        .sort((a, b) => a.startTime.localeCompare(b.startTime));
+
+      // Calculate total activity pages based on all activities for the selected date
+      setTotalActivityPages(
+        Math.ceil(activitiesForCurrentDate.length / activitiesPerPage)
+      );
+
+      // Paginate the activities
+      const indexOfLastActivity = currentActivityPage * activitiesPerPage;
+      const indexOfFirstActivity = indexOfLastActivity - activitiesPerPage;
+      const paginatedActivities = activitiesForCurrentDate.slice(
+        indexOfFirstActivity,
+        indexOfLastActivity
+      );
+
+      setCurrentActivities(paginatedActivities);
     }
-  }, [page, activities, trip.startDate, trip.endDate]);
+  }, [
+    page,
+    activities,
+    trip.startDate,
+    trip.endDate,
+    currentActivityPage,
+    activitiesPerPage,
+  ]);
 
-  const tripDuration = trip.startDate && trip.endDate ? Math.ceil(
-    (new Date(trip.endDate).getTime() - new Date(trip.startDate).getTime()) /
-    (1000 * 3600 * 24)
-  ) + 1 : 0;
+  const tripDuration =
+    trip.startDate && trip.endDate
+      ? Math.ceil(
+          (new Date(trip.endDate).getTime() -
+            new Date(trip.startDate).getTime()) /
+            (1000 * 3600 * 24)
+        ) + 1
+      : 0;
 
   const totalPages = Math.ceil(tripDuration / datesPerPage);
 
-  const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
+  const handlePageChange = (
+    event: React.ChangeEvent<unknown>,
+    value: number
+  ) => {
     setCurrentPage(value);
   };
 
@@ -111,7 +145,12 @@ const TripSchedulePage: React.FC = () => {
   const formatDate = (startDate: string, page: number) => {
     const date = new Date(startDate);
     date.setDate(date.getDate() + page - 1);
-    return date.toLocaleDateString('en-GB', { weekday: 'short', day: '2-digit', month: '2-digit', year: '2-digit' });
+    return date.toLocaleDateString("en-GB", {
+      weekday: "short",
+      day: "2-digit",
+      month: "2-digit",
+      year: "2-digit",
+    });
   };
 
   return (
@@ -122,12 +161,7 @@ const TripSchedulePage: React.FC = () => {
       <Typography variant="h4" gutterBottom>
         Daily Planner
       </Typography>
-      <Box
-        display="flex"
-        justifyContent="space-between"
-        alignItems="center"
-        mb={2}
-      >
+      <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
         <Typography variant="h6" fontWeight="bold">
           Schedule
         </Typography>
@@ -151,28 +185,38 @@ const TripSchedulePage: React.FC = () => {
         <Box sx={{ minWidth: 150, mr: 4 }}>
           <List>
             {Array.from({ length: datesPerPage }).map((_, index) => {
-              const currentIndex = (currentPage - 1) * datesPerPage + index + 1;
+              const currentIndex =
+                (currentPage - 1) * datesPerPage + index + 1;
               if (currentIndex <= tripDuration) {
                 return (
                   <ListItem
                     key={currentIndex}
                     button
                     selected={page === currentIndex}
-                    onClick={() => setPage(currentIndex)}
+                    onClick={() => {
+                      setPage(currentIndex);
+                      setCurrentActivityPage(1); // Reset to first page of activities
+                    }}
                     sx={{
-                      backgroundColor: page === currentIndex ? "primary" : 'transparent',
-                      color: page === currentIndex ? 'white' : 'black',
+                      backgroundColor:
+                        page === currentIndex ? "primary" : "transparent",
+                      color: page === currentIndex ? "white" : "black",
                       mb: 1,
                       borderRadius: 1,
-                      '&.Mui-selected': {
-                        fontWeight: 'bold',
-                        backgroundColor: (theme) => alpha(theme.palette.primary.main, 0.5),
-                      }
+                      "&.Mui-selected": {
+                        fontWeight: "bold",
+                        backgroundColor: (theme) =>
+                          alpha(theme.palette.primary.main, 0.5),
+                      },
                     }}
                   >
                     <ListItemText
-                      primary={trip.startDate ? formatDate(trip.startDate.toString(), currentIndex) : ''}
-                      sx={{ textAlign: 'center' }}
+                      primary={
+                        trip.startDate
+                          ? formatDate(trip.startDate.toString(), currentIndex)
+                          : ""
+                      }
+                      sx={{ textAlign: "center" }}
                     />
                   </ListItem>
                 );
@@ -196,7 +240,7 @@ const TripSchedulePage: React.FC = () => {
                 flexDirection: "column",
                 justifyContent: "center",
                 alignItems: "center",
-                height: "100%"
+                height: "100%",
               }}
             >
               <CircularProgress />
@@ -209,52 +253,102 @@ const TripSchedulePage: React.FC = () => {
           ) : (
             <Box>
               {currentActivities.length > 0 ? (
-                currentActivities.map((activity) => (
-                  <Card key={activity._id} sx={{ display: 'flex', mb: 2 }}>
-                    <img
-                      src={activity.imageUrl}
-                      alt={activity.name}
-                      style={{ width: 151 }}
-                    />
-                    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                      <CardContent>
-                        <Typography variant="h5" component="div">
-                          {activity.name}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                          {activity.description}
-                        </Typography>
-                        <Typography component="div" variant="subtitle1" color="text.secondary" >
-                          {activity.startTime} - {activity.endTime}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                          Participants: {activity.participants}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                          Cost: ${activity.cost}
-                        </Typography>
-                      </CardContent>
-                      <Box sx={{ display: 'flex', alignItems: 'center', pl: 1, pb: 1 }}>
-                        <IconButton color="primary" onClick={() => handleEdit(activity)}>
-                          <Edit />
-                        </IconButton>
-                        <IconButton color="error" onClick={() => handleDelete(activity._id)}>
-                          <Delete />
-                        </IconButton>
+                <>
+                  {currentActivities.map((activity) => (
+                    <Card
+                      key={activity._id}
+                      sx={{
+                        display: "flex",
+                        mb: 2,
+                        height: 200, // Set a fixed height for the card
+                        overflow: "hidden", // Ensure content does not exceed the card height
+                      }}
+                    >
+                      <img
+                        src={activity.imageUrl}
+                        alt={activity.name}
+                        style={{ width: 151, objectFit: "cover" }} // Maintain image aspect ratio
+                      />
+                      <Box sx={{ display: "flex", flexDirection: "column" }}>
+                        <CardContent
+                          sx={{
+                            overflow: "hidden", // Hide overflowing text
+                            textOverflow: "ellipsis", // Add ellipsis for overflowing text
+                            whiteSpace: "nowrap", // Prevent text from wrapping
+                          }}
+                        >
+                          <Typography variant="h5" component="div">
+                            {activity.name}
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            {activity.description}
+                          </Typography>
+                          <Typography
+                            component="div"
+                            variant="subtitle1"
+                            color="text.secondary"
+                          >
+                            {activity.startTime} - {activity.endTime}
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            Participants: {activity.participants}
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            Cost: ${activity.cost}
+                          </Typography>
+                        </CardContent>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            pl: 1,
+                            pb: 1,
+                          }}
+                        >
+                          <IconButton
+                            color="primary"
+                            onClick={() => handleEdit(activity)}
+                          >
+                            <Edit />
+                          </IconButton>
+                          <IconButton
+                            color="error"
+                            onClick={() => handleDelete(activity._id)}
+                          >
+                            <Delete />
+                          </IconButton>
+                        </Box>
                       </Box>
-                    </Box>
-                  </Card>
-                ))
+                    </Card>
+                  ))}
+                  {/* Pagination for activities */}
+                  <Pagination
+                    count={totalActivityPages}
+                    page={currentActivityPage}
+                    onChange={(event, value) => setCurrentActivityPage(value)}
+                    color="primary"
+                    sx={{ mt: 2 }}
+                  />
+                </>
               ) : (
                 <Typography>No activities scheduled for this day.</Typography>
               )}
-              <Dialog open={open} onClose={handleClose} maxWidth="lg" fullWidth>
+              {/* Dialog for editing activity */}
+              <Dialog
+                open={open}
+                onClose={handleClose}
+                maxWidth="lg"
+                fullWidth
+              >
                 <DialogTitle>Edit Your Activity</DialogTitle>
                 <DialogContent>
-                  <CreateActivityPage trip={trip} activityToEdit={editingActivity} onClose={handleClose} />
+                  <CreateActivityPage
+                    trip={trip}
+                    activityToEdit={editingActivity}
+                    onClose={handleClose}
+                  />
                 </DialogContent>
-                <DialogActions>
-                </DialogActions>
+                <DialogActions />
               </Dialog>
             </Box>
           )}
