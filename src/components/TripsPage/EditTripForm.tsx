@@ -217,7 +217,7 @@ const EditTripForm = ({ trip, participants }: EditTripFormProps) => {
                 )}
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={6} sx={{maxHeight: '105px', overflowY: 'auto'}}>
               <Autocomplete
                 multiple
                 id="tags-filled"
@@ -259,7 +259,7 @@ const EditTripForm = ({ trip, participants }: EditTripFormProps) => {
               </Select>
             </FormControl>
           </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={12} sx={{maxHeight: '145px', overflowY: 'auto'}}>
               <Autocomplete
                 multiple
                 id="tags-filled"

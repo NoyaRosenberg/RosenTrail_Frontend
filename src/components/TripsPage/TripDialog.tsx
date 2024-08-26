@@ -216,7 +216,7 @@ const TripDialog: React.FC<TripDialogProps> = ({
                           {price} €
                         </Typography>
                       </Box>
-                      { (
+                      { !showActions && (
                         <Box display="flex" alignItems="center" gap={1}>
                           <Rating value={averageRating ?? 0} readOnly size="small" precision={0.1} />
                           <Typography variant="body2" color="text.secondary">
