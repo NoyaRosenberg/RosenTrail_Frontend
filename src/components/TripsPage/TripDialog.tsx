@@ -57,9 +57,11 @@ const TripDialog: React.FC<TripDialogProps> = ({
         ]);
         setParticipants(participantsData!);
         setReviews(reviewsData);
-        
+
         if (reviewsData.length > 0) {
-          const avgRating = reviewsData.reduce((sum, review) => sum + review.rating, 0) / reviewsData.length;
+          const avgRating =
+            reviewsData.reduce((sum, review) => sum + review.rating, 0) /
+            reviewsData.length;
           setAverageRating(Number(avgRating.toFixed(1)));
         }
       } catch (err) {
@@ -165,7 +167,7 @@ const TripDialog: React.FC<TripDialogProps> = ({
                         <Chip
                           key="accessMode"
                           label={trip.isPublic ? "public" : "private"}
-                          color="default" 
+                          color="default"
                           sx={{ marginBottom: "0.15em" }}
                         />
                       </Box>
@@ -216,7 +218,7 @@ const TripDialog: React.FC<TripDialogProps> = ({
                           {price} €
                         </Typography>
                       </Box>
-                      { !showActions && (
+                      {!showActions && (
                         <Box display="flex" alignItems="center" gap={1}>
                           <Rating value={averageRating ?? 0} readOnly size="small" precision={0.1} />
                           <Typography variant="body2" color="text.secondary">
@@ -228,13 +230,12 @@ const TripDialog: React.FC<TripDialogProps> = ({
                         <Stack>
                           <Divider />
                           <Box display="flex" justifyContent="center" gap={2}>
-                            <Box className="icon-text">
+                            <Box className="icon-text" onClick={handleAddActivity}>
                               <Typography variant="body1">
                                 Add Activity
                               </Typography>
                               <IconButton
                                 color="primary"
-                                onClick={handleAddActivity}
                               >
                                 <AddCircle />
                               </IconButton>
@@ -244,9 +245,9 @@ const TripDialog: React.FC<TripDialogProps> = ({
                               variant="middle"
                               flexItem
                             />
-                            <Box className="icon-text">
+                            <Box className="icon-text" onClick={handleEdit}>
                               <Typography variant="body1">Edit Trip</Typography>
-                              <IconButton color="primary" onClick={handleEdit}>
+                              <IconButton color="primary">
                                 <Edit />
                               </IconButton>
                             </Box>
@@ -255,11 +256,11 @@ const TripDialog: React.FC<TripDialogProps> = ({
                               variant="middle"
                               flexItem
                             />
-                            <Box className="icon-text">
+                            <Box className="icon-text" onClick={handleDelete}>
                               <Typography variant="body1">
                                 Delete Trip
                               </Typography>
-                              <IconButton color="error" onClick={handleDelete}>
+                              <IconButton color="error">
                                 <Delete />
                               </IconButton>
                             </Box>

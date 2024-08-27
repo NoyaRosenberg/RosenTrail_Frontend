@@ -35,7 +35,7 @@
 
 .participant-avatar {
     border: 2px solid white;
-    margin-left: -10px; 
+    margin-left: -10px;
 }
 
 .participant-avatar:first-child {
@@ -46,8 +46,17 @@
     display: flex;
     align-items: center;
     gap: 2px;
+    border-radius: 8px;
 }
 
-.icon-text > .MuiButtonBase-root {
+.icon-text>.MuiButtonBase-root {
     padding-right: 0px !important;
+}
+
+.icon-text:hover .MuiIconButton-root svg {
+    filter: brightness(70%); 
+}
+
+.icon-text:hover .MuiTypography-root {
+    opacity: 0.8; 
 }
