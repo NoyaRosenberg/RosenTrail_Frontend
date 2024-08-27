@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Box, Typography, ButtonGroup, Button } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import AccountMenu from "./AccountMenu";
 import "../../styles/Navbar.css";
 
@@ -9,6 +9,12 @@ export interface NavbarProps {
 }
 
 const Navbar = ({ isUserLoggedIn }: NavbarProps) => {
+  const location = useLocation();
+  
+  useEffect(() => {
+    window.scrollTo(0, 0); 
+  }, [location.pathname]);
+
   return (
     <Box className="navbar-container">
       <Typography variant="h5" component="a" href="" className="navbar-title">
