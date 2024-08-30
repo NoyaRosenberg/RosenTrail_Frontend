@@ -15,8 +15,9 @@ import PlaceDetails, {Place} from './PlaceDetails';
 
 interface MapProps {
     location: Location;
-    placeToDisplay: Place | null;
-    onAddPlace: (place: Place) => void;
+    placeToDisplay?: Place | null;
+    showAutoComplete: boolean;
+    onAddPlace?: (place: Place) => void;
 }
 
 const mapContainerStyle = {
@@ -35,7 +36,7 @@ const mapOptions = {
 const libraries = ['places'] as Libraries;
 const apiKey = "AIzaSyDC7J-IsGSicrRECRUn5H2pYhRm-DpATNo";
 
-const Map = ({location, placeToDisplay, onAddPlace}: MapProps) => {
+const Map = ({location, placeToDisplay, showAutoComplete, onAddPlace}: MapProps) => {
     const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
     const [isInfoWindowOpen, setIsInfoWindowOpen] = useState(false);
     const mapRef = useRef<google.maps.Map | null>(null);
@@ -160,27 +161,29 @@ const Map = ({location, placeToDisplay, onAddPlace}: MapProps) => {
             <GoogleMap
                 mapContainerStyle={mapContainerStyle}
                 center={location.position}
-                zoom={8}
+                zoom={12}
                 onLoad={onLoad}
                 options={mapOptions}
                 onClick={handleMapClick}
             >
-                <Autocomplete onLoad={onLoadAutocomplete} onPlaceChanged={handlePlaceSearch}>
-                    <StyledTextField
-                        className="search"
-                        fullWidth
-                        variant="outlined"
-                        placeholder="Search an activity..."
-                        InputProps={{
-                            startAdornment: (
-                                <InputAdornment position="start">
-                                    <SearchIcon/>
-                                </InputAdornment>
-                            ),
-                        }}
-                        sx={{width: '70%'}}
-                    />
-                </Autocomplete>
+                {showAutoComplete && (
+                    <Autocomplete onLoad={onLoadAutocomplete} onPlaceChanged={handlePlaceSearch}>
+                        <StyledTextField
+                            className="search"
+                            fullWidth
+                            variant="outlined"
+                            placeholder="Search an activity..."
+                            InputProps={{
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <SearchIcon/>
+                                    </InputAdornment>
+                                ),
+                            }}
+                            sx={{width: '70%'}}
+                        />
+                    </Autocomplete>
+                )}
 
                 {selectedPlace && (
                     <>
@@ -195,7 +198,7 @@ const Map = ({location, placeToDisplay, onAddPlace}: MapProps) => {
                                 position={selectedPlace.coordinates}
                                 onCloseClick={() => setIsInfoWindowOpen(false)}
                             >
-                                <PlaceDetails place={selectedPlace} onAddClick={() => onAddPlace(selectedPlace)}/>
+                                <PlaceDetails place={selectedPlace} onAddClick={() => onAddPlace && onAddPlace(selectedPlace)}/>
                             </InfoWindow>
                         )}
                     </>
