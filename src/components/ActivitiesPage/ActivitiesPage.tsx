@@ -178,11 +178,11 @@ const ActivitiesPage = () => {
                                                 flexDirection: "column",
                                             }}
                                         >
-                                            <Typography variant="h6" color="error">
+                                            <Typography gutterBottom variant="h6" color="error">
                                                 Opps!
                                             </Typography>
                                             <Typography color="error">
-                                                We encountered a problem while finding you the best recommendations!
+                                                We encountered a problem while finding you the best recommendations
                                             </Typography>
                                         </Box>
                                     ) : (
@@ -205,7 +205,7 @@ const ActivitiesPage = () => {
                 </Box>
             </Box>
             <Box width="50%" height="100%" borderRadius={2} overflow='hidden' display="flex" flexDirection="column">
-                <Map location={destinationLocation} onAddPlace={addPlaceToTrip} placeToDisplay={selectedRecommendation}/>
+                <Map location={destinationLocation} onAddPlace={addPlaceToTrip} placeToDisplay={selectedRecommendation} showAutoComplete={true}/>
             </Box>
             <Dialog open={isActivityDialogOpen} onClose={handleActivityDialogClose} maxWidth="lg" fullWidth>
                 <DialogTitle>Edit Your Activity</DialogTitle>

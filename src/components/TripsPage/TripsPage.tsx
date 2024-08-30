@@ -84,7 +84,22 @@ const TripsPage = ({
             <CardsSkeleton numInRow={3} />
           </Box>
         ) : error ? (
-          <Typography color="error">{error}</Typography>
+            <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  height: "100%",
+                  flexDirection: "column",
+                }}
+            >
+              <Typography gutterBottom variant="h4" color="error">
+                Opps!
+              </Typography>
+              <Typography color="error">
+                An error occurred while fetching your trips
+              </Typography>
+            </Box>
         ) : (
           <TripsGrid trips={filteredTrips} isCommunityTrips={isCommunityTrips} fetchTrips={fetchTrips} />
         )}
