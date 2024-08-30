@@ -1,6 +1,6 @@
 import { BrowserRouter as Router } from "react-router-dom";
 import "./App.css";
-import { ThemeProvider } from "@emotion/react";
+import { ThemeProvider } from '@mui/material/styles';
 import { CssBaseline, Stack } from "@mui/material";
 import theme from "./theme";
 import { AuthProvider, useAuth } from "./contexts/AuthProvider";

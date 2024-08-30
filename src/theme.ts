@@ -1,6 +1,7 @@
 import {List, Popper, TextField} from "@mui/material";
 import {lightGreen} from "@mui/material/colors";
-import {createTheme, styled} from "@mui/material/styles";
+import { createTheme } from '@mui/material/styles';
+import { styled } from '@mui/system';
 
 export const StyledTextField = styled(TextField)({
     "&.search .MuiOutlinedInput-root": {
