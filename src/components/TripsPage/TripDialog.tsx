@@ -76,6 +76,10 @@ const TripDialog: React.FC<TripDialogProps> = ({
     navigate("/schedule", { state: { trip, showActions } });
   };
 
+  const showBudget = () => {
+    navigate("/budget", { state: { trip } });
+  };
+
   const handleAddActivity = () => {
     navigate("/AddActivities", { state: { trip } });
   };
@@ -195,14 +199,22 @@ const TripDialog: React.FC<TripDialogProps> = ({
                 <Stack>
                   <Stack>
                     <Stack spacing={5}>
-                      <Box display="flex" alignItems="center" gap="40px">
+                      <Box display="flex" alignItems="center" gap="25px">
                         <Button
                           variant="contained"
                           color="primary"
                           onClick={showSchedule}
-                          sx={{ width: "150px", height: "50px" }}
+                          sx={{ width: "140px", height: "40px" }}
                         >
                           Schedule
+                        </Button>
+                        <Button
+                          variant="contained"
+                          color="error"
+                          onClick={showBudget}
+                          sx={{ width: "140px", height: "40px" }}
+                        >
+                          Budget Page
                         </Button>
                         {!showActions && (
                           <Button
