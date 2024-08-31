@@ -35,7 +35,7 @@ const colorSets: ColorSet[] = [
 
 const timelineStyle = {
     [`& .${timelineOppositeContentClasses.root}`]: {
-        flex: 0.2,
+        flex: 0.1,
     }
 };
 
