@@ -32,12 +32,13 @@ const cardContentStyle = {
 interface DailyScheduleProps {
     trip: Trip;
     activities: Activity[];
+    showActions: boolean;
     onActivityClick: (activity: Activity) => void;
     onActivityEdit: (activity: Activity) => void;
     onActivityDelete: (activity: Activity) => void;
 }
 
-const Schedule = ({trip, activities, onActivityClick, onActivityEdit, onActivityDelete}: DailyScheduleProps) => {
+const Schedule = ({trip, activities, showActions, onActivityClick, onActivityEdit, onActivityDelete}: DailyScheduleProps) => {
     const navigate = useNavigate();
     const [currentDate, setCurrentDate] = useState<Date>(new Date(trip.startDate!));
     const [day, setDay] = useState<number>(1);
@@ -110,6 +111,7 @@ const Schedule = ({trip, activities, onActivityClick, onActivityEdit, onActivity
                         <>
                             <DailySchedule
                                 activities={currentDayActivities}
+                                showActions={showActions}
                                 onActivityClick={onActivityClick}
                                 onActivityEdit={onActivityEdit}
                                 onActivityDelete={onActivityDelete}

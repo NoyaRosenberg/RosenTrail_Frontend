@@ -1,6 +1,6 @@
 import {Activity} from "../../../services/activity.service";
 import {Box, Card, CardContent, Stack, Typography} from "@mui/material";
-import { Delete, Edit } from "@mui/icons-material";
+import {Delete, Edit} from "@mui/icons-material";
 import IconButton from "@mui/material/IconButton";
 
 const cardStyle = {
@@ -38,12 +38,13 @@ const iconStyle = {
 
 interface ActivityCardProps {
     activity: Activity;
+    showActions: boolean;
     onClick: (activity: Activity) => void;
     onEdit: (activity: Activity) => void;
     onDelete: (activity: Activity) => void;
 }
 
-const ActivityCard = ({activity, onClick, onEdit, onDelete}: ActivityCardProps) => {
+const ActivityCard = ({activity, showActions, onClick, onEdit, onDelete}: ActivityCardProps) => {
     const handleClick = () => onClick(activity);
     const handleEdit = () => onEdit(activity);
     const handleDelete = () => onDelete(activity);
@@ -51,20 +52,22 @@ const ActivityCard = ({activity, onClick, onEdit, onDelete}: ActivityCardProps) 
     return (
         <Card sx={cardStyle} onClick={handleClick}>
             <CardContent sx={cardContentStyle}>
-                    <Stack>
-                        <Typography variant="h6" component="span">
-                            {activity.name}
-                        </Typography>
-                        <Typography>{activity.description}</Typography>
-                    </Stack>
+                <Stack>
+                    <Typography variant="h6" component="span">
+                        {activity.name}
+                    </Typography>
+                    <Typography>{activity.description}</Typography>
+                </Stack>
+                {showActions && (
                     <Box display="flex">
                         <IconButton color="primary" sx={iconStyle} onClick={handleEdit}>
-                            <Edit />
+                            <Edit/>
                         </IconButton>
                         <IconButton color="error" sx={iconStyle} onClick={handleDelete}>
-                            <Delete />
+                            <Delete/>
                         </IconButton>
                     </Box>
+                )}
             </CardContent>
             <Box
                 component="img"

@@ -26,7 +26,7 @@ const mapContainerStyle = {
 };
 
 const SchedulePage = () => {
-    const {trip} = useLocation().state as { trip: Trip; showActions: boolean; };
+    const {trip, showActions} = useLocation().state as { trip: Trip; showActions: boolean; };
     const {activities, fetchActivities} = useActivities();
     const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
     const [placeToAdd, setPlaceToAdd] = useState<Place | null>(null);
@@ -64,8 +64,9 @@ const SchedulePage = () => {
             <Grid2 container columnSpacing={6} sx={mainContainerStyle}>
                 <Grid2 size={6} height="100%">
                     <Schedule
-                        activities={activities}
                         trip={trip}
+                        activities={activities}
+                        showActions={showActions}
                         onActivityClick={showActivityOnMap}
                         onActivityEdit={editActivity}
                         onActivityDelete={deleteActivity}

@@ -42,12 +42,13 @@ const timelineStyle = {
 
 interface ActivitiesTimelineProps {
     activities: Activity[],
+    showActions: boolean;
     onActivityClick: (activity: Activity) => void;
     onActivityEdit: (activity: Activity) => void;
     onActivityDelete: (activity: Activity) => void;
 }
 
-const DailySchedule = ({activities, onActivityClick, onActivityEdit, onActivityDelete}: ActivitiesTimelineProps) => {
+const DailySchedule = ({activities, showActions, onActivityClick, onActivityEdit, onActivityDelete}: ActivitiesTimelineProps) => {
     const sortedActivities = useMemo(() =>
         activities.sort((a, b) => a.startTime.localeCompare(b.startTime))
         , [activities]);
@@ -84,6 +85,7 @@ const DailySchedule = ({activities, onActivityClick, onActivityEdit, onActivityD
                         <TimelineContent sx={{py: '12px', px: 2}}>
                             <ActivityCard
                                 activity={activity}
+                                showActions={showActions}
                                 onClick={onActivityClick}
                                 onEdit={onActivityEdit}
                                 onDelete={onActivityDelete}
