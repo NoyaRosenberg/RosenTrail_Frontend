@@ -12,6 +12,8 @@ import {InputAdornment} from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import {Location} from '../../services/google-maps.service';
 import PlaceDetails, {Place} from './PlaceDetails';
+import RecommendationService, {Category} from "../../services/recommendation.service";
+import React from 'react';
 
 interface MapProps {
     location: Location;
@@ -65,11 +67,11 @@ const Map = ({location, placeToDisplay, onAddPlace}: MapProps) => {
         autocompleteRef.current = autocomplete;
     };
 
-    const handlePlaceSearch = () => {
+    const handlePlaceSearch = async () => {
         const place = autocompleteRef.current?.getPlace();
 
         if (place) {
-            const newPlace = createPlace(place);
+            const newPlace = await createPlace(place);
 
             if (newPlace && newPlace.coordinates) {
                 setSelectedPlace(newPlace);
@@ -120,9 +122,9 @@ const Map = ({location, placeToDisplay, onAddPlace}: MapProps) => {
 
     const getPlaceDetails = (placeId: string) => {
         if (placesServiceRef.current) {
-            placesServiceRef.current.getDetails({placeId}, (placeDetails, status) => {
+            placesServiceRef.current.getDetails({placeId}, async (placeDetails, status) => {
                 if (status === google.maps.places.PlacesServiceStatus.OK && placeDetails) {
-                    const newPlace = createPlace(placeDetails);
+                    const newPlace = await createPlace(placeDetails);
 
                     if (newPlace) {
                         setSelectedPlace(newPlace);
@@ -135,7 +137,7 @@ const Map = ({location, placeToDisplay, onAddPlace}: MapProps) => {
         }
     }
 
-    const createPlace = (placeDetails: google.maps.places.PlaceResult): Place | undefined => {
+    const createPlace = async (placeDetails: google.maps.places.PlaceResult): Promise<Place | undefined> => {
         if (placeDetails && placeDetails.geometry && placeDetails.geometry.location) {
             const location = placeDetails.geometry?.location;
 
@@ -145,7 +147,8 @@ const Map = ({location, placeToDisplay, onAddPlace}: MapProps) => {
                 photoUrl: placeDetails.photos?.[0]?.getUrl({maxWidth: 300, maxHeight: 200}),
                 address: placeDetails.formatted_address || '',
                 rating: placeDetails.rating ?? 0,
-                priceLevel: placeDetails.price_level
+                priceLevel: placeDetails.price_level,
+                categories: await RecommendationService.getMapCategories(placeDetails.name)
             };
         }
     }
