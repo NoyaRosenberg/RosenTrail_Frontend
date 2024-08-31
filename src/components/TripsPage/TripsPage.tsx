@@ -52,7 +52,7 @@ const TripsPage = ({
         gap: 4,
         paddingTop: "50px",
         paddingBottom: "20px",
-        width: "68%",
+        width: "68%"
       }}
     >
       <Stack spacing={2} alignItems="center" width="100%">
