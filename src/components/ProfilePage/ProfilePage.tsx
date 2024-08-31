@@ -153,7 +153,7 @@ const ProfilePage = () => {
               fullWidth
               variant="outlined"
             />
-            <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 2 }}>
               <TextField
                 label="Gender"
                 name="gender"
@@ -195,7 +195,7 @@ const ProfilePage = () => {
             <Avatar
               alt="Profile Picture"
               src={imageDataPreview || ""}
-              sx={{ width: 150, height: 150 }}
+              sx={{ width: 300, height: 300 }}
             />
             <input
               accept="image/*"
