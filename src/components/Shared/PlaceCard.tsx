@@ -83,8 +83,7 @@ const PlaceCard = ({ name, description, image, isNew, onCardClick, rating, isCom
           textAlign: "center", 
           display: 'flex', 
           flexDirection: 'column', 
-          justifyContent: 'space-between', 
-          minHeight: '120px' // Adjust this value to control the height of the content area
+          minHeight: '120px'
         }}
       >
         <Typography variant="h4" sx={{ fontSize: 18, margin: 1 }}>

@@ -1,11 +1,9 @@
 import {
     Box,
-    Button,
     Card,
     CardContent,
-    CircularProgress, Dialog, DialogActions,
-    DialogContent,
-    DialogTitle,
+    CircularProgress,
+    Fab,
     Stack,
     Typography
 } from "@mui/material";
@@ -15,10 +13,10 @@ import RecommendationFilters from "./Recommendations/RecommendationFilters";
 import {useEffect, useRef, useState} from "react";
 import RecommendationService, {Category} from "../../services/recommendation.service";
 import RecommendationsGrid from "./Recommendations/RecommendationsGrid";
-import CreateActivityPage from "../CreateActivityPage/CreateActivityPage";
-import Map from './Map';
-import GoogleMapsService, {Location} from "../../services/google-maps.service";
-import {Place} from "./PlaceDetails";
+import Map from '../Map/Map';
+import {Place} from "../Map/PlaceDetails";
+import ErrorBox from "../Shared/ErrorBox";
+import ActivityDialog from "../CreateActivityPage/ActivityDialog";
 
 const ActivitiesPage = () => {
     const navigate = useNavigate();
@@ -32,7 +30,6 @@ const ActivitiesPage = () => {
     const [selectedRecommendation, setSelectedRecommendation] = useState<Place | null>(null);
     const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
     const [isActivityDialogOpen, setIsActivityDialogOpen] = useState(false);
-    const [destinationLocation, setDestinationLocation] = useState<Location>({position: {lat: 48.8584, lng: 2.2945}, region: 'FR'});
 
     useEffect(() => {
         if (effectRan.current === false) {
@@ -46,7 +43,7 @@ const ActivitiesPage = () => {
                     setRecommendations(recommendations!);
                     setFilteredRecommendations(recommendations!);
                 } catch (error) {
-                    setError((error as Error).message);
+                    setError("We encountered a problem while finding you the best recommendations");
                 } finally {
                     setLoading(false);
                 }
@@ -58,19 +55,6 @@ const ActivitiesPage = () => {
                 effectRan.current = true;
             };
         }
-    }, [trip.destinations]);
-
-    useEffect(() => {
-        const getDestinationCoordinates = async () => {
-            try {
-                const response = await GoogleMapsService.getCoordinatesByAddress(trip.destinations[0]);
-                setDestinationLocation(response!);
-            } catch (error) {
-                setError((error as Error).message);
-            }
-        };
-
-        getDestinationCoordinates();
     }, [trip.destinations]);
 
     const goBackToSchedule = () => {
@@ -95,7 +79,7 @@ const ActivitiesPage = () => {
             setSelectedRecommendation({
                 name: place.name,
                 coordinates: place.coordinates,
-                photoUrl: place.photoUrl,
+                imageUrl: place.imageUrl,
                 address: place.address,
                 description: place.description,
                 rating: place.rating,
@@ -137,14 +121,15 @@ const ActivitiesPage = () => {
                                         Click an activity to add it to your trip!
                                     </Typography>
                                 </Stack>
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    startIcon={<Schedule/>}
-                                    onClick={goBackToSchedule}
+                                <Fab variant="extended"
+                                     size="medium"
+                                     color="primary"
+                                     sx={{color: 'white'}}
+                                     onClick={goBackToSchedule}
                                 >
+                                    <Schedule sx={{mr: 1}}/>
                                     Trip Schedule
-                                </Button>
+                                </Fab>
                             </Box>
                             <Card sx={{
                                 width: "100%",
@@ -169,22 +154,7 @@ const ActivitiesPage = () => {
                                             </Typography>
                                         </Box>
                                     ) : error && recommendations.length === 0 ? (
-                                        <Box
-                                            sx={{
-                                                display: "flex",
-                                                justifyContent: "center",
-                                                alignItems: "center",
-                                                height: "100%",
-                                                flexDirection: "column",
-                                            }}
-                                        >
-                                            <Typography variant="h6" color="error">
-                                                Opps!
-                                            </Typography>
-                                            <Typography color="error">
-                                                We encountered a problem while finding you the best recommendations!
-                                            </Typography>
-                                        </Box>
+                                        <ErrorBox error={error}/>
                                     ) : (
                                         <Box
                                             className="scrollable"
@@ -205,23 +175,16 @@ const ActivitiesPage = () => {
                 </Box>
             </Box>
             <Box width="50%" height="100%" borderRadius={2} overflow='hidden' display="flex" flexDirection="column">
-                <Map location={destinationLocation} onAddPlace={addPlaceToTrip} placeToDisplay={selectedRecommendation}/>
+                <Map area={trip.destinations[0]}
+                     onAddPlace={addPlaceToTrip}
+                     placeToDisplay={selectedRecommendation}
+                     showAutoComplete={true}
+                />
             </Box>
-            <Dialog open={isActivityDialogOpen} onClose={handleActivityDialogClose} maxWidth="lg" fullWidth>
-                <DialogTitle>Edit Your Activity</DialogTitle>
-                <DialogContent>
-                    <CreateActivityPage
-                        location={selectedPlace?.name}
-                        description={selectedPlace?.description}
-                        cost={selectedPlace?.cost}
-                        trip={trip}
-                        imageUrl={selectedPlace?.photoUrl}
-                        categories={selectedPlace?.categories}
-                        onClose={handleActivityDialogClose}
-                    />
-                </DialogContent>
-                <DialogActions></DialogActions>
-            </Dialog>
+            <ActivityDialog isOpen={isActivityDialogOpen}
+                            trip={trip}
+                            placeToAdd={selectedPlace!}
+                            onClose={handleActivityDialogClose}/>
         </Box>
     );
 }

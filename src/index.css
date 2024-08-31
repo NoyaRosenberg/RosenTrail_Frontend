@@ -9,7 +9,6 @@ html, body, #root {
   height: 100%;
   font-family: 'Nunito', sans-serif !important;
   background-color: #FEFEFE;
-  padding-top: 1rem;
 }
 
 /* Custom Scrollbar Styles */

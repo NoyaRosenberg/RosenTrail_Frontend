@@ -8,12 +8,12 @@ import SignInPage from "../components/SignInPage/SignInPage";
 import SignUpPage from "../components/SignUpPage/SignUpPage";
 import ProfilePage from "../components/ProfilePage/ProfilePage";
 import { CircularProgress } from "@mui/material";
-import SchedulePage from "../components/SchedulePage/SchedulePage";
 import MainPage from "../components/MainPage/MainPage";
 import BudgetPage from "../components/BudgetPage/BudgetPage";
 import TripsPage from "../components/TripsPage/TripsPage";
 import { useTrips } from "../contexts/TripProvider";
 import ReviewPage from "../components/ReviewPage/ReviewPage";
+import SchedulePage from "../components/SchedulePage/SchedulePage";
 
 const AppRoutes: React.FC = () => {
   const { isLoggedIn, loading } = useAuth();

@@ -1,6 +1,6 @@
 import {Grid} from "@mui/material";
-import PlaceCard from "../../PlaceCard";
-import {Place} from "../PlaceDetails";
+import PlaceCard from "../../Shared/PlaceCard";
+import {Place} from "../../Map/PlaceDetails";
 
 export interface RecommendationsGrisProps {
     recommendations: Place[];
@@ -15,7 +15,8 @@ const RecommendationsGrid = ({recommendations, onRecommendationClick}: Recommend
                     <PlaceCard
                         name={rec.name}
                         description={rec.description}
-                        image={rec.photoUrl}
+                        image={rec.imageUrl}
+                        isCommunityTrips={false}
                         onCardClick={() => onRecommendationClick(rec)}
                     />
                 </Grid>

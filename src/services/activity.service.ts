@@ -1,20 +1,15 @@
 import axios from "axios";
 import AuthService from "./auth.service";
+import {Place} from "../components/Map/PlaceDetails.tsx";
 
-export interface Activity {
+export interface Activity extends Place {
     _id: string;
     tripId: string;
-    name: string;
     date: Date;
     startTime: string;
     endTime: string;
     location: string;
-    description: string;
-    cost: number;
     participants?: number;
-    unregisteredParticipants?: string[];
-    categories: string[];
-    imageUrl?: string;
 }
 
 const apiClient = axios.create({
@@ -81,6 +76,15 @@ class ActivityService {
     async updateActivity(activity: Activity): Promise<Activity | void> {
         try {
             const response = await this.apiClient.put<Activity>(`${activity._id}`, activity);
+            return response.data;
+        } catch (error) {
+            this.handleError(error);
+        }
+    }
+
+    async deleteActivity(activity: Activity): Promise<Activity | void> {
+        try {
+            const response = await this.apiClient.delete<Activity>(`/${activity._id}`);
             return response.data;
         } catch (error) {
             this.handleError(error);

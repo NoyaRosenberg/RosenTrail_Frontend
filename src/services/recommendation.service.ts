@@ -1,6 +1,6 @@
 import axios from "axios";
 import AuthService from "./auth.service.ts";
-import {Place} from "../components/ActivitiesPage/PlaceDetails.tsx";
+import {Place} from "../components/Map/PlaceDetails.tsx";
 
 export interface Category {
   id: number;

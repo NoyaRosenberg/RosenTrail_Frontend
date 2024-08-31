@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Grid } from "@mui/material";
-import PlaceCard from "../PlaceCard";
+import PlaceCard from "../Shared/PlaceCard";
 import { Trip } from "../../services/trip.service";
 import { useNavigate } from "react-router-dom";
 import TripDialog from "./TripDialog";

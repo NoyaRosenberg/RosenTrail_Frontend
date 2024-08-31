@@ -10,12 +10,12 @@ export interface Place {
     cost?: number;
     rating?: number;
     priceLevel?: number;
-    photoUrl?: string
+    imageUrl?: string
 }
 
 interface PlaceDetailsProps {
-    place: Place,
-    onAddClick: () => void,
+    place: Place;
+    onAddClick: () => void;
 }
 
 type ChipColor = "primary" | "default" | "info" | "warning" | "error"
@@ -27,10 +27,10 @@ const PriceLevelColor = ['primary', 'default', 'info', 'warning', 'error'];
 const PlaceDetails = ({place, onAddClick}: PlaceDetailsProps) => {
     return (
         <Card sx={{boxShadow: 'none', minWidth: '250px', maxWidth: '280px'}}>
-            {place.photoUrl && (
+            {place.imageUrl && (
                 <CardMedia
                     component="img"
-                    image={place.photoUrl}
+                    image={place.imageUrl}
                     alt={place.name}
                     style={{height: 100}}
                 />
@@ -62,7 +62,9 @@ const PlaceDetails = ({place, onAddClick}: PlaceDetailsProps) => {
                             </Typography>
                         </Box>
                     </Box>
-                    <Button variant="outlined" sx={{width: '70%'}} onClick={onAddClick}>Add To Schedule</Button>
+                    <Button variant="outlined" sx={{width: '70%'}} onClick={onAddClick}>
+                        Add To Schedule
+                    </Button>
                 </Box>
             </CardContent>
         </Card>

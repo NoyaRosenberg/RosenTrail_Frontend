@@ -1,7 +1,7 @@
 import React, {ChangeEvent, SyntheticEvent} from "react";
 import {Stack, Autocomplete, InputAdornment} from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
-import {StyledListbox, StyledPopper, StyledTextField} from "../theme";
+import {StyledListbox, StyledPopper, StyledTextField} from "../../theme";
 
 export interface AutoCompleteSearchBarProps {
     placeholder: string;

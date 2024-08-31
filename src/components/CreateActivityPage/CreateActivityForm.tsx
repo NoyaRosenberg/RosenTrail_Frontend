@@ -17,13 +17,17 @@ import {
     ParticipantsContainer,
     SaveButton,
 } from "../../styles/CreateActivityForm.styles.ts";
+import {Coordinates} from "../../services/google-maps.service";
 
 type CreateActivityFormProps = {
     location?: string;
     description?: string;
-    cost?: number;
     trip: Trip;
+    cost?: number;
     categories?: string[];
+    coordinates?: Coordinates;
+    rating?: number;
+    priceLevel?: number;
     imageUrl?: string;
     onClose: () => void;
     activity?: Activity | null;
@@ -34,7 +38,11 @@ const CreateActivityForm: React.FC<CreateActivityFormProps> = ({
                                                                    description,
                                                                    cost,
                                                                    trip,
-                                                                   categories, imageUrl,
+                                                                   categories,
+                                                                   coordinates,
+                                                                   rating,
+                                                                   priceLevel,
+                                                                   imageUrl,
                                                                    onClose,
                                                                    activity = null,
                                                                }) => {
@@ -50,7 +58,10 @@ const CreateActivityForm: React.FC<CreateActivityFormProps> = ({
         tripId: trip._id ?? "",
         name: location ?? "",
         activityId: activity?._id ?? "",
-        imageUrl: imageUrl ?? ""
+        imageUrl: imageUrl ?? "",
+        coordinates: coordinates,
+        rating: rating,
+        priceLevel: priceLevel
     });
 
     const navigate = useNavigate(); // Hook to navigate
@@ -61,9 +72,14 @@ const CreateActivityForm: React.FC<CreateActivityFormProps> = ({
             setFormData({
                 ...activity,
                 activityId: activity?._id ?? "",
-                participants: formData.participants,
+                participants: formData.participants ?? 0,
                 categories: activity?.categories ?? "",
-                imageUrl: activity?.imageUrl ?? ""
+                imageUrl: activity?.imageUrl ?? "",
+                description: activity?.description ?? "",
+                cost: activity?.cost ?? 0,
+                priceLevel: activity?.priceLevel,
+                rating: activity?.rating,
+                coordinates: activity?.coordinates
             });
         }
     }, [activity, trip._id]);
@@ -98,6 +114,7 @@ const CreateActivityForm: React.FC<CreateActivityFormProps> = ({
                 await activityService.addActivity(formData);
                 toast.success("Activity created successfully");
             }
+
             onClose();
             navigate("/schedule", {state: {trip, showActions: true}}); // Pass state
         } catch (error) {
