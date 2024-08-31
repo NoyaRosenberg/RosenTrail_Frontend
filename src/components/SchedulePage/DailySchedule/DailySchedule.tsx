@@ -15,6 +15,7 @@ import MuseumIcon from '@mui/icons-material/Museum';
 import ParkIcon from '@mui/icons-material/Park';
 import ActivityCard from "./ActivityCard";
 import {Activity} from "../../../services/activity.service";
+import {useMemo} from "react";
 
 type DotColor = "primary" | "secondary" | "success" |
     "warning" | "inherit" | "error" | "info" | "grey" | undefined;
@@ -47,9 +48,13 @@ interface ActivitiesTimelineProps {
 }
 
 const DailySchedule = ({activities, onActivityClick, onActivityEdit, onActivityDelete}: ActivitiesTimelineProps) => {
+    const sortedActivities = useMemo(() =>
+        activities.sort((a, b) => a.startTime.localeCompare(b.startTime))
+        , [activities]);
+
     return (
         <Timeline sx={timelineStyle}>
-            {activities.map((activity, index) => {
+            {sortedActivities.map((activity, index) => {
                 const colorSet = colorSets[index % colorSets.length];
 
                 return (
@@ -67,11 +72,11 @@ const DailySchedule = ({activities, onActivityClick, onActivityEdit, onActivityD
                             <TimelineDot color={colorSet.dotColor} variant={colorSet.variant ?? 'filled'}>
                                 {activity.categories && (
                                     activity.categories.includes("Museums & Theatres") ? (<MuseumIcon/>) :
-                                    activity.categories.includes("Restaurants") ||
-                                    activity.categories.includes("Fancy Restaurants") ||
-                                    activity.categories.includes("Junk Food") ? (<FastfoodIcon/>) :
-                                        activity.categories.includes("Parks") ? (<ParkIcon/>) :
-                                            (<AttractionsIcon/>)
+                                        activity.categories.includes("Restaurants") ||
+                                        activity.categories.includes("Fancy Restaurants") ||
+                                        activity.categories.includes("Junk Food") ? (<FastfoodIcon/>) :
+                                            activity.categories.includes("Parks") ? (<ParkIcon/>) :
+                                                (<AttractionsIcon/>)
                                 )}
                             </TimelineDot>
                             <TimelineConnector sx={{bgcolor: colorSet.secondConnectorColor}}/>
