@@ -10,9 +10,10 @@ import {
   Stack,
   Divider,
   Chip,
-  Rating,
+  Rating, Fab,
 } from "@mui/material";
-import { Delete, Edit, AddCircle } from "@mui/icons-material";
+import {Delete, Edit, AddCircle, Schedule} from "@mui/icons-material";
+import PaidIcon from '@mui/icons-material/Paid';
 import CloseIcon from "@mui/icons-material/Close";
 import "../../styles/Forms.css";
 import "../../styles/TripDialog.css";
@@ -74,6 +75,10 @@ const TripDialog: React.FC<TripDialogProps> = ({
 
   const showSchedule = () => {
     navigate("/schedule", { state: { trip, showActions } });
+  };
+
+  const showBudget = () => {
+    navigate("/budget", { state: { trip } });
   };
 
   const handleAddActivity = () => {
@@ -195,25 +200,38 @@ const TripDialog: React.FC<TripDialogProps> = ({
                 <Stack>
                   <Stack>
                     <Stack spacing={5}>
-                      <Box display="flex" alignItems="center" gap="40px">
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          onClick={showSchedule}
-                          sx={{ width: "150px", height: "50px" }}
-                        >
-                          Schedule
-                        </Button>
-                        {!showActions && (
-                          <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={showReviews}
-                            sx={{ width: "150px", height: "50px" }}
+                      <Box display="flex" alignItems="center" justifyContent="space-between">
+                        <Box display="flex" alignItems="center" gap={2}>
+                          <Fab variant="extended"
+                               size="large"
+                               color="primary"
+                               sx={{color: 'white'}}
+                               onClick={showSchedule}
                           >
-                            Reviews
-                          </Button>
-                        )}
+                            <Schedule sx={{mr: 1}}/>
+                            Schedule
+                          </Fab>
+                          {!showActions ? (
+                              <Fab variant="extended"
+                                   size="large"
+                                   color="primary"
+                                   sx={{color: 'white'}}
+                                   onClick={showReviews}
+                              >
+                                Reviews
+                              </Fab>
+                          ) : (
+                              <Fab variant="extended"
+                                   size="large"
+                                   color="secondary"
+                                   sx={{color: 'white'}}
+                                   onClick={showBudget}
+                              >
+                                <PaidIcon sx={{mr: 1}}/>
+                                expenses
+                              </Fab>
+                          )}
+                        </Box>
                         <Typography variant="h6" component="p" color="#666">
                           {price} €
                         </Typography>
