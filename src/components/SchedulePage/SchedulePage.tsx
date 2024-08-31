@@ -9,12 +9,12 @@ import {Place} from "../Map/PlaceDetails";
 import {Activity} from "../../services/activity.service";
 import ActivityDialog from "../CreateActivityPage/ActivityDialog";
 
-const containerStyle = {
+const mainContainerStyle = {
     height: '100vh',
     overflow: 'hidden',
     padding: 4,
     backgroundColor: '#f5f5f5',
-}
+};
 
 const mapContainerStyle = {
     height: "100%",
@@ -23,7 +23,7 @@ const mapContainerStyle = {
     flexDirection: "column",
     overflow: 'hidden',
     borderRadius: 2
-}
+};
 
 const SchedulePage = () => {
     const {trip} = useLocation().state as { trip: Trip; showActions: boolean; };
@@ -49,7 +49,7 @@ const SchedulePage = () => {
 
     return (
         <>
-            <Grid2 container columnSpacing={8} sx={containerStyle}>
+            <Grid2 container columnSpacing={6} sx={mainContainerStyle}>
                 <Grid2 size={6} height="100%">
                     <Schedule activities={activities} trip={trip} onActivityClick={showActivityOnMap}/>
                 </Grid2>

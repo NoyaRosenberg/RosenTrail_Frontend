@@ -1,4 +1,4 @@
-import {Box, Button, Card, CardContent, CardHeader, Divider, Stack, Typography} from "@mui/material";
+import {Box, Button, Card, CardContent, CardHeader, Divider, Fab, Stack, Typography} from "@mui/material";
 import DailySchedule from "./DailySchedule/DailySchedule";
 import PaginationArrows from "./PaginationArrows";
 import {Activity} from "../../services/activity.service";
@@ -6,12 +6,20 @@ import {useMemo, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {Trip} from "../../services/trip.service";
 import EmptySchedule from "./DailySchedule/EmptySchedule";
+import {AddCircle} from "@mui/icons-material";
 
 const scheduleCardStyle = {
     height: "100%",
     borderRadius: 3,
     display: 'flex',
     flexDirection: 'column'
+};
+
+const cardHeaderStyle = {
+    '& .MuiCardHeader-action': {
+        alignSelf: 'center',
+        paddingRight: "8px !important",
+    }
 };
 
 const cardContentStyle = {
@@ -79,7 +87,16 @@ const Schedule = ({trip, activities, onActivityClick}: DailyScheduleProps) => {
                     onPrevClick={moveToPrevDay} onNextClick={moveToNextDay}/>
             </Box>
             <Card sx={scheduleCardStyle}>
-                <CardHeader title={"Day " + day} subheader={formatedDate}></CardHeader>
+                <CardHeader
+                    title={"Day " + day}
+                    subheader={formatedDate}
+                    action={
+                        <Fab variant="extended" size="medium" color="primary" sx={{color: 'white',}}>
+                            <AddCircle sx={{mr: 1}}/>
+                            Add Attractions
+                        </Fab>
+                    }
+                    sx={cardHeaderStyle}/>
                 <Divider/>
                 <CardContent className="scrollable" sx={cardContentStyle}>
                     {currentDayActivities.length ? (
@@ -91,7 +108,7 @@ const Schedule = ({trip, activities, onActivityClick}: DailyScheduleProps) => {
                                 </Button>
                             </Box>
                         </>
-                        ) : (<EmptySchedule onClick={navigateToAttractionsPage}/>)}
+                    ) : (<EmptySchedule onClick={navigateToAttractionsPage}/>)}
                 </CardContent>
             </Card>
         </Stack>
