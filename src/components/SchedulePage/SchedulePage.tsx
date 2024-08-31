@@ -6,7 +6,7 @@ import {useLocation} from "react-router-dom";
 import {useActivities} from "../../contexts/ActivityProvider";
 import {useEffect, useState} from "react";
 import {Place} from "../Map/PlaceDetails";
-import {Activity} from "../../services/activity.service";
+import activityService, {Activity} from "../../services/activity.service";
 import ActivityDialog from "../CreateActivityPage/ActivityDialog";
 
 const mainContainerStyle = {
@@ -50,7 +50,7 @@ const SchedulePage = () => {
     };
 
     const deleteActivity = (activity: Activity) => {
-        console.log(activity);
+        activityService.deleteActivity(activity).then(() => fetchActivities(trip._id ?? ""));
     };
 
     const handleActivityDialogClose = () => {

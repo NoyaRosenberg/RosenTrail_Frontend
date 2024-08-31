@@ -82,6 +82,15 @@ class ActivityService {
         }
     }
 
+    async deleteActivity(activity: Activity): Promise<Activity | void> {
+        try {
+            const response = await this.apiClient.delete<Activity>(`/${activity._id}`);
+            return response.data;
+        } catch (error) {
+            this.handleError(error);
+        }
+    }
+
     handleError(error: unknown): void {
         if (axios.isAxiosError(error) && error.response) {
             const errorMessage = error.response.data.message || "An error occurred";
