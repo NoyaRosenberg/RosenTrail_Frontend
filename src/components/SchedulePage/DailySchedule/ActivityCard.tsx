@@ -63,7 +63,7 @@ const ActivityCard = ({activity, showActions, onClick, onEdit, onDelete}: Activi
                         <IconButton color="primary" sx={iconStyle} onClick={handleEdit}>
                             <Edit/>
                         </IconButton>
-                        <IconButton color="error" sx={iconStyle} onClick={handleDelete}>
+                        <IconButton color="secondary" sx={iconStyle} onClick={handleDelete}>
                             <Delete/>
                         </IconButton>
                     </Box>
