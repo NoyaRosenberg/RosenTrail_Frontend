@@ -1,11 +1,11 @@
 import {Box, Button, Card, CardContent, CardHeader, Divider, Stack, Typography} from "@mui/material";
-import DailySchedule from "./DailySchedule";
+import DailySchedule from "./DailySchedule/DailySchedule";
 import PaginationArrows from "./PaginationArrows";
 import {Activity} from "../../services/activity.service";
 import {useMemo, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {Trip} from "../../services/trip.service";
-import EmptyDay from "./EmptyDay";
+import EmptySchedule from "./DailySchedule/EmptySchedule";
 
 const scheduleCardStyle = {
     height: "100%",
@@ -91,7 +91,7 @@ const Schedule = ({trip, activities, onActivityClick}: DailyScheduleProps) => {
                                 </Button>
                             </Box>
                         </>
-                        ) : (<EmptyDay onClick={navigateToAttractionsPage}/>)}
+                        ) : (<EmptySchedule onClick={navigateToAttractionsPage}/>)}
                 </CardContent>
             </Card>
         </Stack>

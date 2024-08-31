@@ -12,7 +12,7 @@ import {InputAdornment} from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import GoogleMapsService, {Location} from '../../services/google-maps.service';
 import PlaceDetails, {Place} from './PlaceDetails';
-import ErrorBox from "../ErrorBox";
+import ErrorBox from "../Shared/ErrorBox";
 
 const mapContainerStyle = {
     height: '100vh',

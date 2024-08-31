@@ -13,9 +13,9 @@ import RecommendationFilters from "./Recommendations/RecommendationFilters";
 import {useEffect, useRef, useState} from "react";
 import RecommendationService, {Category} from "../../services/recommendation.service";
 import RecommendationsGrid from "./Recommendations/RecommendationsGrid";
-import Map from './Map';
-import {Place} from "./PlaceDetails";
-import ErrorBox from "../ErrorBox";
+import Map from '../Map/Map';
+import {Place} from "../Map/PlaceDetails";
+import ErrorBox from "../Shared/ErrorBox";
 import ActivityDialog from "../CreateActivityPage/ActivityDialog";
 
 const ActivitiesPage = () => {

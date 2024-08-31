@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { Box, CircularProgress, Container, Stack, Typography } from "@mui/material";
-import SearchBar from "../SearchBar";
+import SearchBar from "../Shared/SearchBar";
 import TripsGrid from "./TripsGrid";
 import { useTrips } from "../../contexts/TripProvider";
 import { Trip } from "../../services/trip.service";
-import CardsSkeleton from "../Skeletons/CardsSkeleton";
+import CardsSkeleton from "../Shared/CardsSkeleton";
 
 export interface TripsPageProps {
   trips: Trip[];

@@ -1,6 +1,6 @@
 import {Grid} from "@mui/material";
-import PlaceCard from "../../PlaceCard";
-import {Place} from "../PlaceDetails";
+import PlaceCard from "../../Shared/PlaceCard";
+import {Place} from "../../Map/PlaceDetails";
 
 export interface RecommendationsGrisProps {
     recommendations: Place[];

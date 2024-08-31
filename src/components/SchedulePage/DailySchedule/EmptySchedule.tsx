@@ -23,7 +23,7 @@ interface EmptyDayProps {
     onClick: () => void;
 }
 
-const EmptyDay = ({onClick}: EmptyDayProps) => {
+const EmptySchedule = ({onClick}: EmptyDayProps) => {
     return (
         <Box sx={boxStyle} paddingLeft={2}>
             <Card sx={cardStyle}>
@@ -43,4 +43,4 @@ const EmptyDay = ({onClick}: EmptyDayProps) => {
     )
 }
 
-export default EmptyDay;
+export default EmptySchedule;

@@ -14,7 +14,7 @@ import FastfoodIcon from '@mui/icons-material/Fastfood';
 import MuseumIcon from '@mui/icons-material/Museum';
 import ParkIcon from '@mui/icons-material/Park';
 import ActivityCard from "./ActivityCard";
-import {Activity} from "../../services/activity.service";
+import {Activity} from "../../../services/activity.service";
 
 type DotColor = "primary" | "secondary" | "success" |
     "warning" | "inherit" | "error" | "info" | "grey" | undefined;

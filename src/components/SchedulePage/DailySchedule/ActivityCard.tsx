@@ -1,4 +1,4 @@
-import {Activity} from "../../services/activity.service";
+import {Activity} from "../../../services/activity.service";
 import {Box, Card, CardContent, Typography} from "@mui/material";
 
 const cardStyle = {

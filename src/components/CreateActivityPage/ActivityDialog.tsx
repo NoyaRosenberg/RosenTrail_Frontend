@@ -1,6 +1,6 @@
 import {Dialog, DialogActions, DialogContent, DialogTitle} from "@mui/material";
 import CreateActivityPage from "./CreateActivityPage";
-import {Place} from "../ActivitiesPage/PlaceDetails";
+import {Place} from "../Map/PlaceDetails";
 import {Trip} from "../../services/trip.service";
 
 interface ActivityDialogProps {

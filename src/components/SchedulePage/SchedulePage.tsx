@@ -1,11 +1,11 @@
 import {Box, Grid2} from '@mui/material';
 import Schedule from "./Schedule";
-import Map from "../ActivitiesPage/Map";
+import Map from "../Map/Map";
 import {Trip} from "../../services/trip.service";
 import {useLocation} from "react-router-dom";
 import {useActivities} from "../../contexts/ActivityProvider";
 import {useEffect, useState} from "react";
-import {Place} from "../ActivitiesPage/PlaceDetails";
+import {Place} from "../Map/PlaceDetails";
 import {Activity} from "../../services/activity.service";
 import ActivityDialog from "../CreateActivityPage/ActivityDialog";
 

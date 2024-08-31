@@ -1,6 +1,6 @@
 import axios from "axios";
 import AuthService from "./auth.service";
-import {Place} from "../components/ActivitiesPage/PlaceDetails.tsx";
+import {Place} from "../components/Map/PlaceDetails.tsx";
 
 export interface Activity extends Place {
     _id: string;
