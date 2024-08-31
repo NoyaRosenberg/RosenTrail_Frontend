@@ -1,35 +1,40 @@
-import {Box, Card, CardContent, CardHeader, Divider, Fab, Stack, Tooltip, Typography} from "@mui/material";
-import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
-import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
-import DailyScheduleTimeline from "./DailyScheduleTimeline";
+import {Box, Card, CardContent, CardHeader, Divider, Stack, Typography} from "@mui/material";
+import ActivitiesTimeline from "./ActivitiesTimeline";
+import PaginationArrows from "./PaginationArrows";
+import {Activity} from "../../services/activity.service";
 
-const arrowStyle = {width: "35px", height: "35px"};
+const scheduleCardStyle = {
+    height: "100%",
+    borderRadius: 3,
+    display: 'flex',
+    flexDirection: 'column'
+};
 
-const DailySchedule = () => {
+const cardContentStyle = {
+    flex: 1,
+    paddingBottom: '16px !important',
+    paddingLeft: 0,
+    overflowY: 'auto'
+};
+
+interface DailyScheduleProps {
+    activities: Activity[];
+}
+
+const DailySchedule = ({activities}: DailyScheduleProps) => {
     return (
         <Stack height="100%" spacing={2}>
             <Box display="flex" justifyContent="space-between" alignItems="center">
                 <Typography variant="h4">
                     Daily Planner
                 </Typography>
-                <Box display="flex" gap={1}>
-                    <Tooltip title="Previous Day">
-                        <Fab size="small" sx={arrowStyle}>
-                            <KeyboardArrowLeftIcon/>
-                        </Fab>
-                    </Tooltip>
-                    <Tooltip title="Next Day">
-                        <Fab size="small" sx={arrowStyle}>
-                            <KeyboardArrowRightIcon/>
-                        </Fab>
-                    </Tooltip>
-                </Box>
+                <PaginationArrows/>
             </Box>
-            <Card sx={{ height: "100%", borderRadius: 3, display: 'flex', flexDirection: 'column' }}>
+            <Card sx={scheduleCardStyle}>
                 <CardHeader title="Day 1" subheader="01/05"></CardHeader>
-                <Divider />
-                <CardContent className="scrollable" sx={{ flex: 1, paddingBottom: '16px !important', paddingLeft: 0, overflowY: 'auto' }}>
-                    <DailyScheduleTimeline />
+                <Divider/>
+                <CardContent className="scrollable" sx={cardContentStyle}>
+                    <ActivitiesTimeline activities={activities}/>
                 </CardContent>
             </Card>
         </Stack>

@@ -1,8 +1,10 @@
 import {Box, Grid2} from '@mui/material';
 import DailySchedule from "./DailySchedule";
-import {useState} from "react";
-import {Location} from "../../services/google-maps.service";
 import Map from "../ActivitiesPage/Map";
+import {Trip} from "../../services/trip.service";
+import {useLocation} from "react-router-dom";
+import {useActivities} from "../../contexts/ActivityProvider";
+import {useEffect} from "react";
 
 const containerStyle = {
     height: '100vh',
@@ -11,22 +13,31 @@ const containerStyle = {
     backgroundColor: '#f5f5f5',
 }
 
+const mapContainerStyle = {
+    height: "100%",
+    width: "100%",
+    display: "flex",
+    flexDirection: "column",
+    overflow: 'hidden',
+    borderRadius: 2
+}
+
 const Schedule = () => {
-    const [destinationLocation] = useState<Location>({
-        position: {lat: 48.8584, lng: 2.2945},
-        region: 'FR'
-    });
+    const {trip} = useLocation().state as { trip: Trip; showActions: boolean; };
+    const { activities, fetchActivities } = useActivities();
+
+    useEffect(() => {
+        fetchActivities(trip._id ?? "")
+    }, [trip._id, fetchActivities]);
 
     return (
         <Grid2 container columnSpacing={8} sx={containerStyle}>
-            <Grid2 size={5} height="100%">
-                <DailySchedule/>
+            <Grid2 size={6} height="100%">
+                <DailySchedule activities={activities}/>
             </Grid2>
-            <Grid2 size={7} height="100%" overflow='hidden'>
-                <Box height="100%" width="100%" display="flex"
-                     flexDirection="column"
-                     overflow='hidden' borderRadius={2}>
-                    <Map location={destinationLocation} showAutoComplete={false}></Map>
+            <Grid2 size={6} height="100%" overflow='hidden'>
+                <Box sx={mapContainerStyle}>
+                    <Map area={trip.destinations[0]} showAutoComplete={false}></Map>
                 </Box>
             </Grid2>
         </Grid2>

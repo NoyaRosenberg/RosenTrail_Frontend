@@ -17,8 +17,8 @@ import RecommendationService, {Category} from "../../services/recommendation.ser
 import RecommendationsGrid from "./Recommendations/RecommendationsGrid";
 import CreateActivityPage from "../CreateActivityPage/CreateActivityPage";
 import Map from './Map';
-import GoogleMapsService, {Location} from "../../services/google-maps.service";
 import {Place} from "./PlaceDetails";
+import ErrorBox from "../ErrorBox";
 
 const ActivitiesPage = () => {
     const navigate = useNavigate();
@@ -32,7 +32,6 @@ const ActivitiesPage = () => {
     const [selectedRecommendation, setSelectedRecommendation] = useState<Place | null>(null);
     const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
     const [isActivityDialogOpen, setIsActivityDialogOpen] = useState(false);
-    const [destinationLocation, setDestinationLocation] = useState<Location>({position: {lat: 48.8584, lng: 2.2945}, region: 'FR'});
 
     useEffect(() => {
         if (effectRan.current === false) {
@@ -46,7 +45,7 @@ const ActivitiesPage = () => {
                     setRecommendations(recommendations!);
                     setFilteredRecommendations(recommendations!);
                 } catch (error) {
-                    setError((error as Error).message);
+                    setError("We encountered a problem while finding you the best recommendations");
                 } finally {
                     setLoading(false);
                 }
@@ -58,19 +57,6 @@ const ActivitiesPage = () => {
                 effectRan.current = true;
             };
         }
-    }, [trip.destinations]);
-
-    useEffect(() => {
-        const getDestinationCoordinates = async () => {
-            try {
-                const response = await GoogleMapsService.getCoordinatesByAddress(trip.destinations[0]);
-                setDestinationLocation(response!);
-            } catch (error) {
-                setError((error as Error).message);
-            }
-        };
-
-        getDestinationCoordinates();
     }, [trip.destinations]);
 
     const goBackToSchedule = () => {
@@ -169,22 +155,7 @@ const ActivitiesPage = () => {
                                             </Typography>
                                         </Box>
                                     ) : error && recommendations.length === 0 ? (
-                                        <Box
-                                            sx={{
-                                                display: "flex",
-                                                justifyContent: "center",
-                                                alignItems: "center",
-                                                height: "100%",
-                                                flexDirection: "column",
-                                            }}
-                                        >
-                                            <Typography gutterBottom variant="h6" color="error">
-                                                Opps!
-                                            </Typography>
-                                            <Typography color="error">
-                                                We encountered a problem while finding you the best recommendations
-                                            </Typography>
-                                        </Box>
+                                        <ErrorBox error={error}/>
                                     ) : (
                                         <Box
                                             className="scrollable"
@@ -205,7 +176,8 @@ const ActivitiesPage = () => {
                 </Box>
             </Box>
             <Box width="50%" height="100%" borderRadius={2} overflow='hidden' display="flex" flexDirection="column">
-                <Map location={destinationLocation} onAddPlace={addPlaceToTrip} placeToDisplay={selectedRecommendation} showAutoComplete={true}/>
+                <Map area={trip.destinations[0]} onAddPlace={addPlaceToTrip} placeToDisplay={selectedRecommendation}
+                     showAutoComplete={true}/>
             </Box>
             <Dialog open={isActivityDialogOpen} onClose={handleActivityDialogClose} maxWidth="lg" fullWidth>
                 <DialogTitle>Edit Your Activity</DialogTitle>

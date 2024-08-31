@@ -16,6 +16,7 @@ const RecommendationsGrid = ({recommendations, onRecommendationClick}: Recommend
                         name={rec.name}
                         description={rec.description}
                         image={rec.photoUrl}
+                        isCommunityTrips={false}
                         onCardClick={() => onRecommendationClick(rec)}
                     />
                 </Grid>

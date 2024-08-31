@@ -10,15 +10,9 @@ import {
 import {StyledTextField} from '../../theme';
 import {InputAdornment} from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-import {Location} from '../../services/google-maps.service';
+import GoogleMapsService, {Location} from '../../services/google-maps.service';
 import PlaceDetails, {Place} from './PlaceDetails';
-
-interface MapProps {
-    location: Location;
-    placeToDisplay?: Place | null;
-    showAutoComplete: boolean;
-    onAddPlace?: (place: Place) => void;
-}
+import ErrorBox from "../ErrorBox";
 
 const mapContainerStyle = {
     height: '100vh',
@@ -36,13 +30,22 @@ const mapOptions = {
 const libraries = ['places'] as Libraries;
 const apiKey = "AIzaSyDC7J-IsGSicrRECRUn5H2pYhRm-DpATNo";
 
-const Map = ({location, placeToDisplay, showAutoComplete, onAddPlace}: MapProps) => {
-    const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
-    const [isInfoWindowOpen, setIsInfoWindowOpen] = useState(false);
+interface MapProps {
+    area: string;
+    placeToDisplay?: Place | null;
+    showAutoComplete: boolean;
+    onAddPlace?: (place: Place) => void;
+}
+
+const Map = ({area, placeToDisplay, showAutoComplete, onAddPlace}: MapProps) => {
     const mapRef = useRef<google.maps.Map | null>(null);
     const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
     const geocoderRef = useRef<google.maps.Geocoder | null>(null);
     const placesServiceRef = useRef<google.maps.places.PlacesService | null>(null);
+    const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
+    const [isInfoWindowOpen, setIsInfoWindowOpen] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+    const [location, setLocation] = useState<Location>();
 
     const onLoad = useCallback((map: google.maps.Map) => {
         mapRef.current = map;
@@ -51,12 +54,28 @@ const Map = ({location, placeToDisplay, showAutoComplete, onAddPlace}: MapProps)
     }, []);
 
     useEffect(() => {
+        const getLocationCoordinates = async () => {
+            try {
+                const response = await GoogleMapsService.getCoordinatesByAddress(area);
+                setLocation(response!);
+            } catch (error) {
+                console.log(error);
+                setError("Failed to display map");
+            }
+        };
+
+        getLocationCoordinates();
+    }, [area]);
+
+    useEffect(() => {
         if (placeToDisplay && placeToDisplay.coordinates) {
             setSelectedPlace(placeToDisplay);
+
             mapRef.current?.panTo({
                 lat: placeToDisplay.coordinates.lat,
                 lng: placeToDisplay.coordinates.lng
             });
+
             mapRef.current?.setZoom(15);
             setIsInfoWindowOpen(true);
         }
@@ -152,59 +171,66 @@ const Map = ({location, placeToDisplay, showAutoComplete, onAddPlace}: MapProps)
     }
 
     return (
-        <LoadScript
-            googleMapsApiKey={apiKey}
-            libraries={libraries}
-            language="en"
-            region={location.region}
-        >
-            <GoogleMap
-                mapContainerStyle={mapContainerStyle}
-                center={location.position}
-                zoom={12}
-                onLoad={onLoad}
-                options={mapOptions}
-                onClick={handleMapClick}
-            >
-                {showAutoComplete && (
-                    <Autocomplete onLoad={onLoadAutocomplete} onPlaceChanged={handlePlaceSearch}>
-                        <StyledTextField
-                            className="search"
-                            fullWidth
-                            variant="outlined"
-                            placeholder="Search an activity..."
-                            InputProps={{
-                                startAdornment: (
-                                    <InputAdornment position="start">
-                                        <SearchIcon/>
-                                    </InputAdornment>
-                                ),
-                            }}
-                            sx={{width: '70%'}}
-                        />
-                    </Autocomplete>
-                )}
-
-                {selectedPlace && (
-                    <>
-                        <Marker
-                            position={selectedPlace.coordinates!}
-                            title={selectedPlace.name}
-                            onClick={handleMarkerClick}
-                        />
-
-                        {isInfoWindowOpen && (
-                            <InfoWindow
-                                position={selectedPlace.coordinates}
-                                onCloseClick={() => setIsInfoWindowOpen(false)}
-                            >
-                                <PlaceDetails place={selectedPlace} onAddClick={() => onAddPlace && onAddPlace(selectedPlace)}/>
-                            </InfoWindow>
+        <>
+            {location ? (
+                <LoadScript
+                    googleMapsApiKey={apiKey}
+                    libraries={libraries}
+                    language="en"
+                    region={location!.region}
+                >
+                    <GoogleMap
+                        mapContainerStyle={mapContainerStyle}
+                        center={location!.position}
+                        zoom={12}
+                        onLoad={onLoad}
+                        options={mapOptions}
+                        onClick={handleMapClick}
+                    >
+                        {showAutoComplete && (
+                            <Autocomplete onLoad={onLoadAutocomplete} onPlaceChanged={handlePlaceSearch}>
+                                <StyledTextField
+                                    className="search"
+                                    fullWidth
+                                    variant="outlined"
+                                    placeholder="Search an activity..."
+                                    InputProps={{
+                                        startAdornment: (
+                                            <InputAdornment position="start">
+                                                <SearchIcon/>
+                                            </InputAdornment>
+                                        ),
+                                    }}
+                                    sx={{width: '70%'}}
+                                />
+                            </Autocomplete>
                         )}
-                    </>
-                )}
-            </GoogleMap>
-        </LoadScript>
+
+                        {selectedPlace && (
+                            <>
+                                <Marker
+                                    position={selectedPlace.coordinates!}
+                                    title={selectedPlace.name}
+                                    onClick={handleMarkerClick}
+                                />
+
+                                {isInfoWindowOpen && (
+                                    <InfoWindow
+                                        position={selectedPlace.coordinates}
+                                        onCloseClick={() => setIsInfoWindowOpen(false)}
+                                    >
+                                        <PlaceDetails place={selectedPlace}
+                                                      onAddClick={() => onAddPlace && onAddPlace(selectedPlace)}/>
+                                    </InfoWindow>
+                                )}
+                            </>
+                        )}
+                    </GoogleMap>
+                </LoadScript>
+            ) : (error && (
+                <ErrorBox error={error}/>
+            ))}
+        </>
     );
 };
 
