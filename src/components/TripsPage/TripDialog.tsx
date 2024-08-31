@@ -199,12 +199,12 @@ const TripDialog: React.FC<TripDialogProps> = ({
                 <Stack>
                   <Stack>
                     <Stack spacing={5}>
-                      <Box display="flex" alignItems="center" gap="25px">
+                      <Box display="flex" alignItems="center" gap="30px">
                         <Button
                           variant="contained"
                           color="primary"
                           onClick={showSchedule}
-                          sx={{ width: "140px", height: "40px" }}
+                          sx={{ width: "140px", height: "45px" }}
                         >
                           Schedule
                         </Button>
@@ -212,9 +212,9 @@ const TripDialog: React.FC<TripDialogProps> = ({
                           variant="contained"
                           color="error"
                           onClick={showBudget}
-                          sx={{ width: "140px", height: "40px" }}
+                          sx={{ width: "160px", height: "45px" }}
                         >
-                          Budget Page
+                          Manage Budget
                         </Button>
                         {!showActions && (
                           <Button
