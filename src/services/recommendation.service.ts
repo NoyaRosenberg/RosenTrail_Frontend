@@ -96,6 +96,14 @@ class RecommendationService {
   getCategories(): Category[] {
     return categories;
   }
+  async getMapCategories(placeName: string | undefined): Promise<string[] | undefined> {
+    try {
+      const response = await this.apiClient.get(`categories/${placeName}`);
+      return response.data;
+    } catch (error) {
+      this.handleError(error);
+    }
+  }
 
   async getRecommendationsFromAI(activityLocation: string): Promise<Place[] | undefined> {
     try {
