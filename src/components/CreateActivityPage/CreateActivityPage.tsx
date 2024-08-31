@@ -31,7 +31,7 @@ const CreateActivityPage: React.FC<CreateActivityPageProps> = ({
                                                                    coordinates,
                                                                    rating,
                                                                    priceLevel,
-                                                                   onClose,
+                                                                   onClose
                                                                }) => {
     return (
         <Box className="create-activity-container">
@@ -53,8 +53,8 @@ const CreateActivityPage: React.FC<CreateActivityPageProps> = ({
                     coordinates={coordinates}
                     rating={rating}
                     priceLevel={priceLevel}
-                    onClose={onClose}
                     activity={activityToEdit}
+                    onClose={onClose}
                 />
             </Box>
         </Box>

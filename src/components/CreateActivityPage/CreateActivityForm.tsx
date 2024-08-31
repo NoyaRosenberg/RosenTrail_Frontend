@@ -60,7 +60,7 @@ const CreateActivityForm: React.FC<CreateActivityFormProps> = ({
         activityId: activity?._id ?? "",
         imageUrl: imageUrl ?? "",
         coordinates: coordinates,
-        rating : rating,
+        rating: rating,
         priceLevel: priceLevel
     });
 
@@ -114,6 +114,7 @@ const CreateActivityForm: React.FC<CreateActivityFormProps> = ({
                 await activityService.addActivity(formData);
                 toast.success("Activity created successfully");
             }
+
             onClose();
             navigate("/schedule", {state: {trip, showActions: true}}); // Pass state
         } catch (error) {

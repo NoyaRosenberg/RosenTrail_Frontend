@@ -42,9 +42,11 @@ const timelineStyle = {
 interface ActivitiesTimelineProps {
     activities: Activity[],
     onActivityClick: (activity: Activity) => void;
+    onActivityEdit: (activity: Activity) => void;
+    onActivityDelete: (activity: Activity) => void;
 }
 
-const DailySchedule = ({activities, onActivityClick}: ActivitiesTimelineProps) => {
+const DailySchedule = ({activities, onActivityClick, onActivityEdit, onActivityDelete}: ActivitiesTimelineProps) => {
     return (
         <Timeline sx={timelineStyle}>
             {activities.map((activity, index) => {
@@ -75,7 +77,12 @@ const DailySchedule = ({activities, onActivityClick}: ActivitiesTimelineProps) =
                             <TimelineConnector sx={{bgcolor: colorSet.secondConnectorColor}}/>
                         </TimelineSeparator>
                         <TimelineContent sx={{py: '12px', px: 2}}>
-                            <ActivityCard activity={activity} onClick={onActivityClick}/>
+                            <ActivityCard
+                                activity={activity}
+                                onClick={onActivityClick}
+                                onEdit={onActivityEdit}
+                                onDelete={onActivityDelete}
+                            />
                         </TimelineContent>
                     </TimelineItem>
                 );

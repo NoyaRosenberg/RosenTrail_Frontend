@@ -33,9 +33,11 @@ interface DailyScheduleProps {
     trip: Trip;
     activities: Activity[];
     onActivityClick: (activity: Activity) => void;
+    onActivityEdit: (activity: Activity) => void;
+    onActivityDelete: (activity: Activity) => void;
 }
 
-const Schedule = ({trip, activities, onActivityClick}: DailyScheduleProps) => {
+const Schedule = ({trip, activities, onActivityClick, onActivityEdit, onActivityDelete}: DailyScheduleProps) => {
     const navigate = useNavigate();
     const [currentDate, setCurrentDate] = useState<Date>(new Date(trip.startDate!));
     const [day, setDay] = useState<number>(1);
@@ -91,7 +93,12 @@ const Schedule = ({trip, activities, onActivityClick}: DailyScheduleProps) => {
                     title={"Day " + day}
                     subheader={formatedDate}
                     action={
-                        <Fab variant="extended" size="medium" color="primary" sx={{color: 'white',}}>
+                        <Fab variant="extended"
+                             size="medium"
+                             color="primary"
+                             sx={{color: 'white'}}
+                             onClick={navigateToAttractionsPage}
+                        >
                             <AddCircle sx={{mr: 1}}/>
                             Add Attractions
                         </Fab>
@@ -101,7 +108,12 @@ const Schedule = ({trip, activities, onActivityClick}: DailyScheduleProps) => {
                 <CardContent className="scrollable" sx={cardContentStyle}>
                     {currentDayActivities.length ? (
                         <>
-                            <DailySchedule activities={currentDayActivities} onActivityClick={onActivityClick}/>
+                            <DailySchedule
+                                activities={currentDayActivities}
+                                onActivityClick={onActivityClick}
+                                onActivityEdit={onActivityEdit}
+                                onActivityDelete={onActivityDelete}
+                            />
                             <Box display="flex" justifyContent="center">
                                 <Button variant="contained" onClick={navigateToAttractionsPage}>
                                     Add more attractions

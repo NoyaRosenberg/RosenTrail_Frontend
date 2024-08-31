@@ -2,31 +2,41 @@ import {Dialog, DialogActions, DialogContent, DialogTitle} from "@mui/material";
 import CreateActivityPage from "./CreateActivityPage";
 import {Place} from "../Map/PlaceDetails";
 import {Trip} from "../../services/trip.service";
+import {Activity} from "../../services/activity.service";
 
 interface ActivityDialogProps {
     isOpen: boolean;
     trip: Trip;
-    selectedPlace: Place;
+    placeToAdd?: Place;
+    activityToEdit?: Activity;
     onClose: () => void;
 }
 
-const ActivityDialog = ({isOpen, trip, selectedPlace, onClose}: ActivityDialogProps) => {
+const ActivityDialog = ({isOpen, trip, placeToAdd, activityToEdit, onClose}: ActivityDialogProps) => {
     return (
         <Dialog open={isOpen} onClose={onClose} maxWidth="lg" fullWidth>
             <DialogTitle>Edit Your Activity</DialogTitle>
             <DialogContent>
-                <CreateActivityPage
-                    location={selectedPlace?.name}
-                    description={selectedPlace?.description}
-                    cost={selectedPlace?.cost}
-                    trip={trip}
-                    imageUrl={selectedPlace?.imageUrl}
-                    categories={selectedPlace?.categories}
-                    coordinates={selectedPlace?.coordinates}
-                    priceLevel={selectedPlace?.priceLevel}
-                    rating={selectedPlace?.rating}
-                    onClose={onClose}
-                />
+                {activityToEdit ? (
+                    <CreateActivityPage
+                        trip={trip}
+                        activityToEdit={activityToEdit}
+                        onClose={onClose}
+                    />
+                ) : (
+                    <CreateActivityPage
+                        location={placeToAdd?.name}
+                        description={placeToAdd?.description}
+                        cost={placeToAdd?.cost}
+                        trip={trip}
+                        imageUrl={placeToAdd?.imageUrl}
+                        categories={placeToAdd?.categories}
+                        coordinates={placeToAdd?.coordinates}
+                        priceLevel={placeToAdd?.priceLevel}
+                        rating={placeToAdd?.rating}
+                        onClose={onClose}
+                    />
+                )}
             </DialogContent>
             <DialogActions></DialogActions>
         </Dialog>

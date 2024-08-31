@@ -1,9 +1,9 @@
 import {
     Box,
-    Button,
     Card,
     CardContent,
     CircularProgress,
+    Fab,
     Stack,
     Typography
 } from "@mui/material";
@@ -121,14 +121,15 @@ const ActivitiesPage = () => {
                                         Click an activity to add it to your trip!
                                     </Typography>
                                 </Stack>
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    startIcon={<Schedule/>}
-                                    onClick={goBackToSchedule}
+                                <Fab variant="extended"
+                                     size="medium"
+                                     color="primary"
+                                     sx={{color: 'white'}}
+                                     onClick={goBackToSchedule}
                                 >
+                                    <Schedule sx={{mr: 1}}/>
                                     Trip Schedule
-                                </Button>
+                                </Fab>
                             </Box>
                             <Card sx={{
                                 width: "100%",
@@ -174,12 +175,15 @@ const ActivitiesPage = () => {
                 </Box>
             </Box>
             <Box width="50%" height="100%" borderRadius={2} overflow='hidden' display="flex" flexDirection="column">
-                <Map area={trip.destinations[0]} onAddPlace={addPlaceToTrip} placeToDisplay={selectedRecommendation}
-                     showAutoComplete={true}/>
+                <Map area={trip.destinations[0]}
+                     onAddPlace={addPlaceToTrip}
+                     placeToDisplay={selectedRecommendation}
+                     showAutoComplete={true}
+                />
             </Box>
             <ActivityDialog isOpen={isActivityDialogOpen}
                             trip={trip}
-                            selectedPlace={selectedPlace!}
+                            placeToAdd={selectedPlace!}
                             onClose={handleActivityDialogClose}/>
         </Box>
     );

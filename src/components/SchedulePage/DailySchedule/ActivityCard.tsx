@@ -1,5 +1,7 @@
 import {Activity} from "../../../services/activity.service";
-import {Box, Card, CardContent, Typography} from "@mui/material";
+import {Box, Card, CardContent, Stack, Typography} from "@mui/material";
+import { Delete, Edit } from "@mui/icons-material";
+import IconButton from "@mui/material/IconButton";
 
 const cardStyle = {
     height: "100%",
@@ -14,6 +16,14 @@ const cardStyle = {
     }
 };
 
+const cardContentStyle = {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+    gap: 4,
+    flex: 1
+}
+
 const imageStyle = {
     width: 100,
     height: '100%',
@@ -21,21 +31,40 @@ const imageStyle = {
     borderRadius: '0 4px 4px 0',
 };
 
+const iconStyle = {
+    width: '36px',
+    height: '36px'
+}
+
 interface ActivityCardProps {
     activity: Activity;
     onClick: (activity: Activity) => void;
+    onEdit: (activity: Activity) => void;
+    onDelete: (activity: Activity) => void;
 }
 
-const ActivityCard = ({activity, onClick}: ActivityCardProps) => {
+const ActivityCard = ({activity, onClick, onEdit, onDelete}: ActivityCardProps) => {
     const handleClick = () => onClick(activity);
+    const handleEdit = () => onEdit(activity);
+    const handleDelete = () => onDelete(activity);
 
     return (
         <Card sx={cardStyle} onClick={handleClick}>
-            <CardContent sx={{ flex: 1 }}>
-                <Typography variant="h6" component="span">
-                    {activity.name}
-                </Typography>
-                <Typography>{activity.description}</Typography>
+            <CardContent sx={cardContentStyle}>
+                    <Stack>
+                        <Typography variant="h6" component="span">
+                            {activity.name}
+                        </Typography>
+                        <Typography>{activity.description}</Typography>
+                    </Stack>
+                    <Box display="flex">
+                        <IconButton color="primary" sx={iconStyle} onClick={handleEdit}>
+                            <Edit />
+                        </IconButton>
+                        <IconButton color="error" sx={iconStyle} onClick={handleDelete}>
+                            <Delete />
+                        </IconButton>
+                    </Box>
             </CardContent>
             <Box
                 component="img"

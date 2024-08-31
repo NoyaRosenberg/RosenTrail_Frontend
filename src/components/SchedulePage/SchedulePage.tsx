@@ -29,29 +29,47 @@ const SchedulePage = () => {
     const {trip} = useLocation().state as { trip: Trip; showActions: boolean; };
     const {activities, fetchActivities} = useActivities();
     const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
+    const [placeToAdd, setPlaceToAdd] = useState<Place | null>(null);
+    const [activityToEdit, setActivityToEdit] = useState<Activity | null>(null);
     const [isActivityDialogOpen, setIsActivityDialogOpen] = useState(false);
 
     useEffect(() => {
         fetchActivities(trip._id ?? "")
-    }, [trip._id, fetchActivities]);
+    }, [trip._id, fetchActivities, isActivityDialogOpen]);
 
     const showActivityOnMap = (activity: Activity) => setSelectedPlace(activity);
 
     const addPlaceToTrip = (place: Place) => {
         setIsActivityDialogOpen(true);
-        setSelectedPlace(place);
-    }
+        setPlaceToAdd(place);
+    };
+
+    const editActivity = (activity: Activity) => {
+        setIsActivityDialogOpen(true);
+        setActivityToEdit(activity);
+    };
+
+    const deleteActivity = (activity: Activity) => {
+        console.log(activity);
+    };
 
     const handleActivityDialogClose = () => {
         setIsActivityDialogOpen(false);
-        setSelectedPlace(null);
+        setPlaceToAdd(null);
+        setActivityToEdit(null);
     };
 
     return (
         <>
             <Grid2 container columnSpacing={6} sx={mainContainerStyle}>
                 <Grid2 size={6} height="100%">
-                    <Schedule activities={activities} trip={trip} onActivityClick={showActivityOnMap}/>
+                    <Schedule
+                        activities={activities}
+                        trip={trip}
+                        onActivityClick={showActivityOnMap}
+                        onActivityEdit={editActivity}
+                        onActivityDelete={deleteActivity}
+                    />
                 </Grid2>
                 <Grid2 size={6} height="100%" overflow='hidden'>
                     <Box sx={mapContainerStyle}>
@@ -63,10 +81,19 @@ const SchedulePage = () => {
                     </Box>
                 </Grid2>
             </Grid2>
-            <ActivityDialog isOpen={isActivityDialogOpen}
-                            trip={trip}
-                            selectedPlace={selectedPlace!}
-                            onClose={handleActivityDialogClose}/>
+            {isActivityDialogOpen && (
+                placeToAdd ? (
+                    <ActivityDialog isOpen={isActivityDialogOpen}
+                                    trip={trip}
+                                    placeToAdd={placeToAdd}
+                                    onClose={handleActivityDialogClose}/>
+                ) : activityToEdit && (
+                    <ActivityDialog isOpen={isActivityDialogOpen}
+                                    trip={trip}
+                                    activityToEdit={activityToEdit}
+                                    onClose={handleActivityDialogClose}/>
+                ))}
+
         </>
     );
 };
