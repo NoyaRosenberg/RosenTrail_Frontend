@@ -5,7 +5,13 @@ const cardStyle = {
     height: "100%",
     display: 'flex',
     backgroundColor: '#f5f5f5',
-    borderRadius: 2
+    borderRadius: 2,
+    cursor: "pointer",
+    transition: 'transform 0.2s, box-shadow 0.3s',
+    '&:hover': {
+        transform: 'scale(1.01)',
+        backgroundColor: 'rgba(0, 0, 0, 0.1)',
+    }
 };
 
 const imageStyle = {
@@ -17,11 +23,14 @@ const imageStyle = {
 
 interface ActivityCardProps {
     activity: Activity;
+    onClick: (activity: Activity) => void;
 }
 
-const ActivityCard = ({activity}: ActivityCardProps) => {
+const ActivityCard = ({activity, onClick}: ActivityCardProps) => {
+    const handleClick = () => onClick(activity);
+
     return (
-        <Card sx={cardStyle}>
+        <Card sx={cardStyle} onClick={handleClick}>
             <CardContent sx={{ flex: 1 }}>
                 <Typography variant="h6" component="span">
                     {activity.name}

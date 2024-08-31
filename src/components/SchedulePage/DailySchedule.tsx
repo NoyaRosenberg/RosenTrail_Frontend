@@ -40,10 +40,11 @@ const timelineStyle = {
 };
 
 interface ActivitiesTimelineProps {
-    activities: Activity[]
+    activities: Activity[],
+    onActivityClick: (activity: Activity) => void;
 }
 
-const DailySchedule = ({activities}: ActivitiesTimelineProps) => {
+const DailySchedule = ({activities, onActivityClick}: ActivitiesTimelineProps) => {
     return (
         <Timeline sx={timelineStyle}>
             {activities.map((activity, index) => {
@@ -62,18 +63,19 @@ const DailySchedule = ({activities}: ActivitiesTimelineProps) => {
                         <TimelineSeparator>
                             <TimelineConnector sx={{bgcolor: colorSet.firstConnectorColor}}/>
                             <TimelineDot color={colorSet.dotColor} variant={colorSet.variant ?? 'filled'}>
-                                {activity.categories.includes("Museums") ? (<MuseumIcon/>) :
+                                {activity.categories && (
+                                    activity.categories.includes("Museums & Theatres") ? (<MuseumIcon/>) :
                                     activity.categories.includes("Restaurants") ||
                                     activity.categories.includes("Fancy Restaurants") ||
                                     activity.categories.includes("Junk Food") ? (<FastfoodIcon/>) :
                                         activity.categories.includes("Parks") ? (<ParkIcon/>) :
                                             (<AttractionsIcon/>)
-                                }
+                                )}
                             </TimelineDot>
                             <TimelineConnector sx={{bgcolor: colorSet.secondConnectorColor}}/>
                         </TimelineSeparator>
                         <TimelineContent sx={{py: '12px', px: 2}}>
-                            <ActivityCard activity={activity}/>
+                            <ActivityCard activity={activity} onClick={onActivityClick}/>
                         </TimelineContent>
                     </TimelineItem>
                 );

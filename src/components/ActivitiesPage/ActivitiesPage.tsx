@@ -3,9 +3,7 @@ import {
     Button,
     Card,
     CardContent,
-    CircularProgress, Dialog, DialogActions,
-    DialogContent,
-    DialogTitle,
+    CircularProgress,
     Stack,
     Typography
 } from "@mui/material";
@@ -15,10 +13,10 @@ import RecommendationFilters from "./Recommendations/RecommendationFilters";
 import {useEffect, useRef, useState} from "react";
 import RecommendationService, {Category} from "../../services/recommendation.service";
 import RecommendationsGrid from "./Recommendations/RecommendationsGrid";
-import CreateActivityPage from "../CreateActivityPage/CreateActivityPage";
 import Map from './Map';
 import {Place} from "./PlaceDetails";
 import ErrorBox from "../ErrorBox";
+import ActivityDialog from "../CreateActivityPage/ActivityDialog";
 
 const ActivitiesPage = () => {
     const navigate = useNavigate();
@@ -81,7 +79,7 @@ const ActivitiesPage = () => {
             setSelectedRecommendation({
                 name: place.name,
                 coordinates: place.coordinates,
-                photoUrl: place.photoUrl,
+                imageUrl: place.imageUrl,
                 address: place.address,
                 description: place.description,
                 rating: place.rating,
@@ -179,21 +177,10 @@ const ActivitiesPage = () => {
                 <Map area={trip.destinations[0]} onAddPlace={addPlaceToTrip} placeToDisplay={selectedRecommendation}
                      showAutoComplete={true}/>
             </Box>
-            <Dialog open={isActivityDialogOpen} onClose={handleActivityDialogClose} maxWidth="lg" fullWidth>
-                <DialogTitle>Edit Your Activity</DialogTitle>
-                <DialogContent>
-                    <CreateActivityPage
-                        location={selectedPlace?.name}
-                        description={selectedPlace?.description}
-                        cost={selectedPlace?.cost}
-                        trip={trip}
-                        imageUrl={selectedPlace?.photoUrl}
-                        categories={selectedPlace?.categories}
-                        onClose={handleActivityDialogClose}
-                    />
-                </DialogContent>
-                <DialogActions></DialogActions>
-            </Dialog>
+            <ActivityDialog isOpen={isActivityDialogOpen}
+                            trip={trip}
+                            selectedPlace={selectedPlace!}
+                            onClose={handleActivityDialogClose}/>
         </Box>
     );
 }

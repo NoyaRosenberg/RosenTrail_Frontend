@@ -1,20 +1,15 @@
 import axios from "axios";
 import AuthService from "./auth.service";
+import {Place} from "../components/ActivitiesPage/PlaceDetails.tsx";
 
-export interface Activity {
+export interface Activity extends Place {
     _id: string;
     tripId: string;
-    name: string;
     date: Date;
     startTime: string;
     endTime: string;
     location: string;
-    description: string;
-    cost: number;
     participants?: number;
-    unregisteredParticipants?: string[];
-    categories: string[];
-    imageUrl?: string;
 }
 
 const apiClient = axios.create({

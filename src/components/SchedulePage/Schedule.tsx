@@ -22,11 +22,12 @@ const cardContentStyle = {
 };
 
 interface DailyScheduleProps {
-    trip: Trip
+    trip: Trip;
     activities: Activity[];
+    onActivityClick: (activity: Activity) => void;
 }
 
-const Schedule = ({trip, activities}: DailyScheduleProps) => {
+const Schedule = ({trip, activities, onActivityClick}: DailyScheduleProps) => {
     const navigate = useNavigate();
     const [currentDate, setCurrentDate] = useState<Date>(new Date(trip.startDate!));
     const [day, setDay] = useState<number>(1);
@@ -63,7 +64,7 @@ const Schedule = ({trip, activities}: DailyScheduleProps) => {
         setDay(prevDay => prevDay + offset);
     };
 
-    const addAttractions = () => {
+    const navigateToAttractionsPage = () => {
         navigate("/AddActivities", {state: {trip}});
     };
 
@@ -83,12 +84,14 @@ const Schedule = ({trip, activities}: DailyScheduleProps) => {
                 <CardContent className="scrollable" sx={cardContentStyle}>
                     {currentDayActivities.length ? (
                         <>
-                            <DailySchedule activities={currentDayActivities}/>
+                            <DailySchedule activities={currentDayActivities} onActivityClick={onActivityClick}/>
                             <Box display="flex" justifyContent="center">
-                                <Button variant="contained" onClick={addAttractions}>Add more attractions</Button>
+                                <Button variant="contained" onClick={navigateToAttractionsPage}>
+                                    Add more attractions
+                                </Button>
                             </Box>
                         </>
-                        ) : (<EmptyDay onClick={addAttractions}/>)}
+                        ) : (<EmptyDay onClick={navigateToAttractionsPage}/>)}
                 </CardContent>
             </Card>
         </Stack>

@@ -162,7 +162,7 @@ const Map = ({area, placeToDisplay, showAutoComplete, onAddPlace}: MapProps) => 
             return {
                 name: placeDetails.name || 'Unknown Place',
                 coordinates: {lat: location.lat(), lng: location.lng()},
-                photoUrl: placeDetails.photos?.[0]?.getUrl({maxWidth: 300, maxHeight: 200}),
+                imageUrl: placeDetails.photos?.[0]?.getUrl({maxWidth: 300, maxHeight: 200}),
                 address: placeDetails.formatted_address || '',
                 rating: placeDetails.rating ?? 0,
                 priceLevel: placeDetails.price_level
