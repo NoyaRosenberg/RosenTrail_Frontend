@@ -1,47 +1,98 @@
-import {Box, Grid2} from '@mui/material';
+import {Box, Button, Card, CardContent, CardHeader, Divider, Stack, Typography} from "@mui/material";
 import DailySchedule from "./DailySchedule";
-import Map from "../ActivitiesPage/Map";
+import PaginationArrows from "./PaginationArrows";
+import {Activity} from "../../services/activity.service";
+import {useMemo, useState} from "react";
+import {useNavigate} from "react-router-dom";
 import {Trip} from "../../services/trip.service";
-import {useLocation} from "react-router-dom";
-import {useActivities} from "../../contexts/ActivityProvider";
-import {useEffect} from "react";
+import EmptyDay from "./EmptyDay";
 
-const containerStyle = {
-    height: '100vh',
-    overflow: 'hidden',
-    padding: 4,
-    backgroundColor: '#f5f5f5',
-}
-
-const mapContainerStyle = {
+const scheduleCardStyle = {
     height: "100%",
-    width: "100%",
-    display: "flex",
-    flexDirection: "column",
-    overflow: 'hidden',
-    borderRadius: 2
+    borderRadius: 3,
+    display: 'flex',
+    flexDirection: 'column'
+};
+
+const cardContentStyle = {
+    flex: 1,
+    paddingBottom: '16px !important',
+    paddingLeft: 0,
+    overflowY: 'auto'
+};
+
+interface DailyScheduleProps {
+    trip: Trip
+    activities: Activity[];
 }
 
-const Schedule = () => {
-    const {trip} = useLocation().state as { trip: Trip; showActions: boolean; };
-    const { activities, fetchActivities } = useActivities();
+const Schedule = ({trip, activities}: DailyScheduleProps) => {
+    const navigate = useNavigate();
+    const [currentDate, setCurrentDate] = useState<Date>(new Date(trip.startDate!));
+    const [day, setDay] = useState<number>(1);
 
-    useEffect(() => {
-        fetchActivities(trip._id ?? "")
-    }, [trip._id, fetchActivities]);
+    const isFirstDay = useMemo(() =>
+            new Date(currentDate).toDateString() === new Date(trip.startDate!).toDateString(),
+        [currentDate, trip.startDate]);
+
+    const isLastDay = useMemo(() =>
+            new Date(currentDate).toDateString() === new Date(trip.endDate!).toDateString(),
+        [currentDate, trip.endDate]);
+
+    const currentDayActivities = useMemo(() => {
+        return activities.filter(activity =>
+            new Date(activity.date).toDateString() === new Date(currentDate).toDateString())
+    }, [activities, currentDate]);
+
+    const formatedDate = useMemo(() => {
+        return new Date(currentDate).toLocaleDateString("en-GB", {
+            weekday: "short",
+            day: "2-digit",
+            month: "2-digit",
+            year: "2-digit",
+        });
+    }, [currentDate]);
+
+    const moveToPrevDay = () => moveDate(currentDate, -1);
+    const moveToNextDay = () => moveDate(currentDate, 1);
+
+    const moveDate = (date: Date, offset: number) => {
+        const newDate = new Date(date);
+        newDate.setDate(newDate.getDate() + offset);
+        setCurrentDate(newDate);
+        setDay(prevDay => prevDay + offset);
+    };
+
+    const addAttractions = () => {
+        navigate("/AddActivities", {state: {trip}});
+    };
 
     return (
-        <Grid2 container columnSpacing={8} sx={containerStyle}>
-            <Grid2 size={6} height="100%">
-                <DailySchedule activities={activities}/>
-            </Grid2>
-            <Grid2 size={6} height="100%" overflow='hidden'>
-                <Box sx={mapContainerStyle}>
-                    <Map area={trip.destinations[0]} showAutoComplete={false}></Map>
-                </Box>
-            </Grid2>
-        </Grid2>
+        <Stack height="100%" spacing={2}>
+            <Box display="flex" justifyContent="space-between" alignItems="center">
+                <Typography variant="h4">
+                    Daily Planner
+                </Typography>
+                <PaginationArrows
+                    disablePrev={isFirstDay} disableNext={isLastDay}
+                    onPrevClick={moveToPrevDay} onNextClick={moveToNextDay}/>
+            </Box>
+            <Card sx={scheduleCardStyle}>
+                <CardHeader title={"Day " + day} subheader={formatedDate}></CardHeader>
+                <Divider/>
+                <CardContent className="scrollable" sx={cardContentStyle}>
+                    {currentDayActivities.length ? (
+                        <>
+                            <DailySchedule activities={currentDayActivities}/>
+                            <Box display="flex" justifyContent="center">
+                                <Button variant="contained" onClick={addAttractions}>Add more attractions</Button>
+                            </Box>
+                        </>
+                        ) : (<EmptyDay onClick={addAttractions}/>)}
+                </CardContent>
+            </Card>
+        </Stack>
     );
-};
+}
 
 export default Schedule;
