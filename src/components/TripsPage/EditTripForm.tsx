@@ -22,6 +22,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "../../styles/Forms.css";
 import { toast } from "react-toastify";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
+import axios from "axios";
 
 interface EditTripFormProps {
   trip: Trip;
@@ -31,6 +32,7 @@ interface EditTripFormProps {
 const EditTripForm = ({ trip, participants }: EditTripFormProps) => {
   const { updateTrip, error } = useTrips();
   const [updatedTrip, setUpdatedTrip] = useState<Trip>({ ...trip });
+  const [currentDestination, setCurrentDestination] = useState("");
   const [updatedParticipants, setUpdatedParticipants] = useState<User[]>([
     ...participants,
   ]);
@@ -40,12 +42,43 @@ const EditTripForm = ({ trip, participants }: EditTripFormProps) => {
   const [imageDataPreview, setImageDataPreview] = useState<string>(
     trip.imgUrl || ""
   );
+  const [suggestions, setSuggestions] = useState<string[]>([]);
 
   const handleChange = (name: string, value: unknown) => {
     setUpdatedTrip((prevData) => ({
       ...prevData,
       [name]: value,
     }));
+  };
+
+  const updateDestinations = (event: unknown, newVal: string[]) => {
+    setUpdatedTrip((prevTrip) => ({
+      ...prevTrip,
+      destinations: newVal,
+    }));
+  };
+
+  const handleInputChange = async (event: any, newInputValue: string) => {
+    setCurrentDestination(newInputValue);
+
+    if (newInputValue) {
+      await fetchSuggestions(newInputValue);
+    } else {
+      setSuggestions([]);
+    }
+  };
+
+  const fetchSuggestions = async (input: string) => {
+    console.log('Fetching suggestions for:', input);
+    try {
+      const response = await axios.get('http://localhost:3000/api/location/autocomplete', {
+        params: { input },
+      });
+      console.log('API response:', response.data);
+      setSuggestions(response.data.map((item: any) => item.description));
+    } catch (error) {
+      console.error('Error fetching suggestions:', error);
+    }
   };
 
   const updateParticipants = async (event: unknown, emails: string[]) => {
@@ -159,7 +192,7 @@ const EditTripForm = ({ trip, participants }: EditTripFormProps) => {
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <Grid container spacing={2} paddingTop={4} paddingBottom={4} display="flex" justifyContent="center">
-      <Grid item xs={4}>
+        <Grid item xs={4}>
           <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center">
             <Avatar
               alt="Profile Picture"
@@ -217,16 +250,15 @@ const EditTripForm = ({ trip, participants }: EditTripFormProps) => {
                 )}
               />
             </Grid>
-            <Grid item xs={6} sx={{maxHeight: '105px', overflowY: 'auto'}}>
+            <Grid item xs={6} sx={{ maxHeight: '105px', overflowY: 'auto' }}>
               <Autocomplete
                 multiple
                 id="tags-filled"
                 freeSolo
                 value={updatedTrip.destinations}
-                onChange={(event, destinations) =>
-                  handleChange("destinations", destinations)
-                }
-                options={[]}
+                onChange={updateDestinations}
+                onInputChange={handleInputChange}
+                options={suggestions}
                 renderInput={(params) => (
                   <TextField
                     {...params}
@@ -245,21 +277,21 @@ const EditTripForm = ({ trip, participants }: EditTripFormProps) => {
               />
             </Grid>
             <Grid item xs={6}>
-            <FormControl fullWidth>
-              <InputLabel id="public-select-label">Access Mode</InputLabel>
-              <Select
-                labelId="public-select-label"
-                id="public-select"
-                value={updatedTrip.isPublic.toString()}
-                label="Access Mode"
-                onChange={event => handleChange('isPublic', event.target.value === 'true')}
-              >
-                <MenuItem value="true">public</MenuItem>
-                <MenuItem value="false">private</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-            <Grid item xs={12} sx={{maxHeight: '145px', overflowY: 'auto'}}>
+              <FormControl fullWidth>
+                <InputLabel id="public-select-label">Access Mode</InputLabel>
+                <Select
+                  labelId="public-select-label"
+                  id="public-select"
+                  value={updatedTrip.isPublic.toString()}
+                  label="Access Mode"
+                  onChange={event => handleChange('isPublic', event.target.value === 'true')}
+                >
+                  <MenuItem value="true">public</MenuItem>
+                  <MenuItem value="false">private</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} sx={{ maxHeight: '145px', overflowY: 'auto' }}>
               <Autocomplete
                 multiple
                 id="tags-filled"
