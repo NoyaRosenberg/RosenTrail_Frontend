@@ -16,14 +16,14 @@ import {toast} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import FormHeader from "../Forms/FormHeader";
 import {LocalizationProvider, DatePicker} from "@mui/x-date-pickers";
+import {DemoContainer} from "@mui/x-date-pickers/internals/demo";
+import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 import {useNavigate} from "react-router-dom";
 import {useTrips} from "../../contexts/TripProvider";
 import "../../styles/Forms.css";
 import tripService from "../../services/trip.service";
 import userService, {User} from "../../services/user.service";
 import dayjs from "dayjs";
-import {DemoContainer} from "@mui/x-date-pickers/internals/demo";
-import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 
 const CreateTripForm: React.FC = () => {
     const {fetchUserTrips} = useTrips();
