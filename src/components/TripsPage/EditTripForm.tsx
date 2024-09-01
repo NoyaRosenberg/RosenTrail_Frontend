@@ -13,8 +13,10 @@ import {
   MenuItem,
   Select,
 } from "@mui/material";
-import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { useTrips } from "../../contexts/TripProvider";
 import { Trip } from "../../services/trip.service";
 import userService, { User } from "../../services/user.service";
@@ -22,6 +24,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "../../styles/Forms.css";
 import { toast } from "react-toastify";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
+import dayjs from "dayjs";
 
 interface EditTripFormProps {
   trip: Trip;
@@ -48,7 +51,7 @@ const EditTripForm = ({ trip, participants }: EditTripFormProps) => {
     }));
   };
 
-  const updateParticipants = async (event: unknown, emails: string[]) => {
+  const updateParticipants = async (_event: unknown, emails: string[]) => {
     setUserNotFoundError(null);
 
     try {
@@ -60,7 +63,7 @@ const EditTripForm = ({ trip, participants }: EditTripFormProps) => {
         participantsId: newParticipants.map((participant) => participant!._id!),
       }));
     } catch (error) {
-      setUserNotFoundError(error.message);
+      setUserNotFoundError((error as Error).message);
     }
   };
 
@@ -157,7 +160,7 @@ const EditTripForm = ({ trip, participants }: EditTripFormProps) => {
   };
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDateFns}>
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Grid container spacing={2} paddingTop={4} paddingBottom={4} display="flex" justifyContent="center">
       <Grid item xs={4}>
           <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center">
@@ -188,34 +191,24 @@ const EditTripForm = ({ trip, participants }: EditTripFormProps) => {
         <Grid item xs={8} display="flex" justifyContent="center" flexWrap="inherit">
           <Grid container spacing={2} component="form" paddingTop={2} paddingLeft={4} paddingRight={6}>
             <Grid item xs={6}>
-              <DatePicker
-                label="Start Date"
-                value={updatedTrip.startDate}
-                onChange={(startDate) => handleChange("startDate", startDate)}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    fullWidth
-                    error={!updatedTrip.startDate}
-                    helperText={!updatedTrip.startDate ? "Required" : ""}
-                  />
-                )}
-              />
+                <DemoContainer components={['DatePicker']}>
+                    <DatePicker
+                        label="Start Date"
+                        format="DD/MM/YYYY"
+                        value={dayjs(updatedTrip.startDate)}
+                        onChange={(date) => handleChange("startDate", date)}
+                    />
+                </DemoContainer>
             </Grid>
             <Grid item xs={6}>
-              <DatePicker
-                label="End Date"
-                value={updatedTrip.endDate}
-                onChange={(endDate) => handleChange("endDate", endDate)}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    fullWidth
-                    error={!updatedTrip.endDate}
-                    helperText={!updatedTrip.endDate ? "Required" : ""}
-                  />
-                )}
-              />
+                <DemoContainer components={['DatePicker']}>
+                    <DatePicker
+                        label="End Date"
+                        format="DD/MM/YYYY"
+                        value={dayjs(updatedTrip.endDate)}
+                        onChange={(date) => handleChange("endDate", date)}
+                    />
+                </DemoContainer>
             </Grid>
             <Grid item xs={6} sx={{maxHeight: '105px', overflowY: 'auto'}}>
               <Autocomplete
@@ -223,7 +216,7 @@ const EditTripForm = ({ trip, participants }: EditTripFormProps) => {
                 id="tags-filled"
                 freeSolo
                 value={updatedTrip.destinations}
-                onChange={(event, destinations) =>
+                onChange={(_event, destinations) =>
                   handleChange("destinations", destinations)
                 }
                 options={[]}
