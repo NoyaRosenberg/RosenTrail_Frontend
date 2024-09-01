@@ -5,6 +5,7 @@ import TripsGrid from "./TripsGrid";
 import { useTrips } from "../../contexts/TripProvider";
 import { Trip } from "../../services/trip.service";
 import CardsSkeleton from "../Shared/CardsSkeleton";
+import React from "react";
 
 export interface TripsPageProps {
   trips: Trip[];
@@ -56,12 +57,47 @@ const TripsPage = ({
       }}
     >
       <Stack spacing={2} alignItems="center" width="100%">
-        <Typography variant="h4" gutterBottom>
-          {title}
-        </Typography>
-        <Typography variant="overline" display="block" gutterBottom>
-          {subTitle}
-        </Typography>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "100%",
+            position: "relative",
+          }}
+        >
+          <Box
+            sx={{
+              position: "absolute",  // Position the video absolutely
+              left: 0,               // Align it to the left edge of the container
+            }}
+          >
+            <video
+              src="/public/video.webm"
+              autoPlay
+              loop
+              muted
+              style={{ width: '200px', height: 'auto' }} // Adjust the size as needed
+            />
+          </Box>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              flexGrow: 1,
+            }}
+          >
+            <Typography variant="h4" gutterBottom>
+              {title}
+            </Typography>
+            <Typography variant="overline" display="block" gutterBottom>
+              {subTitle}
+            </Typography>
+          </Box>
+        </Box>
+
         <Box width="100%">
           <SearchBar placeholder="Search a trip..." onSearch={onTripSearch} />
         </Box>
@@ -84,22 +120,22 @@ const TripsPage = ({
             <CardsSkeleton numInRow={3} />
           </Box>
         ) : error ? (
-            <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  height: "100%",
-                  flexDirection: "column",
-                }}
-            >
-              <Typography gutterBottom variant="h4" color="error">
-                Opps!
-              </Typography>
-              <Typography color="error">
-                An error occurred while fetching your trips
-              </Typography>
-            </Box>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              height: "100%",
+              flexDirection: "column",
+            }}
+          >
+            <Typography gutterBottom variant="h4" color="error">
+              Opps!
+            </Typography>
+            <Typography color="error">
+              An error occurred while fetching your trips
+            </Typography>
+          </Box>
         ) : (
           <TripsGrid trips={filteredTrips} isCommunityTrips={isCommunityTrips} fetchTrips={fetchTrips} />
         )}

@@ -56,7 +56,7 @@ const AppRoutes: React.FC = () => {
               isCommunityTrips={false}
               title="My Wonderful Trips"
               subTitle="Create a new trip or enter your former trip to edit, 
-              publish or print pictures from your wonderful trips"
+              share your wonderful trips"
             />
           </ProtectedRoute>
         }
