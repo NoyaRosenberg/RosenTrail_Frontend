@@ -25,24 +25,27 @@ import "../../styles/Forms.css";
 import {toast} from "react-toastify";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import dayjs from "dayjs";
+import axios from "axios";
 
 interface EditTripFormProps {
     trip: Trip;
     participants: User[];
 }
 
-const EditTripForm = ({trip, participants}: EditTripFormProps) => {
-    const {updateTrip, error} = useTrips();
-    const [updatedTrip, setUpdatedTrip] = useState<Trip>({...trip});
-    const [updatedParticipants, setUpdatedParticipants] = useState<User[]>([
-        ...participants,
-    ]);
-    const [userNotFoundError, setUserNotFoundError] = useState<string | null>(
-        null
-    );
-    const [imageDataPreview, setImageDataPreview] = useState<string>(
-        trip.imgUrl || ""
-    );
+const EditTripForm = ({ trip, participants }: EditTripFormProps) => {
+  const { updateTrip, error } = useTrips();
+  const [updatedTrip, setUpdatedTrip] = useState<Trip>({ ...trip });
+  const [currentDestination, setCurrentDestination] = useState("");
+  const [updatedParticipants, setUpdatedParticipants] = useState<User[]>([
+    ...participants,
+  ]);
+  const [userNotFoundError, setUserNotFoundError] = useState<string | null>(
+    null
+  );
+  const [imageDataPreview, setImageDataPreview] = useState<string>(
+    trip.imgUrl || ""
+  );
+  const [suggestions, setSuggestions] = useState<string[]>([]);
 
     const handleChange = (name: string, value: unknown) => {
         setUpdatedTrip((prevData) => ({
@@ -51,8 +54,38 @@ const EditTripForm = ({trip, participants}: EditTripFormProps) => {
         }));
     };
 
-    const updateParticipants = async (_event: unknown, emails: string[]) => {
-        setUserNotFoundError(null);
+  const updateDestinations = (_event: unknown, newVal: string[]) => {
+    setUpdatedTrip((prevTrip) => ({
+      ...prevTrip,
+      destinations: newVal,
+    }));
+  };
+
+  const handleInputChange = async (_event: any, newInputValue: string) => {
+    setCurrentDestination(newInputValue);
+
+    if (newInputValue) {
+      await fetchSuggestions(newInputValue);
+    } else {
+      setSuggestions([]);
+    }
+  };
+
+  const fetchSuggestions = async (input: string) => {
+    console.log('Fetching suggestions for:', input);
+    try {
+      const response = await axios.get('http://localhost:3000/api/location/autocomplete', {
+        params: { input },
+      });
+      console.log('API response:', response.data);
+      setSuggestions(response.data.map((item: any) => item.description));
+    } catch (error) {
+      console.error('Error fetching suggestions:', error);
+    }
+  };
+
+  const updateParticipants = async (_event: unknown, emails: string[]) => {
+    setUserNotFoundError(null);
 
         try {
             const newParticipants = await getParticipantsByEmails(emails);
@@ -216,10 +249,9 @@ const EditTripForm = ({trip, participants}: EditTripFormProps) => {
                                 id="tags-filled"
                                 freeSolo
                                 value={updatedTrip.destinations}
-                                onChange={(_event, destinations) =>
-                                    handleChange("destinations", destinations)
-                                }
-                                options={[]}
+                                onChange={updateDestinations}
+                                onInputChange={handleInputChange}
+                                options={suggestions}
                                 renderInput={(params) => (
                                     <TextField
                                         {...params}

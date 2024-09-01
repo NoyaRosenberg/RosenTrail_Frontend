@@ -24,32 +24,57 @@ import "../../styles/Forms.css";
 import tripService from "../../services/trip.service";
 import userService, {User} from "../../services/user.service";
 import dayjs from "dayjs";
+import axios from "axios";
 
 const CreateTripForm: React.FC = () => {
-    const {fetchUserTrips} = useTrips();
-    const [currentDestination, setCurrentDestination] = useState("");
-    const [currentParticipant, setCurrentParticipant] = useState("");
-    const [trip, setTrip] = useState({
-        startDate: new Date(),
-        endDate: new Date(),
-        destinations: [] as string[],
-        participants: [] as string[],
-        ownerId:
-            JSON.parse(localStorage.getItem("currentUser") || "{}")?.userId || "",
-        isPublic: true,
-    });
-    const [error, setError] = useState<string | null>(null);
-    const [userNotFoundError, setUserNotFoundError] = useState<string | null>(
-        null
-    );
-    const navigate = useNavigate();
+  const { fetchUserTrips } = useTrips();
+  const [currentDestination, setCurrentDestination] = useState("");
+  const [currentParticipant, setCurrentParticipant] = useState("");
+  const [trip, setTrip] = useState({
+    startDate: new Date(),
+    endDate: new Date(),
+    destinations: [] as string[],
+    participants: [] as string[],
+    ownerId:
+      JSON.parse(localStorage.getItem("currentUser") || "{}")?.userId || "",
+    isPublic: true,
+  });
+  const [error, setError] = useState<string | null>(null);
+  const [userNotFoundError, setUserNotFoundError] = useState<string | null>(
+    null
+  );
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const navigate = useNavigate();
 
-    const handleDateChange = (name: string, date: Date | null) => {
-        setTrip((prevTrip) => ({
-            ...prevTrip,
-            [name]: date,
-        }));
-    };
+  const fetchSuggestions = async (input: string) => {
+    console.log('Fetching suggestions for:', input);
+    try {
+      const response = await axios.get('http://localhost:3000/api/location/autocomplete', {
+        params: { input },
+      });
+      console.log('API response:', response.data);
+      setSuggestions(response.data.map((item: any) => item.description));
+    } catch (error) {
+      console.error('Error fetching suggestions:', error);
+    }
+  };
+
+  const handleInputChange = async (_event: any, newInputValue: string) => {
+    setCurrentDestination(newInputValue);
+
+    if (newInputValue) {
+      await fetchSuggestions(newInputValue);
+    } else {
+      setSuggestions([]);
+    }
+  };
+
+  const handleDateChange = (date: Date | null, name: string) => {
+    setTrip((prevTrip) => ({
+      ...prevTrip,
+      [name]: date,
+    }));
+  };
 
     const updateParticipants = async (
         _event: unknown,
@@ -190,10 +215,8 @@ const CreateTripForm: React.FC = () => {
                             id="tags-filled"
                             freeSolo
                             onChange={updateDestinations}
-                            onInputChange={(_event, newInputValue) => {
-                                setCurrentDestination(newInputValue);
-                            }}
-                            options={[]}
+                            onInputChange={handleInputChange}
+                            options={suggestions}
                             renderInput={(params) => (
                                 <TextField
                                     {...params}
