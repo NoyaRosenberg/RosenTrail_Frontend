@@ -1,12 +1,8 @@
 import React, {useEffect, useState} from "react";
 import activityService, {Activity} from "../../services/activity.service.ts";
 import {Trip} from "../../services/trip.service.ts";
-import {DatePicker, LocalizationProvider} from "@mui/x-date-pickers";
 import {ToastContainer, toast} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import {IconButton} from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
-import {AdapterDateFns} from "@mui/x-date-pickers/AdapterDateFns";
 import {useNavigate} from "react-router-dom";
 import {
     FormContainer,
@@ -14,10 +10,13 @@ import {
     Subtitle,
     StyledForm,
     StyledTextField,
-    ParticipantsContainer,
-    SaveButton,
+    ParticipantsContainer, SaveButton
 } from "../../styles/CreateActivityForm.styles.ts";
 import {Coordinates} from "../../services/google-maps.service";
+import {LocalizationProvider, DatePicker} from "@mui/x-date-pickers";
+import {DemoContainer} from "@mui/x-date-pickers/internals/demo";
+import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs from "dayjs";
 
 type CreateActivityFormProps = {
     location?: string;
@@ -30,7 +29,7 @@ type CreateActivityFormProps = {
     priceLevel?: number;
     imageUrl?: string;
     onClose: () => void;
-    activity?: Activity | null;
+    activityToEdit?: Activity | null;
 };
 
 const CreateActivityForm: React.FC<CreateActivityFormProps> = ({
@@ -44,7 +43,7 @@ const CreateActivityForm: React.FC<CreateActivityFormProps> = ({
                                                                    priceLevel,
                                                                    imageUrl,
                                                                    onClose,
-                                                                   activity = null,
+                                                                   activityToEdit = null,
                                                                }) => {
     const [formData, setFormData] = useState({
         date: trip.startDate ?? new Date(),
@@ -53,11 +52,11 @@ const CreateActivityForm: React.FC<CreateActivityFormProps> = ({
         endTime: "",
         categories: categories ?? "",
         description: description ?? "",
-        participants: activity?.participants ?? 1,
+        participants: activityToEdit?.participants ?? 1,
         cost: cost ?? 0,
         tripId: trip._id ?? "",
         name: location ?? "",
-        activityId: activity?._id ?? "",
+        activityId: activityToEdit?._id ?? "",
         imageUrl: imageUrl ?? "",
         coordinates: coordinates,
         rating: rating,
@@ -67,22 +66,22 @@ const CreateActivityForm: React.FC<CreateActivityFormProps> = ({
     const navigate = useNavigate(); // Hook to navigate
 
     useEffect(() => {
-        if (activity) {
+        if (activityToEdit) {
             // If an activity is provided, populate the form with its data
             setFormData({
-                ...activity,
-                activityId: activity?._id ?? "",
+                ...activityToEdit,
+                activityId: activityToEdit?._id ?? "",
                 participants: formData.participants ?? 0,
-                categories: activity?.categories ?? "",
-                imageUrl: activity?.imageUrl ?? "",
-                description: activity?.description ?? "",
-                cost: activity?.cost ?? 0,
-                priceLevel: activity?.priceLevel,
-                rating: activity?.rating,
-                coordinates: activity?.coordinates
+                categories: activityToEdit?.categories ?? "",
+                imageUrl: activityToEdit?.imageUrl ?? "",
+                description: activityToEdit?.description ?? "",
+                cost: activityToEdit?.cost ?? 0,
+                priceLevel: activityToEdit?.priceLevel,
+                rating: activityToEdit?.rating,
+                coordinates: activityToEdit?.coordinates
             });
         }
-    }, [activity, trip._id]);
+    }, [activityToEdit, trip._id]);
 
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -105,7 +104,7 @@ const CreateActivityForm: React.FC<CreateActivityFormProps> = ({
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            if (activity) {
+            if (activityToEdit) {
                 // If activity exists, update it
                 await activityService.updateActivity(formData);
                 toast.success("Activity updated successfully");
@@ -124,32 +123,32 @@ const CreateActivityForm: React.FC<CreateActivityFormProps> = ({
     };
 
     return (
-        <LocalizationProvider dateAdapter={AdapterDateFns}>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
             <FormContainer>
-                <IconButton
-                    aria-label="close"
-                    onClick={onClose}
-                    style={{position: "absolute", right: "10px", top: "10px"}}
-                >
-                    <CloseIcon/>
-                </IconButton>
-                <Title>{activity ? "Edit" : "Create"} Your Activity</Title>
-                <Subtitle>You can edit your activity plans here</Subtitle>
+                <Title>{activityToEdit ? "Edit" : "Create"} Your Activity</Title>
+                <Subtitle>You can {activityToEdit ? "edit" : "create"} your activity plans here</Subtitle>
                 <StyledForm onSubmit={handleSubmit}>
-                    <DatePicker
-                        label="Date"
-                        value={formData.date}
-                        minDate={new Date(trip.startDate || new Date())}
-                        maxDate={new Date(trip.endDate || new Date())}
-                        onChange={(date) => handleDateChange(date, "date")}
-                        renderInput={(params) => <StyledTextField {...params} fullWidth/>}
-                    />
+                    <DemoContainer components={['DatePicker']}>
+                        <DatePicker
+                            format="DD/MM/YYYY"
+                            label="Date"
+                            value={dayjs(formData.date)}
+                            minDate={dayjs(new Date(trip.startDate || new Date()))}
+                            maxDate={dayjs(new Date(trip.endDate || new Date()))}
+                            onChange={(date) => handleDateChange(date!.toDate(), "date")}
+                        />
+                    </DemoContainer>
                     <StyledTextField
                         label="Location"
                         name="location"
                         value={formData.location}
                         onChange={handleChange}
                         fullWidth
+                        sx={{
+                            "& .MuiInputBase-root": {
+                                width: 255
+                            },
+                        }}
                     />
                     <StyledTextField
                         label="Start Hour"
@@ -159,6 +158,11 @@ const CreateActivityForm: React.FC<CreateActivityFormProps> = ({
                         onChange={handleChange}
                         fullWidth
                         InputLabelProps={{shrink: true}}
+                        sx={{
+                            "& .MuiInputBase-root": {
+                                width: 255
+                            },
+                        }}
                     />
                     <StyledTextField
                         label="End Hour"
@@ -168,6 +172,11 @@ const CreateActivityForm: React.FC<CreateActivityFormProps> = ({
                         onChange={handleChange}
                         fullWidth
                         InputLabelProps={{shrink: true}}
+                        sx={{
+                            "& .MuiInputBase-root": {
+                                width: 255
+                            },
+                        }}
                     />
                     <StyledTextField
                         label="Activity Description"
@@ -177,6 +186,11 @@ const CreateActivityForm: React.FC<CreateActivityFormProps> = ({
                         fullWidth
                         multiline
                         rows={3}
+                        sx={{
+                            "& .MuiInputBase-root": {
+                                width: 255
+                            },
+                        }}
                     />
                     <ParticipantsContainer>
                         <StyledTextField
@@ -186,6 +200,11 @@ const CreateActivityForm: React.FC<CreateActivityFormProps> = ({
                             value={formData.participants}
                             onChange={handleParticipantsChange}
                             InputProps={{inputProps: {min: 1}}}
+                            sx={{
+                                "& .MuiInputBase-root": {
+                                    width: 255
+                                },
+                            }}
                         />
                     </ParticipantsContainer>
                     <StyledTextField
@@ -195,6 +214,11 @@ const CreateActivityForm: React.FC<CreateActivityFormProps> = ({
                         value={formData.cost}
                         onChange={handleChange}
                         fullWidth
+                        sx={{
+                            "& .MuiInputBase-root": {
+                                width: 255
+                            },
+                        }}
                     />
                     <SaveButton type="submit" variant="contained" fullWidth>
                         Save changes
