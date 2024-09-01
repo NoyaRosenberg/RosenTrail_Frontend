@@ -22,6 +22,7 @@ import { useTrips } from "../../contexts/TripProvider";
 import "../../styles/Forms.css";
 import tripService from "../../services/trip.service";
 import userService, { User } from "../../services/user.service";
+import axios from "axios";
 
 const CreateTripForm: React.FC = () => {
   const { fetchUserTrips } = useTrips();
@@ -40,7 +41,31 @@ const CreateTripForm: React.FC = () => {
   const [userNotFoundError, setUserNotFoundError] = useState<string | null>(
     null
   );
+  const [suggestions, setSuggestions] = useState<string[]>([]);
   const navigate = useNavigate();
+
+  const fetchSuggestions = async (input: string) => {
+    console.log('Fetching suggestions for:', input);
+    try {
+      const response = await axios.get('http://localhost:3000/api/location/autocomplete', {
+        params: { input },
+      });
+      console.log('API response:', response.data);
+      setSuggestions(response.data.map((item: any) => item.description));
+    } catch (error) {
+      console.error('Error fetching suggestions:', error);
+    }
+  };
+
+  const handleInputChange = async (event: any, newInputValue: string) => {
+    setCurrentDestination(newInputValue);
+
+    if (newInputValue) {
+      await fetchSuggestions(newInputValue);
+    } else {
+      setSuggestions([]);
+    }
+  };
 
   const handleDateChange = (date: Date | null, name: string) => {
     setTrip((prevTrip) => ({
@@ -236,22 +261,25 @@ const CreateTripForm: React.FC = () => {
               id="tags-filled"
               freeSolo
               onChange={updateDestinations}
-              onInputChange={(event, newInputValue) => {
-                setCurrentDestination(newInputValue);
-              }}
-              options={[]}
+              onInputChange={handleInputChange}
+              options={suggestions}
               renderInput={(params) => (
                 <TextField
                   {...params}
                   variant="outlined"
                   label="Destinations"
                   placeholder="Destinations"
+                  fullWidth
+                  InputProps={{
+                    ...params.InputProps,
+                    style: { height: '56px' }, // Set a longer height
+                  }}
                 />
               )}
             />
           </Grid>
           <Grid item xs={6}>
-            <FormControl fullWidth>
+            <FormControl fullWidth sx={{ height: '56px' }}>
               <InputLabel id="public-select-label">Access Mode</InputLabel>
               <Select
                 labelId="public-select-label"
@@ -259,6 +287,7 @@ const CreateTripForm: React.FC = () => {
                 value={trip.isPublic.toString()}
                 label="Access Mode"
                 onChange={handlePublicChange}
+                style={{ height: '56px', display: 'flex', alignItems: 'center' }}
               >
                 <MenuItem value="true">public</MenuItem>
                 <MenuItem value="false">private</MenuItem>
@@ -282,12 +311,13 @@ const CreateTripForm: React.FC = () => {
                   placeholder="Participants"
                   error={!!userNotFoundError}
                   helperText={userNotFoundError}
+                  sx={{ height: '56px' }}
                 />
               )}
             />
           </Grid>
           <Grid item xs={12}>
-            <Button type="submit" variant="contained" color="primary" fullWidth>
+            <Button type="submit" variant="contained" color="primary" fullWidth sx={{ height: '56px'}}>
               Create Trip
             </Button>
           </Grid>
