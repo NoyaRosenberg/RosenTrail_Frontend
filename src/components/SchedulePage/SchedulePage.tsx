@@ -13,7 +13,7 @@ const mainContainerStyle = {
     height: '100vh',
     overflow: 'hidden',
     padding: 4,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#f5f5f5'
 };
 
 const mapContainerStyle = {

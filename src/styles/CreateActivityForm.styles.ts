@@ -1,16 +1,19 @@
 import { styled } from '@mui/system';
 import { TextField, Button } from '@mui/material';
+import {lightGreen} from "@mui/material/colors";
 
 export const FormContainer = styled('div')({
-  width: '400px',
-  padding: '20px',
+  width: '100%',
+  padding: '30px 60px 30px 60px',
   background: '#fff',
-  borderRadius: '8px',
-  boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: "center",
+  alignItems: "center"
 });
 
 export const Title = styled('h2')({
-  color: '#4CAF50',
+  color: lightGreen[500],
   marginBottom: '5px',
 });
 
@@ -22,6 +25,8 @@ export const Subtitle = styled('p')({
 export const StyledForm = styled('form')({
   display: 'flex',
   flexDirection: 'column',
+  justifyContent: "center",
+  alignItems: "center",
   gap: '15px',
 });
 

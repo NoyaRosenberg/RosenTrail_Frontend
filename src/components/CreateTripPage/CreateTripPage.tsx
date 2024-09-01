@@ -1,20 +1,19 @@
-import { Box } from '@mui/material';
+import {Box} from '@mui/material';
 import CreateTripForm from './CreateTripForm';
 import '../../styles/CreateTrip.css';
 import '../../styles/Forms.css';
-import React from 'react';
 
 const CreateTripPage = () => {
-  return (
-    <Box className="form-page-main-container">
-    <Box className="form-page-left-container">
-      <Box className="form-page-background-image create-trip-image" />
-    </Box>
-    <Box className="form-page-right-container">
-      <CreateTripForm />
-    </Box>
-  </Box>
-  );
+    return (
+        <Box className="form-page-main-container">
+            <Box className="form-page-left-container">
+                <Box className="form-page-background-image create-trip-image"/>
+            </Box>
+            <Box className="form-page-right-container">
+                <CreateTripForm/>
+            </Box>
+        </Box>
+    );
 };
 
 export default CreateTripPage;
